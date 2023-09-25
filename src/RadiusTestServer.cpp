@@ -27,6 +27,9 @@
 
 #include "Platform.h"
 #include "Configuration.h"
+#include "Goose.h"
+#include "GooseEthernet.h"
+#include "Production.h"
 
 // Namespaces:
 using namespace std;
@@ -54,9 +57,9 @@ void thread_func(uint8_t* puiData)
 
     while (1)
     {
-    std::cout << "thread_func puiData" << " " << (int)*puiData << std::endl;
+        std::cout << "thread_func puiData" << " " << (int)*puiData << std::endl;
 //    std::cout << "thread_func uiData" << " " << (int)uiData << std::endl;
-    std::cout << "thread_func" << " " << std::this_thread::get_id() << std::endl;
+        std::cout << "thread_func" << " " << std::this_thread::get_id() << std::endl;
         usleep(1000000);
     }
 }
@@ -80,19 +83,41 @@ int main(int argc, char** argv)
 
     uint8_t uiData = 56;
 
-    std::thread th(thread_func, &uiData);
-    std::thread::id th_id = th.get_id();
-//    th.join(); // ждем завершения работы функции блокируем здесь
-    th.detach(); // не ждем завершения работы функции
+//    std::thread th(thread_func, &uiData);
+//    std::thread::id th_id = th.get_id();
+////    th.join(); // ждем завершения работы функции блокируем здесь
+//    th.detach(); // не ждем завершения работы функции
+
+    CProductionInterface* pxGooseThreadProduction;
+    pxGooseThreadProduction = new CGooseThreadProduction();
+
+//    CGooseEthernet* pxGooseEthernet;
+//    CGooseEthernetInterface* pxGooseEthernet;
+    CGooseInterface* pxGooseEthernet;
+    pxGooseEthernet = new CGooseEthernet();
+
+//    std::thread th(CGooseThreadProduction::Process, pxGooseEthernet);
+//    std::thread::id th_id = th.get_id();
+//    // не ждем завершения работы функции
+//    th.detach();
+    pxGooseThreadProduction -> Create(pxGooseEthernet);
 
 
+    pxGooseEthernet -> SetFsmState(2);
+    pxGooseEthernet -> SetOwnAddress(78);
+//    pxGooseEthernet -> GetOwnAddress();
 
     while (1)
     {
+        pxGooseEthernet -> Fsm();
+
+        std::cout << "main FsmState" << " " << (int)pxGooseEthernet -> GetFsmState() << std::endl;
+        std::cout << "main OwnAddress" << " " << (int)pxGooseEthernet -> GetOwnAddress() << std::endl;
         std::cout << "main uiData" << " " << (int)uiData << std::endl;
-        std::cout << "main" << " " << th_id << std::endl;
         usleep(1000000);
     }
+
+    delete[] pxGooseEthernet;
 
     return 0;
 

@@ -14,6 +14,7 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="RadiusTestServer/src/Goose" />
+					<Add directory="RadiusTestServer/src" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -24,6 +25,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="RadiusTestServer/src/Goose" />
+					<Add directory="RadiusTestServer/src" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -38,16 +40,15 @@
 		<Unit filename="src/Configuration.h" />
 		<Unit filename="src/Crc.cpp" />
 		<Unit filename="src/Crc.h" />
-		<Unit filename="src/DataStore.h" />
 		<Unit filename="src/DataTypes.h" />
-		<Unit filename="src/Dfa.cpp" />
-		<Unit filename="src/Dfa.h" />
 		<Unit filename="src/Goose/Goose.cpp" />
 		<Unit filename="src/Goose/Goose.h" />
 		<Unit filename="src/Goose/GooseEthernet.cpp" />
 		<Unit filename="src/Goose/GooseEthernet.h" />
 		<Unit filename="src/Platform.cpp" />
 		<Unit filename="src/Platform.h" />
+		<Unit filename="src/Production.cpp" />
+		<Unit filename="src/Production.h" />
 		<Unit filename="src/RadiusTestServer.cpp" />
 		<Unit filename="src/Task.cpp" />
 		<Unit filename="src/Task.h" />

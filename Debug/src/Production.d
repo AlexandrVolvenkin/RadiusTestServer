@@ -1,16 +1,15 @@
-src/Goose/GooseEthernet.o: ../src/Goose/GooseEthernet.cpp \
- ../src/Goose/GooseEthernet.h \
+src/Production.o: ../src/Production.cpp ../src/Production.h \
+ D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src\Goose/Goose.h \
  D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Platform.h \
  D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Configuration.h \
- ../src/Goose/Goose.h \
  D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Task.h
 
-../src/Goose/GooseEthernet.h:
+../src/Production.h:
+
+D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src\Goose/Goose.h:
 
 D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Platform.h:
 
 D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Configuration.h:
-
-../src/Goose/Goose.h:
 
 D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Task.h:

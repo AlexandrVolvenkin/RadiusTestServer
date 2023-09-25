@@ -14,7 +14,7 @@
 #include "Goose.h"
 
 //-----------------------------------------------------------------------------------------
-class CGooseEthernetInterface
+class CGooseEthernetInterface : public CGoose
 {
 public:
 
@@ -30,7 +30,7 @@ public:
 
 
 //-----------------------------------------------------------------------------------------
-class CGooseEthernet : public CGoose
+class CGooseEthernet : public CGooseEthernetInterface
 {
 public:
     enum
@@ -40,6 +40,7 @@ public:
 
     CGooseEthernet();
     virtual ~CGooseEthernet();
+    void Fsm(void);
 
 
 private:

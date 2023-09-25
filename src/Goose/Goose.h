@@ -11,12 +11,23 @@
 #include <stdint.h>
 
 #include "Platform.h"
+#include "Task.h"
 
 //-----------------------------------------------------------------------------------------
-class CGooseInterface
+class CGooseInterface : public CTask
 {
 public:
-    virtual void Fsm(void);
+    virtual void SetOwnAddress(uint32_t uiAddress) {};
+    virtual uint32_t GetOwnAddress(void) {};
+
+    virtual void SetServerAddress(uint32_t uiAddress) {};
+    virtual uint32_t GetServerAddress(void) {};
+
+    virtual void SetMagicCode(uint32_t uiMagicCode) {};
+    virtual uint32_t GetMagicCode(void) {};
+
+    virtual void SetMessageLength(uint16_t uiLength) {};
+    virtual uint16_t GetMessageLength(void) {};
 
 };
 
@@ -30,7 +41,7 @@ public:
 
 
 //-----------------------------------------------------------------------------------------
-class CGoose
+class CGoose : public CGooseInterface
 {
 public:
     enum
@@ -45,38 +56,38 @@ public:
 
 //-----------------------------------------------------------------------------------------
 public:
-    virtual void SetOwnAddress(uint32_t uiAddress)
+    void SetOwnAddress(uint32_t uiAddress)
     {
         m_uiOwnAddress = uiAddress;
     };
-    virtual uint32_t GetOwnAddress(void)
+    uint32_t GetOwnAddress(void)
     {
         return m_uiOwnAddress;
     };
 
-    virtual void SetServerAddress(uint32_t uiAddress)
+    void SetServerAddress(uint32_t uiAddress)
     {
         m_uiServerAddress = uiAddress;
     };
-    virtual uint32_t GetServerAddress(void)
+    uint32_t GetServerAddress(void)
     {
         return m_uiServerAddress;
     };
 
-    virtual void SetMagicCode(uint32_t uiMagicCode)
+    void SetMagicCode(uint32_t uiMagicCode)
     {
         m_uiMagicCode = uiMagicCode;
     };
-    virtual uint32_t GetMagicCode(void)
+    uint32_t GetMagicCode(void)
     {
         return m_uiMagicCode;
     };
 
-    virtual void SetMessageLength(uint16_t uiLength)
+    void SetMessageLength(uint16_t uiLength)
     {
         m_uiMessageLength = uiLength;
     };
-    virtual uint16_t GetMessageLength(void)
+    uint16_t GetMessageLength(void)
     {
         return m_uiMessageLength;
     };

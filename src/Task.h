@@ -10,17 +10,42 @@
 
 #include <stdint.h>
 
-#include "Dfa.h"
-#include "Timer.h"
-
 //-----------------------------------------------------------------------------------------
-class CTaskInterface : public CDfaLite
+class CTaskInterface
 {
 public:
-    virtual bool IsSolved(void) {};
+    virtual void SetFsmState(uint8_t uiData) {};
+    virtual uint8_t GetFsmState(void) {};
+    virtual void Fsm(void) {};
+};
 
-protected:
-    virtual bool IsSourceStateActive(void) {};
+//-----------------------------------------------------------------------------------------
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------------
+class CTask : public CTaskInterface
+{
+public:
+    CTask();
+    virtual ~CTask();
+
+    void SetFsmState(uint8_t uiData)
+    {
+        m_uiFsmState = uiData;
+    };
+    uint8_t GetFsmState(void)
+    {
+        return m_uiFsmState;
+    };
+
+
+private:
+    uint8_t m_uiFsmState;
+
 };
 
 //-----------------------------------------------------------------------------------------
@@ -31,102 +56,20 @@ protected:
 
 
 ////-----------------------------------------------------------------------------------------
-//class CTask
+//class CMainProductionTask : public CTask
 //{
 //public:
-//    CTask();
-//    virtual ~CTask();
-//    bool IsSolved(void);
-//protected:
-//    bool IsSourceStateActive(void)
+//    enum
 //    {
 //
 //    };
-//};
 //
+//    CMainProductionTask();
+//    virtual ~CMainProductionTask();
+//
+//private:
+//
+//};
 ////-----------------------------------------------------------------------------------------
-
-
-
-
-
-
-//-----------------------------------------------------------------------------------------
-class CIsRegularButtonPressedInterface : public CTaskInterface
-{
-public:
-    bool IsSolved(void) {};
-
-private:
-    virtual bool IsSourceStateActive(void) {};
-    // время состояния кнопки в нажатом состоянии, исключающее дребезг контактов.
-    virtual uint16_t KEY_PRESSED_TIME(void) {};
-};
-//-----------------------------------------------------------------------------------------
-
-
-
-
-
-
-//-----------------------------------------------------------------------------------------
-class CIsReceiptButtonPressed : public CTaskInterface
-{
-private:
-    enum
-    {
-        TASK_IDDLE = 0,
-        TASK_START,
-        KEY_STATE_UNPRESSED,
-        KEY_STATE_PRESSED,
-        TASK_IS_SOLVED,
-    };
-
-public:
-    CIsReceiptButtonPressed();
-    virtual ~CIsReceiptButtonPressed();
-    bool IsSolved(void);
-    void Fsm(void);
-
-private:
-    bool IsSourceStateActive(void);
-    // время состояния кнопки в нажатом состоянии, исключающее дребезг контактов.
-    uint16_t KEY_PRESSED_TIME(void)
-    {
-        return 100;
-    };
-
-protected:
-    CTimer m_xTimer;
-};
-//-----------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-//-----------------------------------------------------------------------------------------
-class CIsAlarmReset : public CTaskInterface
-{
-private:
-    enum
-    {
-        TASK_IDDLE = 0,
-        TASK_START,
-        TASK_IS_SOLVED
-    };
-
-public:
-    CIsAlarmReset();
-    virtual ~CIsAlarmReset();
-    bool IsSolved(void);
-    void Fsm(void);
-
-private:
-};
-
-//-----------------------------------------------------------------------------------------
 
 #endif // CTASK_H
