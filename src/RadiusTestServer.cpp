@@ -82,44 +82,35 @@ int main(int argc, char** argv)
 // test
 
     uint8_t uiData = 56;
-
-//    std::thread th(thread_func, &uiData);
-//    std::thread::id th_id = th.get_id();
-////    th.join(); // ждем завершения работы функции блокируем здесь
-//    th.detach(); // не ждем завершения работы функции
-
-    CProductionInterface* pxGooseThreadProduction;
-    pxGooseThreadProduction = new CGooseThreadProduction();
-
-//    CGooseEthernet* pxGooseEthernet;
-//    CGooseEthernetInterface* pxGooseEthernet;
-    CGooseInterface* pxGooseEthernet;
-    pxGooseEthernet = new CGooseEthernet();
-
-//    std::thread th(CGooseThreadProduction::Process, pxGooseEthernet);
-//    std::thread::id th_id = th.get_id();
-//    // не ждем завершения работы функции
-//    th.detach();
-    pxGooseThreadProduction -> Place(pxGooseEthernet);
-
-
-    pxGooseEthernet -> SetFsmState(2);
-    pxGooseEthernet -> SetOwnAddress(78);
-//    pxGooseEthernet -> GetOwnAddress();
-
-    while (1)
-    {
-        pxGooseEthernet -> Fsm();
-
-        std::cout << "main FsmState" << " " << (int)pxGooseEthernet -> GetFsmState() << std::endl;
-        std::cout << "main OwnAddress" << " " << (int)pxGooseEthernet -> GetOwnAddress() << std::endl;
-        std::cout << "main uiData" << " " << (int)uiData << std::endl;
-        usleep(1000000);
-    }
-
-    delete[] pxGooseEthernet;
-
-    return 0;
+//
+////    std::thread th(thread_func, &uiData);
+////    std::thread::id th_id = th.get_id();
+//////    th.join(); // ждем завершения работы функции блокируем здесь
+////    th.detach(); // не ждем завершения работы функции
+//
+//
+//
+//    pxGooseEthernet -> SetFsmState(2);
+//    pxGooseEthernet -> SetOwnAddress(78);
+////    pxGooseEthernet -> GetOwnAddress();
+//
+//    while (1)
+//    {
+////        pxGooseEthernet -> Fsm();
+//
+//        std::cout << "main FsmState" << " " << (int)pxGooseEthernet -> GetFsmState() << std::endl;
+//        std::cout << "main OwnAddress" << " " << (int)pxGooseEthernet -> GetOwnAddress() << std::endl;
+//        std::cout << "main uiData" << " " << (int)uiData << std::endl;
+//        usleep(1000000);
+//    }
+//
+//    delete[] pxMainProductionCycle;
+//    delete[] pxMainThreadProduction;
+//
+//    delete[] pxGooseEthernet;
+//    delete[] pxGooseThreadProduction;
+//
+//    return 0;
 
 //-----------------------------------------------------------------------------------------
 
@@ -194,6 +185,61 @@ int main(int argc, char** argv)
             exit(EXIT_FAILURE);
         }
     }
+
+
+    // создадим указатель на объект "производственная площадка главной задачи"
+    CProductionInterface* pxMainThreadProduction;
+    // создадим объект "производственная площадка главной задачи"
+    pxMainThreadProduction = new CMainThreadProduction();
+
+    // создадим указатель на объект "главной задачи"
+    CMainProductionCycleInterface* pxMainProductionCycle;
+    // создадим объект "главной задачи"
+    pxMainProductionCycle = new CMainProductionCycle();
+    // установим начальное состояние автомата задачи
+    pxMainProductionCycle -> SetFsmState(CMainProductionCycle::IDDLE);
+    // разместим задачу на производственной площадке
+    pxMainThreadProduction -> Place(pxMainProductionCycle);
+
+
+    // создадим указатель на объект "производственная площадка Goose задачи"
+    CProductionInterface* pxGooseThreadProduction;
+    // создадим объект "производственная площадка Goose задачи"
+    pxGooseThreadProduction = new CGooseThreadProduction();
+
+    // создадим указатель на объект "Goose задачи"
+    CGooseInterface* pxGooseEthernet;
+    // создадим объект "Goose задачи"
+    pxGooseEthernet = new CGooseEthernet();
+    // установим начальное состояние автомата задачи
+    pxGooseEthernet -> SetFsmState(CGooseEthernet::START_REQUEST);
+    // разместим задачу на производственной площадке
+    pxGooseThreadProduction -> Place(pxGooseEthernet);
+
+
+//    pxMainProductionCycle -> SetFsmState(0);
+//    pxMainProductionCycle -> SetOwnAddress(77);
+////    pxMainProductionCycle -> GetOwnAddress();
+
+    pxGooseEthernet -> SetFsmState(0);
+    pxGooseEthernet -> SetOwnAddress(78);
+//    pxGooseEthernet -> GetOwnAddress();
+
+    while (1)
+    {
+//        pxGooseEthernet -> Fsm();
+
+        std::cout << "main FsmState" << " " << (int)pxGooseEthernet -> GetFsmState() << std::endl;
+        std::cout << "main OwnAddress" << " " << (int)pxGooseEthernet -> GetOwnAddress() << std::endl;
+        std::cout << "main uiData" << " " << (int)uiData << std::endl;
+        usleep(1000000);
+    }
+
+    delete[] pxMainProductionCycle;
+    delete[] pxMainThreadProduction;
+
+    delete[] pxGooseEthernet;
+    delete[] pxGooseThreadProduction;
 
     return 0;
 }

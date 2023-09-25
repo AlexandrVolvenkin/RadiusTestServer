@@ -45,6 +45,8 @@
 		<Unit filename="src/Goose/Goose.h" />
 		<Unit filename="src/Goose/GooseEthernet.cpp" />
 		<Unit filename="src/Goose/GooseEthernet.h" />
+		<Unit filename="src/MainProductionCycle.cpp" />
+		<Unit filename="src/MainProductionCycle.h" />
 		<Unit filename="src/Platform.cpp" />
 		<Unit filename="src/Platform.h" />
 		<Unit filename="src/Production.cpp" />

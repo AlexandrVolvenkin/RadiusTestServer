@@ -12,6 +12,7 @@
 #include <thread>
 
 #include "Goose.h"
+#include "MainProductionCycle.h"
 
 //-----------------------------------------------------------------------------------------
 class CProductionInterface
@@ -24,6 +25,9 @@ public:
 //    virtual void Stop(void) {};
 //    static void Process(void) {};
     static void Process(CGooseInterface* pxGooseInterface) {};
+
+    virtual void Place(CMainProductionCycleInterface* pxMainProductionCycleInterface) {};
+    static void Process(CMainProductionCycleInterface* pxMainProductionCycleInterface) {};
 };
 
 //-----------------------------------------------------------------------------------------
@@ -68,6 +72,9 @@ class CMainThreadProduction : public CProduction
 public:
     CMainThreadProduction();
     virtual ~CMainThreadProduction();
+
+    void Place(CMainProductionCycleInterface* pxMainProductionCycleInterface);
+    static void Process(CMainProductionCycleInterface* pxMainProductionCycleInterface);
 
 protected:
 

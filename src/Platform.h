@@ -38,6 +38,7 @@
 # include <arpa/inet.h>
 # include <poll.h>
 # include <netdb.h>
+#include <net/if.h>
 
 #include <unistd.h>
 
@@ -98,11 +99,11 @@ public:
 
     void SetDataIsWrited(bool bData)
     {
-       m_bDataIsWrited = bData;
+        m_bDataIsWrited = bData;
     }
     bool GetDataIsWrited(void)
     {
-       return m_bDataIsWrited;
+        return m_bDataIsWrited;
     }
 
     virtual bool IsDataWrited(void)
@@ -291,6 +292,7 @@ class CEthernetCommunicationDevice : public CCommunicationDevice
 public:
     enum
     {
+        ETHERNET_TYPE = 0x0800,
         MAX_BUFF_LENGTH = 1024,
         INTERMEDIATE_BUFF_LENGTH = 16
     };
@@ -300,6 +302,8 @@ public:
 
 //-----------------------------------------------------------------------------------------
     void Init(void);
+    void SetPortName(const char* pccDeviceName);
+    const char* GetPortName(void);
     void SetIpAddress(const char* pccIpAddress);
     const char* GetIpAddress(void);
     void SetPort(uint16_t uiPort);
@@ -321,6 +325,7 @@ public:
 //-----------------------------------------------------------------------------------------
 private:
 protected:
+    const char *m_pccDeviceName;
     const char *m_pccIpAddress;
     uint32_t m_uiIpAddress;
     uint16_t m_uiPort;

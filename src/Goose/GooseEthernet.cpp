@@ -16,7 +16,7 @@ CGooseEthernet::CGooseEthernet()
     m_pxCommunicationDevice = new CEthernetCommunicationDevice();
     m_puiRxBuffer = new uint8_t[GOOSE_ETHERNET_MAX_FRAME_LENGTH];
     m_puiTxBuffer = new uint8_t[GOOSE_ETHERNET_MAX_FRAME_LENGTH];
-//    SetFsmState(IDDLE);
+    SetFsmState(IDDLE);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -128,10 +128,10 @@ void CGooseEthernet::Fsm(void)
         break;
 
     case START_REQUEST:
-//        ReceiveDisable();
+        ReceiveDisable();
         GetTimerPointer() -> Set(m_uiReceiveTimeout);
         SetMessageLength(0);
-//        ReceiveEnable();
+        ReceiveEnable();
         SetFsmState(WAITING_MESSAGE_REQUEST);
         break;
 

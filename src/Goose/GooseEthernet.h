@@ -108,7 +108,7 @@ private:
     uint16_t Send(uint8_t* puiDestination, uint16_t uiLength);
     int16_t Receive(uint8_t* puiSource, uint16_t uiLength);
 //    uint16_t GetFrameLength(void);
-    int8_t FrameCheck(uint8_t * , uint16_t );
+    int8_t FrameCheck(uint8_t *, uint16_t );
 
     bool IsDataWrited(void)
     {

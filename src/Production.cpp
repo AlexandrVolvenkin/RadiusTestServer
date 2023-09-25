@@ -72,6 +72,28 @@ CMainThreadProduction::~CMainThreadProduction()
 }
 
 //-----------------------------------------------------------------------------------------
+void CMainThreadProduction::Place(CMainProductionCycleInterface* pxMainProductionCycleInterface)
+{
+
+    std::thread th(CMainThreadProduction::Process, pxMainProductionCycleInterface);
+    std::thread::id th_id = th.get_id();
+    std::cout << "CMainThreadProduction th_id" << " " << th_id << std::endl;
+    // не ждем завершения работы функции
+    th.detach();
+}
+
+//-----------------------------------------------------------------------------------------
+void CMainThreadProduction::Process(CMainProductionCycleInterface* pxMainProductionCycleInterface)
+{
+    while (1)
+    {
+        pxMainProductionCycleInterface -> Fsm();
+        std::cout << "CMainThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
+        usleep(1000000);
+    }
+}
+
+//-----------------------------------------------------------------------------------------
 
 
 
