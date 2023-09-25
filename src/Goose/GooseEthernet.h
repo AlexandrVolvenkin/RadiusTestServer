@@ -11,12 +11,27 @@
 #include <stdint.h>
 
 #include "Platform.h"
+#include "Timer.h"
 #include "Goose.h"
 
 //-----------------------------------------------------------------------------------------
 class CGooseEthernetInterface : public CGoose
 {
 public:
+
+//    virtual uint16_t MIN_MESSAGE_LENGTH(void) {};
+//    virtual void CommunicationDeviceInit(const char* pccIpAddress,
+//                                 uint16_t uiPort) {};
+//    virtual void ReceiveEnable(void) {};
+//    virtual void ReceiveDisable(void) {};
+//    virtual void TransmitEnable(void) {};
+//    virtual void TransmitDisable(void) {};
+//    virtual uint16_t Send(uint8_t* puiDestination, uint16_t uiLength) {};
+//    virtual int16_t Receive(uint8_t* puiSource, uint16_t uiLength) {};
+////    uint16_t GetFrameLength(void) {};
+//    virtual int8_t FrameCheck(uint8_t * , uint16_t ) {};
+//    virtual bool IsDataWrited(void) {};
+//    virtual int8_t MessengerIsReady(void) {};
 
 };
 
@@ -38,9 +53,73 @@ public:
         GOOSE_ETHERNET_MAX_FRAME_LENGTH = 1024,
     };
 
+    enum
+    {
+        IDDLE  = 0,
+        START,
+//-----------------------------------------------------------------------------------------
+// GooseServer
+        REQUEST_ENABLE,
+        WAITING_ACCEPT,
+        START_REQUEST,
+        WAITING_MESSAGE_REQUEST,
+        RECEIVE_MESSAGE_REQUEST,
+        REQUEST_PROCESSING_REQUEST,
+        FRAME_TRANSMIT_CONFIRMATION,
+        WAITING_FRAME_TRANSMIT_CONFIRMATION,
+        END_WAITING_FRAME_TRANSMIT_CONFIRMATION,
+        STOP_REQUEST,
+        REQUEST_ERROR,
+
+//-----------------------------------------------------------------------------------------
+// GooseClient
+        CONFIRMATION_ENABLE,
+        WAITING_CONNECT,
+        START_CONFIRMATION,
+        WAITING_MESSAGE_CONFIRMATION,
+        RECEIVE_MESSAGE_CONFIRMATION,
+        ANSWER_PROCESSING_CONFIRMATION,
+        FRAME_TRANSMIT_REQUEST,
+        WAITING_FRAME_TRANSMIT_REQUEST,
+        END_WAITING_FRAME_TRANSMIT_REQUEST,
+        STOP_CONFIRMATION,
+        CONFIRMATION_ERROR,
+
+        RESTART,
+    };
+
+    uint16_t MIN_MESSAGE_LENGTH(void)
+    {
+        return 4;
+    };
+
     CGooseEthernet();
     virtual ~CGooseEthernet();
+
     void Fsm(void);
+
+private:
+    void CommunicationDeviceInit(const char* pccIpAddress,
+                                 uint16_t uiPort);
+    void ReceiveEnable(void);
+    void ReceiveDisable(void);
+    void TransmitEnable(void);
+    void TransmitDisable(void);
+    uint16_t Send(uint8_t* puiDestination, uint16_t uiLength);
+    int16_t Receive(uint8_t* puiSource, uint16_t uiLength);
+//    uint16_t GetFrameLength(void);
+    int8_t FrameCheck(uint8_t * , uint16_t );
+
+    bool IsDataWrited(void)
+    {
+        return m_pxCommunicationDevice -> IsDataWrited();
+    };
+    int8_t MessengerIsReady(void);
+
+    CTimer* GetTimerPointer(void)
+    {
+        return &m_xTimer;
+    };
 
 
 private:
@@ -48,6 +127,7 @@ private:
     CEthernetCommunicationDevice* m_pxCommunicationDevice;
     uint16_t m_uiRequestTransactionId = 0;
     uint16_t m_uiResponseTransactionId = 0;
+    CTimer m_xTimer;
     // таймоут по отсутствию запроса.
     const static uint16_t m_uiReceiveTimeout = 15000;
     // таймоут по отсутствию подтверждения.

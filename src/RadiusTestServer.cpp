@@ -100,7 +100,7 @@ int main(int argc, char** argv)
 //    std::thread::id th_id = th.get_id();
 //    // не ждем завершения работы функции
 //    th.detach();
-    pxGooseThreadProduction -> Create(pxGooseEthernet);
+    pxGooseThreadProduction -> Place(pxGooseEthernet);
 
 
     pxGooseEthernet -> SetFsmState(2);

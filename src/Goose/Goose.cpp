@@ -22,3 +22,21 @@ CGoose::~CGoose()
     std::cout << "CGoose desstructor"  << std::endl;
 
 }
+
+//-----------------------------------------------------------------------------------------
+void CGoose::SlaveSet(uint8_t uiSlave)
+{
+    m_uiOwnAddress = uiSlave;
+}
+
+//-----------------------------------------------------------------------------------------
+uint16_t CGoose::RequestProcessing(uint8_t *puiRequest, uint8_t *puiResponse, uint16_t uiFrameLength)
+{
+
+}
+
+//-----------------------------------------------------------------------------------------
+uint16_t CGoose::AnswerProcessing(uint8_t *puiResponse, uint16_t uiFrameLength)
+{
+
+}

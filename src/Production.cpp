@@ -20,35 +20,35 @@ CProduction::~CProduction()
 
 }
 
-//-----------------------------------------------------------------------------------------
-void CProduction::Create(void)
-{
-
-}
-
-//-----------------------------------------------------------------------------------------
-void CProduction::Place(void)
-{
-
-}
-
-//-----------------------------------------------------------------------------------------
-void CProduction::Start(void)
-{
-
-}
-
-//-----------------------------------------------------------------------------------------
-void CProduction::Stop(void)
-{
-
-}
-
-//-----------------------------------------------------------------------------------------
-void CProduction::Process(void)
-{
-
-}
+////-----------------------------------------------------------------------------------------
+//void CProduction::Create(void)
+//{
+//
+//}
+//
+////-----------------------------------------------------------------------------------------
+//void CProduction::Place(void)
+//{
+//
+//}
+//
+////-----------------------------------------------------------------------------------------
+//void CProduction::Start(void)
+//{
+//
+//}
+//
+////-----------------------------------------------------------------------------------------
+//void CProduction::Stop(void)
+//{
+//
+//}
+//
+////-----------------------------------------------------------------------------------------
+//void CProduction::Process(void)
+//{
+//
+//}
 
 //-----------------------------------------------------------------------------------------
 
@@ -101,8 +101,19 @@ CGooseThreadProduction::~CGooseThreadProduction()
 ////    th.detach();
 //}
 
+////-----------------------------------------------------------------------------------------
+//void CGooseThreadProduction::Create(CGooseInterface* pxGooseInterface)
+//{
+//
+//    std::thread th(CGooseThreadProduction::Process, pxGooseInterface);
+//    std::thread::id th_id = th.get_id();
+//    std::cout << "CGooseThreadProduction th_id" << " " << th_id << std::endl;
+//    // не ждем завершения работы функции
+//    th.detach();
+//}
+
 //-----------------------------------------------------------------------------------------
-void CGooseThreadProduction::Create(CGooseInterface* pxGooseInterface)
+void CGooseThreadProduction::Place(CGooseInterface* pxGooseInterface)
 {
 
     std::thread th(CGooseThreadProduction::Process, pxGooseInterface);
@@ -112,31 +123,24 @@ void CGooseThreadProduction::Create(CGooseInterface* pxGooseInterface)
     th.detach();
 }
 
-//-----------------------------------------------------------------------------------------
-void CGooseThreadProduction::Place(void)
-{
-
-}
-
-//-----------------------------------------------------------------------------------------
-void CGooseThreadProduction::Start(void)
-{
-
-}
-
-//-----------------------------------------------------------------------------------------
-void CGooseThreadProduction::Stop(void)
-{
-
-}
+////-----------------------------------------------------------------------------------------
+//void CGooseThreadProduction::Start(void)
+//{
+//
+//}
+//
+////-----------------------------------------------------------------------------------------
+//void CGooseThreadProduction::Stop(void)
+//{
+//
+//}
 
 //-----------------------------------------------------------------------------------------
 void CGooseThreadProduction::Process(CGooseInterface* pxGooseInterface)
 {
-
-
     while (1)
     {
+        pxGooseInterface -> Fsm();
         std::cout << "CGooseThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
         usleep(1000000);
     }

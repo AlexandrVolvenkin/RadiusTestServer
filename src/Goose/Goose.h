@@ -17,6 +17,8 @@
 class CGooseInterface : public CTask
 {
 public:
+    virtual void SlaveSet(uint8_t uiSlave) {};
+
     virtual void SetOwnAddress(uint32_t uiAddress) {};
     virtual uint32_t GetOwnAddress(void) {};
 
@@ -29,6 +31,12 @@ public:
     virtual void SetMessageLength(uint16_t uiLength) {};
     virtual uint16_t GetMessageLength(void) {};
 
+private:
+    virtual uint16_t RequestProcessing(uint8_t *puiRequest,
+                                       uint8_t *puiResponse,
+                                       uint16_t uiFrameLength) {};
+    virtual uint16_t AnswerProcessing(uint8_t *puiResponse,
+                                      uint16_t uiFrameLength) {};
 };
 
 //-----------------------------------------------------------------------------------------
@@ -54,7 +62,13 @@ public:
     CGoose();
     virtual ~CGoose();
 
-//-----------------------------------------------------------------------------------------
+    void SlaveSet(uint8_t uiSlave);
+    uint16_t RequestProcessing(uint8_t *puiRequest,
+                               uint8_t *puiResponse,
+                               uint16_t uiFrameLength);
+    uint16_t AnswerProcessing(uint8_t *puiResponse,
+                              uint16_t uiFrameLength);
+
 public:
     void SetOwnAddress(uint32_t uiAddress)
     {

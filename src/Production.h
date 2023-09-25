@@ -17,12 +17,12 @@
 class CProductionInterface
 {
 public:
-    virtual void Create(void) {};
-    virtual void Create(CGooseInterface* pxGooseInterface) {};
-    virtual void Place(void) {};
-    virtual void Start(void) {};
-    virtual void Stop(void) {};
-    static void Process(void) {};
+//    virtual void Create(void) {};
+//    virtual void Create(CGooseInterface* pxGooseInterface) {};
+    virtual void Place(CGooseInterface* pxGooseInterface) {};
+//    virtual void Start(void) {};
+//    virtual void Stop(void) {};
+//    static void Process(void) {};
     static void Process(CGooseInterface* pxGooseInterface) {};
 };
 
@@ -42,11 +42,11 @@ public:
     CProduction();
     virtual ~CProduction();
 
-    void Create(void);
-    void Place(void);
-    void Start(void);
-    void Stop(void);
-    static void Process(void);
+//    void Create(void);
+//    void Place(void);
+//    void Start(void);
+//    void Stop(void);
+//    static void Process(void);
 
 protected:
 
@@ -90,10 +90,10 @@ public:
     CGooseThreadProduction();
     virtual ~CGooseThreadProduction();
 
-    void Create(CGooseInterface* pxGooseInterface);
-    void Place(void);
-    void Start(void);
-    void Stop(void);
+//    void Create(CGooseInterface* pxGooseInterface);
+    void Place(CGooseInterface* pxGooseInterface);
+//    void Start(void);
+//    void Stop(void);
     static void Process(CGooseInterface* pxGooseInterface);
 
 protected:

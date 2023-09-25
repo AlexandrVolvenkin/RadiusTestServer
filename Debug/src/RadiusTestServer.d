@@ -4,6 +4,7 @@ src/RadiusTestServer.o: ../src/RadiusTestServer.cpp ../src/Platform.h \
  D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Platform.h \
  D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Task.h \
  D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src\Goose/GooseEthernet.h \
+ D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Timer.h \
  D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src\Goose/Goose.h \
  ../src/Production.h
 
@@ -18,6 +19,8 @@ D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\sr
 D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Task.h:
 
 D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src\Goose/GooseEthernet.h:
+
+D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Timer.h:
 
 D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src\Goose/Goose.h:
 

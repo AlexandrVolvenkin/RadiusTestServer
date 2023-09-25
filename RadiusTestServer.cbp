@@ -54,7 +54,6 @@
 		<Unit filename="src/Task.h" />
 		<Unit filename="src/Timer.cpp" />
 		<Unit filename="src/Timer.h" />
-		<Unit filename="src/main.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
