@@ -120,7 +120,7 @@ void CGooseEthernet::Fsm(void)
             SetFsmState(START_REQUEST);
         }
 
-        // Çàêîí÷èëîñü âðåìÿ îæèäàíèÿ çàïðîñà(15 ñåêóíä)?
+        // Ð—Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð»Ð¾ÑÑŒ Ð²Ñ€ÐµÐ¼Ñ Ð¾Ð¶Ð¸Ð´Ð°Ð½Ð¸Ñ Ð·Ð°Ð¿Ñ€Ð¾ÑÐ°(15 ÑÐµÐºÑƒÐ½Ð´)?
         if (GetTimerPointer() -> IsOverflow())
         {
             SetFsmState(REQUEST_ERROR);
@@ -149,7 +149,7 @@ void CGooseEthernet::Fsm(void)
             SetFsmState(REQUEST_ERROR);
         }
 
-        // Çàêîí÷èëîñü âðåìÿ îæèäàíèÿ çàïðîñà(15 ñåêóíä)?
+        // Ð—Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð»Ð¾ÑÑŒ Ð²Ñ€ÐµÐ¼Ñ Ð¾Ð¶Ð¸Ð´Ð°Ð½Ð¸Ñ Ð·Ð°Ð¿Ñ€Ð¾ÑÐ°(15 ÑÐµÐºÑƒÐ½Ð´)?
         if (GetTimerPointer() -> IsOverflow())
         {
             SetFsmState(REQUEST_ERROR);
@@ -170,7 +170,7 @@ void CGooseEthernet::Fsm(void)
             SetFsmState(REQUEST_ERROR);
         }
 
-        // Ïðèíÿò ïàêåò(çàêîí÷èëîñü âðåìÿ îæèäàíèÿ ñëåäóþùåãî áîäà(3.5 áîä))?
+        // ÐŸÑ€Ð¸Ð½ÑÑ‚ Ð¿Ð°ÐºÐµÑ‚(Ð·Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð»Ð¾ÑÑŒ Ð²Ñ€ÐµÐ¼Ñ Ð¾Ð¶Ð¸Ð´Ð°Ð½Ð¸Ñ ÑÐ»ÐµÐ´ÑƒÑŽÑ‰ÐµÐ³Ð¾ Ð±Ð¾Ð´Ð°(3.5 Ð±Ð¾Ð´))?
         if (GetTimerPointer() -> IsOverflow())
         {
             if (FrameCheck(m_puiRxBuffer, GetMessageLength()))
@@ -207,7 +207,7 @@ void CGooseEthernet::Fsm(void)
         break;
 
     case WAITING_FRAME_TRANSMIT_CONFIRMATION:
-        // Çàêîí÷èëîñü âðåìÿ ïàóçû ìåæäó ïðè¸ìîì è ïåðåäà÷åé(5 ìèëèñåêóíä)?
+        // Ð—Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð»Ð¾ÑÑŒ Ð²Ñ€ÐµÐ¼Ñ Ð¿Ð°ÑƒÐ·Ñ‹ Ð¼ÐµÐ¶Ð´Ñƒ Ð¿Ñ€Ð¸Ñ‘Ð¼Ð¾Ð¼ Ð¸ Ð¿ÐµÑ€ÐµÐ´Ð°Ñ‡ÐµÐ¹(5 Ð¼Ð¸Ð»Ð¸ÑÐµÐºÑƒÐ½Ð´)?
         if (GetTimerPointer() -> IsOverflow())
         {
             GetTimerPointer() -> Set(m_uiConfirmationTimeout);
@@ -225,7 +225,7 @@ void CGooseEthernet::Fsm(void)
             SetFsmState(STOP_REQUEST);
         }
 
-        // Çàêîí÷èëîñü âðåìÿ îæèäàíèÿ îêîí÷àíèÿ ïåðåäà÷è?
+        // Ð—Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð»Ð¾ÑÑŒ Ð²Ñ€ÐµÐ¼Ñ Ð¾Ð¶Ð¸Ð´Ð°Ð½Ð¸Ñ Ð¾ÐºÐ¾Ð½Ñ‡Ð°Ð½Ð¸Ñ Ð¿ÐµÑ€ÐµÐ´Ð°Ñ‡Ð¸?
         if (GetTimerPointer() -> IsOverflow())
         {
 //            CPlatform::TxLedOff();
@@ -269,7 +269,7 @@ void CGooseEthernet::Fsm(void)
 //            SetFsmState(STOP_CONFIRMATION);
 //        }
 //
-//        // Çàêîí÷èëîñü âðåìÿ îæèäàíèÿ îòâåòà(500 ìèëèñåêóíä)?
+//        // Ð—Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð»Ð¾ÑÑŒ Ð²Ñ€ÐµÐ¼Ñ Ð¾Ð¶Ð¸Ð´Ð°Ð½Ð¸Ñ Ð¾Ñ‚Ð²ÐµÑ‚Ð°(500 Ð¼Ð¸Ð»Ð¸ÑÐµÐºÑƒÐ½Ð´)?
 //        if (GetTimerPointer() -> IsOverflow())
 //        {
 //            SetFsmState(STOP_CONFIRMATION);
@@ -290,7 +290,7 @@ void CGooseEthernet::Fsm(void)
 //            SetFsmState(STOP_CONFIRMATION);
 //        }
 //
-//        // Ïðèíÿò ïàêåò(çàêîí÷èëîñü âðåìÿ îæèäàíèÿ ñëåäóþùåãî áîäà(3.5 áîä))?
+//        // ÐŸÑ€Ð¸Ð½ÑÑ‚ Ð¿Ð°ÐºÐµÑ‚(Ð·Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð»Ð¾ÑÑŒ Ð²Ñ€ÐµÐ¼Ñ Ð¾Ð¶Ð¸Ð´Ð°Ð½Ð¸Ñ ÑÐ»ÐµÐ´ÑƒÑŽÑ‰ÐµÐ³Ð¾ Ð±Ð¾Ð´Ð°(3.5 Ð±Ð¾Ð´))?
 //        if (GetTimerPointer() -> IsOverflow())
 //        {
 //            if (FrameCheck(m_puiRxBuffer, GetMessageLength()))
@@ -323,7 +323,7 @@ void CGooseEthernet::Fsm(void)
 //        break;
 //
 //    case WAITING_FRAME_TRANSMIT_REQUEST:
-//        // Çàêîí÷èëîñü âðåìÿ ïàóçû ìåæäó ïðè¸ìîì è ïåðåäà÷åé(5 ìèëèñåêóíä)?
+//        // Ð—Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð»Ð¾ÑÑŒ Ð²Ñ€ÐµÐ¼Ñ Ð¿Ð°ÑƒÐ·Ñ‹ Ð¼ÐµÐ¶Ð´Ñƒ Ð¿Ñ€Ð¸Ñ‘Ð¼Ð¾Ð¼ Ð¸ Ð¿ÐµÑ€ÐµÐ´Ð°Ñ‡ÐµÐ¹(5 Ð¼Ð¸Ð»Ð¸ÑÐµÐºÑƒÐ½Ð´)?
 //        if (GetTimerPointer() -> IsOverflow())
 //        {
 //            GetTimerPointer() -> Set(m_uiConfirmationTimeout);
@@ -341,7 +341,7 @@ void CGooseEthernet::Fsm(void)
 //            SetFsmState(START_CONFIRMATION);
 //        }
 //
-//        // Çàêîí÷èëîñü âðåìÿ îæèäàíèÿ îêîí÷àíèÿ ïåðåäà÷è?
+//        // Ð—Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð»Ð¾ÑÑŒ Ð²Ñ€ÐµÐ¼Ñ Ð¾Ð¶Ð¸Ð´Ð°Ð½Ð¸Ñ Ð¾ÐºÐ¾Ð½Ñ‡Ð°Ð½Ð¸Ñ Ð¿ÐµÑ€ÐµÐ´Ð°Ñ‡Ð¸?
 //        if (GetTimerPointer() -> IsOverflow())
 //        {
 ////            CPlatform::TxLedOff();

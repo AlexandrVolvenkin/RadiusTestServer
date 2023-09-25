@@ -85,8 +85,8 @@ int main(int argc, char** argv)
 
 //    std::thread th(thread_func, &uiData);
 //    std::thread::id th_id = th.get_id();
-////    th.join(); // æäåì çàâåðøåíèÿ ðàáîòû ôóíêöèè áëîêèðóåì çäåñü
-//    th.detach(); // íå æäåì çàâåðøåíèÿ ðàáîòû ôóíêöèè
+////    th.join(); // Ð¶Ð´ÐµÐ¼ Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð¸Ñ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ Ð±Ð»Ð¾ÐºÐ¸Ñ€ÑƒÐµÐ¼ Ð·Ð´ÐµÑÑŒ
+//    th.detach(); // Ð½Ðµ Ð¶Ð´ÐµÐ¼ Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð¸Ñ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸
 
     CProductionInterface* pxGooseThreadProduction;
     pxGooseThreadProduction = new CGooseThreadProduction();
@@ -98,7 +98,7 @@ int main(int argc, char** argv)
 
 //    std::thread th(CGooseThreadProduction::Process, pxGooseEthernet);
 //    std::thread::id th_id = th.get_id();
-//    // íå æäåì çàâåðøåíèÿ ðàáîòû ôóíêöèè
+//    // Ð½Ðµ Ð¶Ð´ÐµÐ¼ Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð¸Ñ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸
 //    th.detach();
     pxGooseThreadProduction -> Place(pxGooseEthernet);
 
@@ -152,26 +152,26 @@ int main(int argc, char** argv)
         {
         case 'e':
             cout << "case 'e' " << optarg << endl;
-            // ïîëó÷èì èìÿ èíòåêôåéñà ethernet
+            // Ð¿Ð¾Ð»ÑƒÑ‡Ð¸Ð¼ Ð¸Ð¼Ñ Ð¸Ð½Ñ‚ÐµÐºÑ„ÐµÐ¹ÑÐ° ethernet
 //            input[global.incnt++] = strdup(optarg);
 //        cout << "e arg = " << strdup(optarg) << endl;
             break;
 
         case 'c':
             cout << "case 'c' " << optarg << endl;
-            // ïîëó÷èì èìÿ èíòåêôåéñà comm
+            // Ð¿Ð¾Ð»ÑƒÑ‡Ð¸Ð¼ Ð¸Ð¼Ñ Ð¸Ð½Ñ‚ÐµÐºÑ„ÐµÐ¹ÑÐ° comm
 //            output[global.outcnt++] = strdup(optarg);
             break;
 
         case 'p':
             cout << "case 'p' " << optarg << endl;
-            // ïîëó÷èì äëèíó ïåðèîäà çàäà÷è
+            // Ð¿Ð¾Ð»ÑƒÑ‡Ð¸Ð¼ Ð´Ð»Ð¸Ð½Ñƒ Ð¿ÐµÑ€Ð¸Ð¾Ð´Ð° Ð·Ð°Ð´Ð°Ñ‡Ð¸
 //            output[global.outcnt++] = strdup(optarg);
             break;
 
         case 'v':
             cout << "case 'v' " << optarg << endl;
-            // îïöèÿ -v âåðñèÿ
+            // Ð¾Ð¿Ñ†Ð¸Ñ -v Ð²ÐµÑ€ÑÐ¸Ñ
             printf("RadiusTestServer Version: %s\n",
 #ifdef GIT_HASH
                    GIT_HASH
@@ -184,7 +184,7 @@ int main(int argc, char** argv)
 
         case 'b':
             cout << "case 'b' " << optarg << endl;
-//            // îïöèÿ - ðàáîòàòü â ôîíîâîì ðåæèìå
+//            // Ð¾Ð¿Ñ†Ð¸Ñ - Ñ€Ð°Ð±Ð¾Ñ‚Ð°Ñ‚ÑŒ Ð² Ñ„Ð¾Ð½Ð¾Ð²Ð¾Ð¼ Ñ€ÐµÐ¶Ð¸Ð¼Ðµ
 //            daemon = 1;
             break;
 
@@ -204,7 +204,7 @@ int main(int argc, char** argv)
 
 
 //    for (int i = 0; i < argc; i++) {
-//        // Âûâîäèì ñïèñîê àðãóìåíòîâ â öèêëå
+//        // Ð’Ñ‹Ð²Ð¾Ð´Ð¸Ð¼ ÑÐ¿Ð¸ÑÐ¾Ðº Ð°Ñ€Ð³ÑƒÐ¼ÐµÐ½Ñ‚Ð¾Ð² Ð² Ñ†Ð¸ÐºÐ»Ðµ
 //        cout << "Argument " << i << " : " << argv[i] << endl;
 //    }
 

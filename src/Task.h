@@ -1,4 +1,4 @@
-﻿#ifndef CTASK_H
+#ifndef CTASK_H
 #define CTASK_H
 //-----------------------------------------------------------------------------------------
 //  Source      : FileName.cpp

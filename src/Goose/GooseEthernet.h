@@ -128,9 +128,9 @@ private:
     uint16_t m_uiRequestTransactionId = 0;
     uint16_t m_uiResponseTransactionId = 0;
     CTimer m_xTimer;
-    // таймоут по отсутствию запроса.
+    // С‚Р°Р№РјРѕСѓС‚ РїРѕ РѕС‚СЃСѓС‚СЃС‚РІРёСЋ Р·Р°РїСЂРѕСЃР°.
     const static uint16_t m_uiReceiveTimeout = 15000;
-    // таймоут по отсутствию подтверждения.
+    // С‚Р°Р№РјРѕСѓС‚ РїРѕ РѕС‚СЃСѓС‚СЃС‚РІРёСЋ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ.
     const static uint16_t m_uiConfirmationTimeout = 500;
     const static uint16_t m_uiTransmitDelayTimeout = 5;
 

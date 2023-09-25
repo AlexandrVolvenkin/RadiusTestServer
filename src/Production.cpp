@@ -97,7 +97,7 @@ CGooseThreadProduction::~CGooseThreadProduction()
 //{
 //
 ////    std::thread th(Process);
-////    // не ждем завершения работы функции
+////    // РЅРµ Р¶РґРµРј Р·Р°РІРµСЂС€РµРЅРёСЏ СЂР°Р±РѕС‚С‹ С„СѓРЅРєС†РёРё
 ////    th.detach();
 //}
 
@@ -108,7 +108,7 @@ CGooseThreadProduction::~CGooseThreadProduction()
 //    std::thread th(CGooseThreadProduction::Process, pxGooseInterface);
 //    std::thread::id th_id = th.get_id();
 //    std::cout << "CGooseThreadProduction th_id" << " " << th_id << std::endl;
-//    // не ждем завершения работы функции
+//    // РЅРµ Р¶РґРµРј Р·Р°РІРµСЂС€РµРЅРёСЏ СЂР°Р±РѕС‚С‹ С„СѓРЅРєС†РёРё
 //    th.detach();
 //}
 
@@ -119,7 +119,7 @@ void CGooseThreadProduction::Place(CGooseInterface* pxGooseInterface)
     std::thread th(CGooseThreadProduction::Process, pxGooseInterface);
     std::thread::id th_id = th.get_id();
     std::cout << "CGooseThreadProduction th_id" << " " << th_id << std::endl;
-    // не ждем завершения работы функции
+    // РЅРµ Р¶РґРµРј Р·Р°РІРµСЂС€РµРЅРёСЏ СЂР°Р±РѕС‚С‹ С„СѓРЅРєС†РёРё
     th.detach();
 }
 
