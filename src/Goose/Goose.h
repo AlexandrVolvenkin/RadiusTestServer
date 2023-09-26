@@ -31,6 +31,8 @@ public:
     virtual void SetMessageLength(uint16_t uiLength) {};
     virtual uint16_t GetMessageLength(void) {};
 
+    virtual CEthernetCommunicationDevice* GetCommunicationDevice(void) {};
+
 private:
     virtual uint16_t RequestProcessing(uint8_t *puiRequest,
                                        uint8_t *puiResponse,

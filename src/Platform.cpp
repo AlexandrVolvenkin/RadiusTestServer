@@ -958,6 +958,7 @@ int8_t CEthernetCommunicationDevice::Open(void)
     }
 
     cout << "socket open ok." << endl;
+    cout << "CEthernetCommunicationDevice m_pccDeviceName " << m_pccDeviceName << endl;
 
     struct ifreq ifopts;	/* set promiscuous mode */
     /* Set interface to promiscuous mode - do we need to do this every time? */
@@ -1038,11 +1039,73 @@ int8_t CEthernetCommunicationDevice::Close(void)
 //    close(m_iDeviceDescriptorAccept);
 }
 
-//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------
 int16_t CEthernetCommunicationDevice::Read(uint8_t *puiDestination, uint16_t uiLength)
 {
-    return read(m_iDeviceDescriptor, puiDestination, uiLength);
+    int rc;
+    fd_set rfds;
+    struct timeval tv;
+    struct timeval *p_tv;
+
+
+    tv.tv_sec = 0;
+    tv.tv_usec = 1000000;
+    p_tv = &tv;
+
+    /* Add a file descriptor to the set */
+    FD_ZERO(&rfds);
+    FD_SET(m_iDeviceDescriptor, &rfds);
+
+    if( select(m_iDeviceDescriptor + 1, &rfds, NULL, NULL, &tv) == -1 )
+    {
+//        std::cout << "CTcpCommunicationDevice::Read timeout"  << std::endl;
+        return -1;
+    }
+    else if( FD_ISSET( m_iDeviceDescriptorAccept, &rfds ) )
+    {
+//        std::cout << "CTcpCommunicationDevice::Read FD_ISSET"  << std::endl;
+        if( ( rc = recv(m_iDeviceDescriptorAccept, (char*)puiDestination, uiLength, 0) ) == -1 )
+        {
+//            std::cout << "CTcpCommunicationDevice::Read recv error"  << std::endl;
+            return -1;
+        }
+        else
+        {
+            if (rc)
+            {
+//            std::cout << "CTcpCommunicationDevice::Read recv rc "  << (int)rc  << std::endl;
+                return rc;
+            }
+            else
+            {
+//            std::cout << "CTcpCommunicationDevice::Read recv 0 " << std::endl;
+                return 0;
+            }
+        }
+    }
+
+//    cout << "Read" << endl;
+//    unsigned char *pucSourceTemp;
+//    pucSourceTemp = (unsigned char*)puiDestination;
+//    for(int i=0; i<32; )
+//    {
+//        for(int j=0; j<8; j++)
+//        {
+//            cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
+//        }
+//        cout << endl;
+//        i += 8;
+//    }
+
+//        std::cout << "CTcpCommunicationDevice::Read return 0"  << std::endl;
+    return 0;
 }
+
+////-----------------------------------------------------------------------------------------
+//int16_t CEthernetCommunicationDevice::Read(uint8_t *puiDestination, uint16_t uiLength)
+//{
+//    return read(m_iDeviceDescriptor, puiDestination, uiLength);
+//}
 
 //-----------------------------------------------------------------------------------------
 int16_t CEthernetCommunicationDevice::Write(uint8_t *puiSource, uint16_t uiLength)

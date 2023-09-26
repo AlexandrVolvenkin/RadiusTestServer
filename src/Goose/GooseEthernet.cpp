@@ -9,6 +9,9 @@
 #include "GooseEthernet.h"
 #include "Platform.h"
 
+// Namespaces:
+using namespace std;
+
 //-----------------------------------------------------------------------------------------
 CGooseEthernet::CGooseEthernet()
 {
@@ -40,25 +43,25 @@ void CGooseEthernet::CommunicationDeviceInit(const char* pccIpAddress,
 //-----------------------------------------------------------------------------------------
 void CGooseEthernet::ReceiveEnable(void)
 {
-//    m_pxCommunicationDevice -> Open();
+    m_pxCommunicationDevice -> Open();
 }
 
 //-----------------------------------------------------------------------------------------
 void CGooseEthernet::ReceiveDisable(void)
 {
-//    m_pxCommunicationDevice -> Close();
+    m_pxCommunicationDevice -> Close();
 }
 
 //-----------------------------------------------------------------------------------------
 void CGooseEthernet::TransmitEnable(void)
 {
-//    m_pxCommunicationDevice -> Open();
+    m_pxCommunicationDevice -> Open();
 }
 
 //-----------------------------------------------------------------------------------------
 void CGooseEthernet::TransmitDisable(void)
 {
-//    m_pxCommunicationDevice -> Close();
+    m_pxCommunicationDevice -> Close();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -100,6 +103,10 @@ int8_t CGooseEthernet::MessengerIsReady(void)
 //-----------------------------------------------------------------------------------------
 void CGooseEthernet::Fsm(void)
 {
+//    std::cout << "CGooseEthernet::Fsm"  << std::endl;
+//
+//            cout << "GetFsmState() " << (int)GetFsmState() << endl;
+
     switch (GetFsmState())
     {
         int16_t iBytesNumber;
@@ -109,51 +116,58 @@ void CGooseEthernet::Fsm(void)
 //-----------------------------------------------------------------------------------------
 // GooseServer
     case REQUEST_ENABLE:
-        m_pxCommunicationDevice -> Listen();
-        GetTimerPointer() -> Set(m_uiReceiveTimeout);
-        SetFsmState(WAITING_ACCEPT);
-        break;
-
-    case WAITING_ACCEPT:
-        if (m_pxCommunicationDevice -> Accept())
-        {
-            SetFsmState(START_REQUEST);
-        }
-
-        // Закончилось время ожидания запроса(15 секунд)?
-        if (GetTimerPointer() -> IsOverflow())
-        {
-            SetFsmState(REQUEST_ERROR);
-        }
-        break;
-
-    case START_REQUEST:
+    std::cout << "CGooseEthernet::Fsm REQUEST_ENABLE"  << std::endl;
+//        m_pxCommunicationDevice -> Listen();
+//        GetTimerPointer() -> Set(m_uiReceiveTimeout);
+//        SetFsmState(WAITING_ACCEPT);
         ReceiveDisable();
         GetTimerPointer() -> Set(m_uiReceiveTimeout);
         SetMessageLength(0);
         ReceiveEnable();
+        SetFsmState(START_REQUEST);
+        break;
+
+//    case WAITING_ACCEPT:
+//        if (m_pxCommunicationDevice -> Accept())
+//        {
+//            SetFsmState(START_REQUEST);
+//        }
+//
+//        // Закончилось время ожидания запроса(15 секунд)?
+//        if (GetTimerPointer() -> IsOverflow())
+//        {
+//            SetFsmState(REQUEST_ERROR);
+//        }
+//        break;
+
+    case START_REQUEST:
+//    std::cout << "CGooseEthernet::Fsm START_REQUEST"  << std::endl;
+//        ReceiveDisable();
+        GetTimerPointer() -> Set(m_uiReceiveTimeout);
+        SetMessageLength(0);
+//        ReceiveEnable();
         SetFsmState(WAITING_MESSAGE_REQUEST);
         break;
 
     case WAITING_MESSAGE_REQUEST:
         iBytesNumber = Receive((m_puiRxBuffer + GetMessageLength()), (GOOSE_ETHERNET_MAX_FRAME_LENGTH - GetMessageLength()));
 
-        if (iBytesNumber > 0)
-        {
-            SetMessageLength(GetMessageLength() + iBytesNumber);
-//            GetTimerPointer() -> Set(m_uiGuardTimeout);
-            SetFsmState(RECEIVE_MESSAGE_REQUEST);
-        }
-        else if (iBytesNumber == 0)
-        {
-            SetFsmState(REQUEST_ERROR);
-        }
-
-        // Закончилось время ожидания запроса(15 секунд)?
-        if (GetTimerPointer() -> IsOverflow())
-        {
-            SetFsmState(REQUEST_ERROR);
-        }
+//        if (iBytesNumber > 0)
+//        {
+//            SetMessageLength(GetMessageLength() + iBytesNumber);
+////            GetTimerPointer() -> Set(m_uiGuardTimeout);
+//            SetFsmState(RECEIVE_MESSAGE_REQUEST);
+//        }
+//        else if (iBytesNumber == 0)
+//        {
+//            SetFsmState(REQUEST_ERROR);
+//        }
+//
+//        // Закончилось время ожидания запроса(15 секунд)?
+//        if (GetTimerPointer() -> IsOverflow())
+//        {
+//            SetFsmState(REQUEST_ERROR);
+//        }
 
         break;
 

@@ -82,38 +82,13 @@ int main(int argc, char** argv)
 // test
 
     uint8_t uiData = 56;
-//
-////    std::thread th(thread_func, &uiData);
-////    std::thread::id th_id = th.get_id();
-//////    th.join(); // ждем завершения работы функции блокируем здесь
-////    th.detach(); // не ждем завершения работы функции
-//
-//
-//
-//    pxGooseEthernet -> SetFsmState(2);
-//    pxGooseEthernet -> SetOwnAddress(78);
-////    pxGooseEthernet -> GetOwnAddress();
-//
-//    while (1)
-//    {
-////        pxGooseEthernet -> Fsm();
-//
-//        std::cout << "main FsmState" << " " << (int)pxGooseEthernet -> GetFsmState() << std::endl;
-//        std::cout << "main OwnAddress" << " " << (int)pxGooseEthernet -> GetOwnAddress() << std::endl;
-//        std::cout << "main uiData" << " " << (int)uiData << std::endl;
-//        usleep(1000000);
-//    }
-//
-//    delete[] pxMainProductionCycle;
-//    delete[] pxMainThreadProduction;
-//
-//    delete[] pxGooseEthernet;
-//    delete[] pxGooseThreadProduction;
-//
 //    return 0;
 
 //-----------------------------------------------------------------------------------------
 
+    const char *pccGooseInterfaceName = "eth0";
+    const char *pccCommInterfaceName = "ttyO1";
+    uint8_t uiCalculationPeriodTime = 5;
 
     /* parameter parsing */
     while(1)
@@ -144,20 +119,18 @@ int main(int argc, char** argv)
         case 'e':
             cout << "case 'e' " << optarg << endl;
             // получим имя интекфейса ethernet
-//            input[global.incnt++] = strdup(optarg);
-//        cout << "e arg = " << strdup(optarg) << endl;
+            pccGooseInterfaceName = optarg;
             break;
 
         case 'c':
             cout << "case 'c' " << optarg << endl;
-            // получим имя интекфейса comm
-//            output[global.outcnt++] = strdup(optarg);
+            pccCommInterfaceName = optarg;
             break;
 
         case 'p':
             cout << "case 'p' " << optarg << endl;
             // получим длину периода задачи
-//            output[global.outcnt++] = strdup(optarg);
+            uiCalculationPeriodTime = atoi(optarg);
             break;
 
         case 'v':
@@ -198,8 +171,8 @@ int main(int argc, char** argv)
     pxMainProductionCycle = new CMainProductionCycle();
     // установим начальное состояние автомата задачи
     pxMainProductionCycle -> SetFsmState(CMainProductionCycle::IDDLE);
-    // разместим задачу на производственной площадке
-    pxMainThreadProduction -> Place(pxMainProductionCycle);
+//    // разместим задачу на производственной площадке
+//    pxMainThreadProduction -> Place(pxMainProductionCycle);
 
 
     // создадим указатель на объект "производственная площадка Goose задачи"
@@ -211,8 +184,10 @@ int main(int argc, char** argv)
     CGooseInterface* pxGooseEthernet;
     // создадим объект "Goose задачи"
     pxGooseEthernet = new CGooseEthernet();
+    // установим имя интерфейса
+    pxGooseEthernet -> GetCommunicationDevice() -> SetPortName(pccGooseInterfaceName);
     // установим начальное состояние автомата задачи
-    pxGooseEthernet -> SetFsmState(CGooseEthernet::START_REQUEST);
+    pxGooseEthernet -> SetFsmState(CGooseEthernet::REQUEST_ENABLE);
     // разместим задачу на производственной площадке
     pxGooseThreadProduction -> Place(pxGooseEthernet);
 
@@ -221,19 +196,21 @@ int main(int argc, char** argv)
 //    pxMainProductionCycle -> SetOwnAddress(77);
 ////    pxMainProductionCycle -> GetOwnAddress();
 
-    pxGooseEthernet -> SetFsmState(0);
-    pxGooseEthernet -> SetOwnAddress(78);
+//    pxGooseEthernet -> SetFsmState(0);
+//    pxGooseEthernet -> SetOwnAddress(78);
 //    pxGooseEthernet -> GetOwnAddress();
 
-    while (1)
-    {
-//        pxGooseEthernet -> Fsm();
+//    while (1)
+//    {
+////        pxGooseEthernet -> Fsm();
+//
+//        std::cout << "main FsmState" << " " << (int)pxGooseEthernet -> GetFsmState() << std::endl;
+//        std::cout << "main OwnAddress" << " " << (int)pxGooseEthernet -> GetOwnAddress() << std::endl;
+//        std::cout << "main uiData" << " " << (int)uiData << std::endl;
+//        usleep(1000000);
+//    }
 
-        std::cout << "main FsmState" << " " << (int)pxGooseEthernet -> GetFsmState() << std::endl;
-        std::cout << "main OwnAddress" << " " << (int)pxGooseEthernet -> GetOwnAddress() << std::endl;
-        std::cout << "main uiData" << " " << (int)uiData << std::endl;
-        usleep(1000000);
-    }
+    CMainThreadProduction::Process(pxMainProductionCycle);
 
     delete[] pxMainProductionCycle;
     delete[] pxMainThreadProduction;
@@ -246,6 +223,38 @@ int main(int argc, char** argv)
 
 
 //-----------------------------------------------------------------------------------------
+
+
+//
+////    std::thread th(thread_func, &uiData);
+////    std::thread::id th_id = th.get_id();
+//////    th.join(); // ждем завершения работы функции блокируем здесь
+////    th.detach(); // не ждем завершения работы функции
+//
+//
+//
+//    pxGooseEthernet -> SetFsmState(2);
+//    pxGooseEthernet -> SetOwnAddress(78);
+////    pxGooseEthernet -> GetOwnAddress();
+//
+//    while (1)
+//    {
+////        pxGooseEthernet -> Fsm();
+//
+//        std::cout << "main FsmState" << " " << (int)pxGooseEthernet -> GetFsmState() << std::endl;
+//        std::cout << "main OwnAddress" << " " << (int)pxGooseEthernet -> GetOwnAddress() << std::endl;
+//        std::cout << "main uiData" << " " << (int)uiData << std::endl;
+//        usleep(1000000);
+//    }
+//
+//    delete[] pxMainProductionCycle;
+//    delete[] pxMainThreadProduction;
+//
+//    delete[] pxGooseEthernet;
+//    delete[] pxGooseThreadProduction;
+//
+
+
 
 
 

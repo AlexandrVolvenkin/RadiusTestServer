@@ -121,6 +121,11 @@ private:
         return &m_xTimer;
     };
 
+    CEthernetCommunicationDevice* GetCommunicationDevice(void)
+    {
+        return m_pxCommunicationDevice;
+    };
+
 
 private:
 

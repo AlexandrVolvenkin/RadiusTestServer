@@ -75,11 +75,11 @@ CMainThreadProduction::~CMainThreadProduction()
 void CMainThreadProduction::Place(CMainProductionCycleInterface* pxMainProductionCycleInterface)
 {
 
-    std::thread th(CMainThreadProduction::Process, pxMainProductionCycleInterface);
-    std::thread::id th_id = th.get_id();
-    std::cout << "CMainThreadProduction th_id" << " " << th_id << std::endl;
-    // не ждем завершения работы функции
-    th.detach();
+//    std::thread th(CMainThreadProduction::Process, pxMainProductionCycleInterface);
+//    std::thread::id th_id = th.get_id();
+//    std::cout << "CMainThreadProduction th_id" << " " << th_id << std::endl;
+//    // не ждем завершения работы функции
+//    th.detach();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -112,6 +112,7 @@ CGooseThreadProduction::CGooseThreadProduction()
 CGooseThreadProduction::~CGooseThreadProduction()
 {
 
+//    th.join();
 }
 
 ////-----------------------------------------------------------------------------------------
@@ -163,8 +164,9 @@ void CGooseThreadProduction::Process(CGooseInterface* pxGooseInterface)
     while (1)
     {
         pxGooseInterface -> Fsm();
-        std::cout << "CGooseThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
-        usleep(1000000);
+//        std::cout << "CGooseThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
+//        usleep(1000000);
+        usleep(1000);
     }
 }
 
