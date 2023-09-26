@@ -919,6 +919,30 @@ void CEthernetCommunicationDevice::SetPort(uint16_t uiPort)
 }
 
 //-----------------------------------------------------------------------------------------
+void CEthernetCommunicationDevice::SetDestinationMacAddress(uint8_t* puiMacAddress)
+{
+    memcpy(m_auiDestinationMacAddress, puiMacAddress, ETHER_ADDR_LEN);
+}
+
+//-----------------------------------------------------------------------------------------
+uint8_t* CEthernetCommunicationDevice::GetDestnationMacAddress(void)
+{
+    return m_auiDestinationMacAddress;
+}
+
+//-----------------------------------------------------------------------------------------
+void CEthernetCommunicationDevice::SetSourseMacAddress(uint8_t* puiMacAddress)
+{
+    memcpy(m_auiSourseMacAddress, puiMacAddress, ETHER_ADDR_LEN);
+}
+
+//-----------------------------------------------------------------------------------------
+uint8_t* CEthernetCommunicationDevice::GetSourseMacAddress(void)
+{
+    return m_auiSourseMacAddress;
+}
+
+//-----------------------------------------------------------------------------------------
 int8_t CEthernetCommunicationDevice::Open(void)
 {
 

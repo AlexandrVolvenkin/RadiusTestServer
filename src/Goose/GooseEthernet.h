@@ -51,6 +51,10 @@ public:
     enum
     {
         GOOSE_ETHERNET_MAX_FRAME_LENGTH = 1024,
+//        GOOSE_ETHERNET_HEADER_LENGTH = 0,
+//        GOOSE_ETHERNET_PRESET_REQ_LENGTH = 0,
+//        GOOSE_ETHERNET_PRESET_RSP_LENGTH = 0,
+//        GOOSE_ETHERNET__CHECKSUM_LENGTH = 0,
     };
 
     enum
@@ -105,6 +109,8 @@ private:
     void ReceiveDisable(void);
     void TransmitEnable(void);
     void TransmitDisable(void);
+    uint16_t CheckHeader(uint8_t *puiRequest);
+    uint16_t SetHeader(uint8_t *puiResponse);
     uint16_t Send(uint8_t* puiDestination, uint16_t uiLength);
     int16_t Receive(uint8_t* puiSource, uint16_t uiLength);
 //    uint16_t GetFrameLength(void);

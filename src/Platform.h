@@ -39,6 +39,7 @@
 # include <poll.h>
 # include <netdb.h>
 #include <net/if.h>
+#include <netinet/if_ether.h>
 
 #include <unistd.h>
 
@@ -63,6 +64,10 @@ public:
     virtual void SetIpAddress(const char* pccIpAddress) {};
     virtual const char* GetIpAddress(void) {};
     virtual void SetPort(uint16_t uiPort) {};
+    virtual void SetDestinationMacAddress(uint8_t* puiMacAddress) {};
+    virtual uint8_t* GetDestnationMacAddress(void) {};
+    virtual void SetSourseMacAddress(uint8_t* puiMacAddress) {};
+    virtual uint8_t* GetSourseMacAddress(void) {};
 
     virtual int8_t Open(void) {};
     virtual int8_t Close(void) {};
@@ -294,7 +299,8 @@ public:
     {
         ETHERNET_TYPE = 0x0800,
         MAX_BUFF_LENGTH = 1024,
-        INTERMEDIATE_BUFF_LENGTH = 16
+        INTERMEDIATE_BUFF_LENGTH = 16,
+        MAC_ADDRESS_LENGTH = 6,
     };
 
     CEthernetCommunicationDevice();
@@ -302,10 +308,15 @@ public:
 
 //-----------------------------------------------------------------------------------------
     void Init(void);
+
     void SetPortName(const char* pccDeviceName);
     const char* GetPortName(void);
     void SetIpAddress(const char* pccIpAddress);
     const char* GetIpAddress(void);
+    void SetDestinationMacAddress(uint8_t* puiMacAddress);
+    uint8_t* GetDestnationMacAddress(void);
+    void SetSourseMacAddress(uint8_t* puiMacAddress);
+    uint8_t* GetSourseMacAddress(void);
     void SetPort(uint16_t uiPort);
     int8_t Listen(void);
     int8_t Accept(void);
@@ -329,6 +340,8 @@ protected:
     const char *m_pccIpAddress;
     uint32_t m_uiIpAddress;
     uint16_t m_uiPort;
+    uint8_t m_auiDestinationMacAddress[6] = {0};
+    uint8_t m_auiSourseMacAddress[6] = {0};
     /* Socket or file descriptor */
     int32_t m_iDeviceDescriptor;
     int32_t m_iDeviceDescriptorAccept;
