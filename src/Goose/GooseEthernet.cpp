@@ -201,21 +201,7 @@ uint16_t CGooseEthernet::SetHeader(uint8_t *puiResponse)
 
     uiLength += sizeof(struct ether_header);
 
-//
-//    puiResponse[0] = (m_uiResponseTransactionId >> 8);
-//    puiResponse[1] = (m_uiResponseTransactionId & 0x00ff);
-//
-//    /* Protocol Modbus */
-//    puiResponse[2] = 0;
-//    puiResponse[3] = 0;
-//
-//    /* Length will be set later by send_msg (4 and 5) */
-//
-//    /* The slave ID is copied from the indication */
-//    puiResponse[6] = uiSlave;
-//    puiResponse[7] = uiFunctionCode;
-//
-//    return _MODBUS_TCP_PRESET_RSP_LENGTH;
+    return uiLength;
 }
 
 //-----------------------------------------------------------------------------------------

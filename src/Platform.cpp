@@ -945,35 +945,6 @@ uint8_t* CEthernetCommunicationDevice::GetSourseMacAddress(void)
 //-----------------------------------------------------------------------------------------
 int8_t CEthernetCommunicationDevice::Open(void)
 {
-
-//    int sockopt;
-//    ssize_t numbytes;
-//    struct ifreq ifopts;	/* set promiscuous mode */
-//    struct ifreq if_ip;	/* get ip addr */
-//
-//    struct ifreq if_idx;
-//    struct ifreq if_mac;
-
-//    /* Header structures */
-//    eh = (struct ether_header *) buf;
-//    // получим указатели на заголовки 3 сетевого уровня в кадре 2 канального уровня.
-//    iph = (struct iphdr *) (buf + sizeof(struct ether_header));
-//    udph = (struct udphdr *) (buf + sizeof(struct iphdr) + sizeof(struct ether_header));
-
-//    // передача.
-//    /* Get the index of the interface to send on */
-//    memset(&if_idx, 0, sizeof(struct ifreq));
-//    strncpy(if_idx.ifr_name, m_pccDeviceName, IFNAMSIZ-1);
-//    if (ioctl(m_iDeviceDescriptor, SIOCGIFINDEX, &if_idx) < 0)
-//        perror("SIOCGIFINDEX");
-//    /* Get the MAC address of the interface to send on */
-//    memset(&if_mac, 0, sizeof(struct ifreq));
-//    strncpy(if_mac.ifr_name, m_pccDeviceName, IFNAMSIZ-1);
-//    if (ioctl(m_iDeviceDescriptor, SIOCGIFHWADDR, &if_mac) < 0)
-//        perror("SIOCGIFHWADDR");
-
-//    memset(&if_ip, 0, sizeof(struct ifreq));
-
     /* Open PF_PACKET socket, listening for EtherType ETHER_TYPE */
     if ((m_iDeviceDescriptor = socket(PF_PACKET, SOCK_RAW, htons(ETHERNET_TYPE))) == -1)
     {
@@ -1016,6 +987,24 @@ int8_t CEthernetCommunicationDevice::Open(void)
     }
     cout << "setsockopt SO_REUSEADDR ok." << endl;
 
+    /* Get the MAC address of the interface to send on */
+    struct ifreq if_mac;
+    memset(&if_mac, 0, sizeof(struct ifreq));
+    strncpy(if_mac.ifr_name, m_pccDeviceName, strlen(m_pccDeviceName));
+    if (ioctl(m_iDeviceDescriptor, SIOCGIFHWADDR, &if_mac) < 0)
+    {
+        perror("SIOCGIFHWADDR");
+        return -1;
+    }
+
+    SetSourseMacAddress(((uint8_t *)&if_mac.ifr_hwaddr.sa_data));
+    printf("sourse MAC: %x:%x:%x:%x:%x:%x\n",
+           GetSourseMacAddress()[0],
+           GetSourseMacAddress()[1],
+           GetSourseMacAddress()[2],
+           GetSourseMacAddress()[3],
+           GetSourseMacAddress()[4],
+           GetSourseMacAddress()[5]);
 
     return 0;
 }

@@ -97,6 +97,11 @@ public:
         return 4;
     };
 
+    uint16_t HEADER_LENGTH(void)
+    {
+        return sizeof(struct ether_header) + 1;
+    };
+
     CGooseEthernet();
     virtual ~CGooseEthernet();
 
