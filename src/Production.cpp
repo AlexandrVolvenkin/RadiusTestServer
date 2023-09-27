@@ -112,7 +112,7 @@ CGooseThreadProduction::CGooseThreadProduction()
 CGooseThreadProduction::~CGooseThreadProduction()
 {
 
-//    th.join();
+    m_xThread.join();
 }
 
 ////-----------------------------------------------------------------------------------------
@@ -138,12 +138,11 @@ CGooseThreadProduction::~CGooseThreadProduction()
 //-----------------------------------------------------------------------------------------
 void CGooseThreadProduction::Place(CGooseInterface* pxGooseInterface)
 {
-
-    std::thread th(CGooseThreadProduction::Process, pxGooseInterface);
-    std::thread::id th_id = th.get_id();
+    std::thread m_xThread(CGooseThreadProduction::Process, pxGooseInterface);
+    std::thread::id th_id = m_xThread.get_id();
     std::cout << "CGooseThreadProduction th_id" << " " << th_id << std::endl;
     // не ждем завершения работы функции
-    th.detach();
+    m_xThread.detach();
 }
 
 ////-----------------------------------------------------------------------------------------

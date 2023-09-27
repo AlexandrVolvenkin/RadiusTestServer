@@ -57,41 +57,6 @@ public:
 //        GOOSE_ETHERNET__CHECKSUM_LENGTH = 0,
     };
 
-    enum
-    {
-        IDDLE  = 0,
-        START,
-//-----------------------------------------------------------------------------------------
-// GooseServer
-        REQUEST_ENABLE,
-        WAITING_ACCEPT,
-        START_REQUEST,
-        WAITING_MESSAGE_REQUEST,
-        RECEIVE_MESSAGE_REQUEST,
-        REQUEST_PROCESSING_REQUEST,
-        FRAME_TRANSMIT_CONFIRMATION,
-        WAITING_FRAME_TRANSMIT_CONFIRMATION,
-        END_WAITING_FRAME_TRANSMIT_CONFIRMATION,
-        STOP_REQUEST,
-        REQUEST_ERROR,
-
-//-----------------------------------------------------------------------------------------
-// GooseClient
-        CONFIRMATION_ENABLE,
-        WAITING_CONNECT,
-        START_CONFIRMATION,
-        WAITING_MESSAGE_CONFIRMATION,
-        RECEIVE_MESSAGE_CONFIRMATION,
-        ANSWER_PROCESSING_CONFIRMATION,
-        FRAME_TRANSMIT_REQUEST,
-        WAITING_FRAME_TRANSMIT_REQUEST,
-        END_WAITING_FRAME_TRANSMIT_REQUEST,
-        STOP_CONFIRMATION,
-        CONFIRMATION_ERROR,
-
-        RESTART,
-    };
-
     uint16_t MIN_MESSAGE_LENGTH(void)
     {
         return 4;
@@ -99,7 +64,7 @@ public:
 
     uint16_t HEADER_LENGTH(void)
     {
-        return sizeof(struct ether_header) + 1;
+        return sizeof(struct ether_header) + 2;
     };
 
     CGooseEthernet();
@@ -116,6 +81,12 @@ private:
     void TransmitDisable(void);
     uint16_t CheckHeader(uint8_t *puiRequest);
     uint16_t SetHeader(uint8_t *puiResponse);
+    uint16_t RequestBasis(uint8_t uiSlave,
+                          uint8_t uiFunctionCode,
+                          uint8_t *puiRequest);
+    uint16_t ResponseBasis(uint8_t uiSlave,
+                           uint8_t uiFunctionCode,
+                           uint8_t *puiResponse);
     uint16_t Send(uint8_t* puiDestination, uint16_t uiLength);
     int16_t Receive(uint8_t* puiSource, uint16_t uiLength);
 //    uint16_t GetFrameLength(void);
@@ -135,6 +106,16 @@ private:
     CEthernetCommunicationDevice* GetCommunicationDevice(void)
     {
         return m_pxCommunicationDevice;
+    };
+
+    uint8_t* GetRxBuffer(void)
+    {
+        return m_puiRxBuffer;
+    };
+
+    uint8_t* GetTxBuffer(void)
+    {
+        return m_puiTxBuffer;
     };
 
 

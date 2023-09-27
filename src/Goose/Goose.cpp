@@ -24,15 +24,18 @@ CGoose::~CGoose()
 }
 
 //-----------------------------------------------------------------------------------------
-uint16_t CGoose::ResponseException(uint8_t uiSlave, uint8_t uiFunctionCode, uint8_t uiExceptionCode, uint8_t *puiResponse)
+uint16_t CGoose::ResponseException(uint8_t uiSlave,
+                                   uint8_t uiFunctionCode,
+                                   uint8_t uiExceptionCode,
+                                   uint8_t *puiResponse)
 {
-//    uint16_t uiLength;
-//    SetHeader(uint8_t *puiResponse)
-//    uiLength = ResponseBasis(uiSlave, (uiFunctionCode | 0x80), puiResponse);
-//    /* Positive exception code */
-//    puiResponse[uiLength++] = uiExceptionCode;
-//
-//    return uiLength;
+    uint16_t uiLength;
+    uiLength = ResponseBasis(uiSlave,
+                             (uiFunctionCode | 0x80),
+                             puiResponse);
+    puiResponse[uiLength++] = uiExceptionCode;
+
+    return uiLength;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -45,31 +48,29 @@ void CGoose::SlaveSet(uint8_t uiSlave)
 uint16_t CGoose::ReportSlaveID(uint8_t *puiRequest, uint8_t *puiResponse, uint16_t uiLength)
 {
     uint16_t uiOffset = HEADER_LENGTH();
-    int8_t uiSlave = puiRequest[uiOffset - 1];
-    int8_t uiFunctionCode = puiRequest[uiOffset];
-//
-//    uiLength = ResponseBasis(uiSlave, uiFunctionCode, puiResponse);
-//    puiResponse[uiLength++] = 3;			// Число байт данных
-//    puiResponse[uiLength++] = 32;			// Количество окон сигнализации
-//    puiResponse[uiLength++] = 7;			// Код модификации
-//    puiResponse[uiLength++] = 50;			// Код устройства
-//
-//    return uiLength;
+    int8_t uiSlave = puiRequest[uiOffset];
+    int8_t uiFunctionCode = puiRequest[uiOffset + 1];
+
+    uiLength = ResponseBasis(uiSlave,
+                             uiFunctionCode,
+                             puiResponse);
+
+    puiResponse[uiLength++] = 1;
+    puiResponse[uiLength++] = 50;
+
+    return uiLength;
 }
 
 //-----------------------------------------------------------------------------------------
-uint16_t CGoose::RequestProcessing(uint8_t *puiRequest, uint8_t *puiResponse, uint16_t uiFrameLength)
+// Server
+uint16_t CGoose::RequestProcessing(uint8_t *puiRequest,
+                                   uint8_t *puiResponse,
+                                   uint16_t uiFrameLength)
 {
-    uint16_t uiOffset = HEADER_LENGTH();
-    int8_t uiSlave = puiRequest[uiOffset - 1];
-    int8_t uiFunctionCode = puiRequest[uiOffset];
     uint16_t uiLength = uiFrameLength;
-
-//    /* Filter on the Modbus unit identifier (slave) in RTU mode */
-//    if (uiSlave != m_uiOwnAddress && uiSlave != MODBUS_BROADCAST_ADDRESS)
-//    {
-//        return 0;
-//    }
+    uint16_t uiOffset = HEADER_LENGTH();
+    int8_t uiSlave = puiRequest[uiOffset];
+    int8_t uiFunctionCode = puiRequest[uiOffset + 1];
 
     switch (uiFunctionCode)
     {
@@ -90,7 +91,64 @@ uint16_t CGoose::RequestProcessing(uint8_t *puiRequest, uint8_t *puiResponse, ui
 }
 
 //-----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------------
+// Client
+int8_t CGoose::ReportSlaveIDRequest(uint8_t uiSlaveAddress)
+{
+    if (MessengerIsReady())
+    {
+        m_uiSlaveAddress = uiSlaveAddress;
+        m_uiFunctionCode = _FC_REPORT_SLAVE_ID;
+        m_uiMessageLength = RequestBasis(uiSlaveAddress,
+                                         m_uiFunctionCode,
+                                         GetTxBuffer());
+        SetFsmState(FRAME_TRANSMIT_REQUEST);
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+//-----------------------------------------------------------------------------------------
+uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiMessage, uint16_t uiLength)
+{
+    return 1;
+}
+
+//-----------------------------------------------------------------------------------------
 uint16_t CGoose::AnswerProcessing(uint8_t *puiResponse, uint16_t uiFrameLength)
 {
+    uint16_t uiLength = uiFrameLength;
+    uint16_t uiOffset = HEADER_LENGTH();
+    uint8_t uiSlave = puiResponse[uiOffset];
+    uint8_t uiFunctionCode = puiResponse[uiOffset + 1];
 
+    if ((m_uiSlaveAddress == uiSlave) &&
+            (m_uiFunctionCode == uiFunctionCode))
+    {
+        switch (uiFunctionCode)
+        {
+        case _FC_REPORT_SLAVE_ID:
+            break;
+
+        default:
+            break;
+        }
+
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }

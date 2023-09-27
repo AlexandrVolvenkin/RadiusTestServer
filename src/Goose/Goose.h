@@ -63,12 +63,27 @@ class CGooseInterface : public CTask
 {
 public:
     virtual void SlaveSet(uint8_t uiSlave) {};
+    virtual uint16_t SetHeader(uint8_t *puiResponse) {};
+    virtual int8_t MessengerIsReady(void) {};
 
-    virtual uint16_t ResponseException(uint8_t uiSlave, uint8_t uiFunctionCode, uint8_t uiExceptionCode, uint8_t *puiResponse) {};
-    virtual uint16_t ReportSlaveID(uint8_t *puiRequest, uint8_t *puiResponse, uint16_t uiLength) {};
+    virtual uint16_t RequestBasis(uint8_t uiSlave,
+                                  uint8_t uiFunctionCode,
+                                  uint8_t *puiRequest) {};
+    virtual uint16_t ResponseBasis(uint8_t uiSlave,
+                                   uint8_t uiFunctionCode,
+                                   uint8_t *puiResponse) {};
+    virtual uint16_t ResponseException(uint8_t uiSlave,
+                                       uint8_t uiFunctionCode,
+                                       uint8_t uiExceptionCode,
+                                       uint8_t *puiResponse) {};
+    virtual uint16_t ReportSlaveID(uint8_t *puiRequest,
+                                   uint8_t *puiResponse,
+                                   uint16_t uiLength) {};
 
-    virtual void SetOwnAddress(uint32_t uiAddress) {};
-    virtual uint32_t GetOwnAddress(void) {};
+    virtual void SetOwnAddress(uint8_t uiAddress) {};
+    virtual uint8_t GetOwnAddress(void) {};
+//    virtual void SetOwnAddress(uint32_t uiAddress) {};
+//    virtual uint32_t GetOwnAddress(void) {};
 
     virtual void SetServerAddress(uint32_t uiAddress) {};
     virtual uint32_t GetServerAddress(void) {};
@@ -80,6 +95,9 @@ public:
     virtual uint16_t GetMessageLength(void) {};
 
     virtual CEthernetCommunicationDevice* GetCommunicationDevice(void) {};
+
+    virtual uint8_t* GetRxBuffer(void) {};
+    virtual uint8_t* GetTxBuffer(void) {};
 
     virtual uint16_t HEADER_LENGTH(void) {};
 
@@ -111,27 +129,82 @@ public:
 
     };
 
+    enum
+    {
+        IDDLE  = 0,
+        START,
+//-----------------------------------------------------------------------------------------
+// GooseServer
+        REQUEST_ENABLE,
+        WAITING_ACCEPT,
+        START_REQUEST,
+        WAITING_MESSAGE_REQUEST,
+        RECEIVE_MESSAGE_REQUEST,
+        REQUEST_PROCESSING_REQUEST,
+        FRAME_TRANSMIT_CONFIRMATION,
+        WAITING_FRAME_TRANSMIT_CONFIRMATION,
+        END_WAITING_FRAME_TRANSMIT_CONFIRMATION,
+        STOP_REQUEST,
+        REQUEST_ERROR,
+
+//-----------------------------------------------------------------------------------------
+// GooseClient
+        CONFIRMATION_ENABLE,
+        WAITING_CONNECT,
+        START_CONFIRMATION,
+        WAITING_MESSAGE_CONFIRMATION,
+        RECEIVE_MESSAGE_CONFIRMATION,
+        ANSWER_PROCESSING_CONFIRMATION,
+        FRAME_TRANSMIT_REQUEST,
+        WAITING_FRAME_TRANSMIT_REQUEST,
+        END_WAITING_FRAME_TRANSMIT_REQUEST,
+        STOP_CONFIRMATION,
+        CONFIRMATION_ERROR,
+
+        RESTART,
+    };
+
     CGoose();
     virtual ~CGoose();
 
     void SlaveSet(uint8_t uiSlave);
-    uint16_t ResponseException(uint8_t uiSlave, uint8_t uiFunctionCode, uint8_t uiExceptionCode, uint8_t *puiResponse);
-    uint16_t ReportSlaveID(uint8_t *puiRequest, uint8_t *puiResponse, uint16_t uiLength);
+    uint16_t ResponseException(uint8_t uiSlave,
+                               uint8_t uiFunctionCode,
+                               uint8_t uiExceptionCode,
+                               uint8_t *puiResponse);
+    uint16_t ReportSlaveID(uint8_t *puiRequest,
+                           uint8_t *puiResponse,
+                           uint16_t uiLength);
     uint16_t RequestProcessing(uint8_t *puiRequest,
                                uint8_t *puiResponse,
                                uint16_t uiFrameLength);
     uint16_t AnswerProcessing(uint8_t *puiResponse,
                               uint16_t uiFrameLength);
 
+
+//-----------------------------------------------------------------------------------------
+// Client
+    int8_t ReportSlaveIDRequest(uint8_t uiSlaveAddress);
+    uint16_t ReportSlaveIDReceive(uint8_t *puiMessage,
+                                  uint16_t uiLength);
+
 public:
-    void SetOwnAddress(uint32_t uiAddress)
+    void SetOwnAddress(uint8_t uiAddress)
     {
         m_uiOwnAddress = uiAddress;
     };
-    uint32_t GetOwnAddress(void)
+    uint8_t GetOwnAddress(void)
     {
         return m_uiOwnAddress;
     };
+//    void SetOwnAddress(uint32_t uiAddress)
+//    {
+//        m_uiOwnAddress = uiAddress;
+//    };
+//    uint32_t GetOwnAddress(void)
+//    {
+//        return m_uiOwnAddress;
+//    };
 
     void SetServerAddress(uint32_t uiAddress)
     {
@@ -162,7 +235,12 @@ public:
 
 //-----------------------------------------------------------------------------------------
 private:
-    uint32_t m_uiOwnAddress;
+    uint8_t m_uiOwnAddress;
+    uint8_t m_uiSlaveAddress;
+    uint8_t m_uiFunctionCode;
+    uint16_t m_uiQuantity;
+
+//    uint32_t m_uiOwnAddress;
     uint32_t m_uiServerAddress;
     uint32_t m_uiMagicCode;
     uint16_t m_uiMessageLength;

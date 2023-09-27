@@ -39,6 +39,7 @@ static void help(char *progname)
 {
     fprintf(stderr, "-----------------------------------------------------------------------\n");
     fprintf(stderr, "Usage: %s\n" \
+            "  -m | --mode <mode> - set mode to <mode> (default is server)\n" \
             "  -e | --ethernet <name> - set ethernet to <name> (default is eth0)\n" \
             "  -c | --comm <name> - set comm port to <name> (default is comm0)\n" \
             "  -p | --period <time> - set task period  to <time> (default is 10mc)\n" \
@@ -86,6 +87,7 @@ int main(int argc, char** argv)
 
 //-----------------------------------------------------------------------------------------
 
+    const char *pccMode = "server";
     const char *pccGooseInterfaceName = "eth0";
     const char *pccCommInterfaceName = "ttyO1";
     uint8_t uiCalculationPeriodTime = 5;
@@ -97,6 +99,7 @@ int main(int argc, char** argv)
         static struct option long_options[] =
         {
             {"help", no_argument, NULL, 'h'},
+            {"mode", required_argument, NULL, 'm'},
             {"ethernet", required_argument, NULL, 'e'},
             {"comm", required_argument, NULL, 'c'},
             {"period", required_argument, NULL, 'p'},
@@ -105,7 +108,7 @@ int main(int argc, char** argv)
             {NULL, 0, NULL, 0}
         };
 
-        iOption = getopt_long(argc, argv, "he:c:p:vb", long_options, NULL);
+        iOption = getopt_long(argc, argv, "hm:e:c:p:vb", long_options, NULL);
 
 //        cout << "iOption = " << iOption << endl;
         /* no more options to parse */
@@ -116,6 +119,11 @@ int main(int argc, char** argv)
 
         switch(iOption)
         {
+        case 'm':
+            cout << "case 'm' " << optarg << endl;
+            // получим имя интекфейса ethernet
+            pccMode = optarg;
+            break;
         case 'e':
             cout << "case 'e' " << optarg << endl;
             // получим имя интекфейса ethernet
@@ -186,8 +194,21 @@ int main(int argc, char** argv)
     pxGooseEthernet = new CGooseEthernet();
     // установим имя интерфейса
     pxGooseEthernet -> GetCommunicationDevice() -> SetPortName(pccGooseInterfaceName);
-    // установим начальное состояние автомата задачи
-    pxGooseEthernet -> SetFsmState(CGooseEthernet::REQUEST_ENABLE);
+
+    // режим работы - сервер?
+    if (strcmp(pccMode, "server") == 0)
+    {
+        std::cout << "main mode server"  << std::endl;
+        // установим начальное состояние автомата задачи, режим работы - сервер
+        pxGooseEthernet -> SetFsmState(CGooseEthernet::REQUEST_ENABLE);
+    }
+    else
+    {
+        std::cout << "main mode client"  << std::endl;
+        // установим начальное состояние автомата задачи, режим работы - клиент
+        pxGooseEthernet -> SetFsmState(CGooseEthernet::REQUEST_ENABLE);
+    }
+
     // разместим задачу на производственной площадке
     pxGooseThreadProduction -> Place(pxGooseEthernet);
 

@@ -1097,18 +1097,18 @@ int16_t CEthernetCommunicationDevice::Read(uint8_t *puiDestination, uint16_t uiL
         }
     }
 
-//    cout << "Read" << endl;
-//    unsigned char *pucSourceTemp;
-//    pucSourceTemp = (unsigned char*)puiDestination;
-//    for(int i=0; i<32; )
-//    {
-//        for(int j=0; j<8; j++)
-//        {
-//            cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
-//        }
-//        cout << endl;
-//        i += 8;
-//    }
+    cout << "Read" << endl;
+    unsigned char *pucSourceTemp;
+    pucSourceTemp = (unsigned char*)puiDestination;
+    for(int i=0; i<32; )
+    {
+        for(int j=0; j<8; j++)
+        {
+            cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
+        }
+        cout << endl;
+        i += 8;
+    }
 
 //        std::cout << "CTcpCommunicationDevice::Read return 0"  << std::endl;
     return 0;

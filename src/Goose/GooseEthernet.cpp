@@ -40,88 +40,6 @@ void CGooseEthernet::CommunicationDeviceInit(const char* pccIpAddress,
     m_pxCommunicationDevice -> SetPort(uiPort);
 }
 
-////-----------------------------------------------------------------------------------------
-//void CGooseEthernet::DestinationMacAddressSet(uint8_t* uiDestination,
-//        uint8_t* uiSourse)
-//{
-//    memset(uiDestination, uiSourse, MAC_ADDRESS_LENGTH);
-//}
-//
-////-----------------------------------------------------------------------------------------
-//void CGooseEthernet::SourseMacAddressSet(uint8_t* uiDestination,
-//        uint8_t* uiSourse)
-//{
-//    memset(uiDestination, uiSourse, MAC_ADDRESS_LENGTH);
-//}
-//
-//////-----------------------------------------------------------------------------------------
-////void CGooseEthernet::DestinationMacAddressSet(uint8_t* puiMacAddress)
-////{
-////    memset(m_auiDestinationMacAddress, puiMacAddress, MAC_ADDRESS_LENGTH);
-////}
-////
-//////-----------------------------------------------------------------------------------------
-////void CGooseEthernet::SourseMacAddressSet(uint8_t* puiMacAddress)
-////{
-////    memset(m_auiSourseMacAddress, puiMacAddress, MAC_ADDRESS_LENGTH);
-////}
-//
-//
-///* TODO: consider replacing this with memcpy */
-//#define SET_MAC(WHICH, FRAME, MAC) \
-//do \
-//{ \
-//  /* Check parameters */ \
-//  if ( FRAME == 0 || MAC == 0 ) \
-//  { \
-//    return 0; \
-//  } \
-//\
-//  /* Declare variables */ \
-//  size_t i = 0; /* Temp variable used for array index */ \
-//\
-//  /* Copy the ethernet header into the GOOSE frame */ \
-//  for( i = 0; i < 6; i++ ) \
-//  { \
-//    WHICH = MAC[i]; \
-//  } \
-//\
-//  return 1; \
-//\
-//} \
-//while (0)
-//
-//
-//int set_dest_mac( goose_frame_t *goose_frame, const uint8_t *dmac )
-//{
-//    SET_MAC(goose_frame->eth_hdr.ether_dhost[i], goose_frame, dmac);
-//}
-//
-//
-//int set_src_mac( goose_frame_t *goose_frame, const uint8_t *smac )
-//{
-//    SET_MAC(goose_frame->eth_hdr.ether_shost[i], goose_frame, smac);
-//#if 0
-//    /* Check parameters */
-//    if ( goose_frame == 0 || smac == 0 )
-//    {
-//        return 0;
-//    }
-//
-//    /* Declare variables */
-//    size_t i = 0; /* Temp variable used for array index */
-//
-//    /* Copy the ethernet header into the GOOSE frame */
-//    for( i = 0; i < 6; i++ )
-//    {
-//        goose_frame->eth_hdr.ether_shost[i] = smac[i];
-//    }
-//
-//    return 1;
-//#endif
-//}
-
-//    eh = (struct ether_header *) buf;
 //-----------------------------------------------------------------------------------------
 void CGooseEthernet::ReceiveEnable(void)
 {
@@ -181,12 +99,12 @@ uint16_t CGooseEthernet::CheckHeader(uint8_t *puiRequest)
 }
 
 //-----------------------------------------------------------------------------------------------------
-uint16_t CGooseEthernet::SetHeader(uint8_t *puiResponse)
+uint16_t CGooseEthernet::SetHeader(uint8_t *puiData)
 {
     uint16_t uiLength = 0;
 
     struct ether_header* pxEthernetHeader;
-    pxEthernetHeader = (struct ether_header*)puiResponse;
+    pxEthernetHeader = (struct ether_header*)puiData;
 
     memcpy(pxEthernetHeader -> ether_dhost,
            m_pxCommunicationDevice -> GetDestnationMacAddress(),
@@ -200,6 +118,80 @@ uint16_t CGooseEthernet::SetHeader(uint8_t *puiResponse)
     pxEthernetHeader -> ether_type = htons(ETH_P_IP);
 
     uiLength += sizeof(struct ether_header);
+
+    if (m_uiRequestTransactionId < UINT16_MAX)
+    {
+        m_uiRequestTransactionId++;
+    }
+    else
+    {
+        m_uiRequestTransactionId = 0;
+    }
+
+    puiData[uiLength++] = (m_uiRequestTransactionId >> 8);
+    puiData[uiLength++] = (m_uiRequestTransactionId & 0x00ff);
+
+    return uiLength;
+}
+
+//-----------------------------------------------------------------------------------------------------
+uint16_t CGooseEthernet::RequestBasis(uint8_t uiSlave,
+                                      uint8_t uiFunctionCode,
+                                      uint8_t *puiRequest)
+{
+//    /* Extract from MODBUS Messaging on TCP/IP Implementation Guide V1.0b
+//       (page 23/46):
+//       The transaction identifier is used to associate the future response
+//       with the request. So, at a time, on a TCP connection, this identifier
+//       must be unique. */
+//
+//    /* Transaction ID */
+//    if (m_uiRequestTransactionId < UINT16_MAX)
+//    {
+//        m_uiRequestTransactionId++;
+//    }
+//    else
+//    {
+//        m_uiRequestTransactionId = 0;
+//    }
+//    puiRequest[0] = (m_uiRequestTransactionId >> 8);
+//    puiRequest[1] = (m_uiRequestTransactionId & 0x00ff);
+//
+//    /* Protocol Modbus */
+//    puiRequest[2] = 0;
+//    puiRequest[3] = 0;
+//
+//    /* Length will be defined later by set_puiRequest_length_tcp at offsets 4
+//       and 5 */
+//
+//    puiRequest[6] = uiSlave;
+//    puiRequest[7] = uiFunctionCode;
+//    puiRequest[8] = (static_cast<uint8_t>(uiAddress >> 8));
+//    puiRequest[9] = (static_cast<uint8_t>(uiAddress & 0x00ff));
+//    puiRequest[10] = (static_cast<uint8_t>(uiBitNumber >> 8));
+//    puiRequest[11] = (static_cast<uint8_t>(uiBitNumber & 0x00ff));
+//
+//    return _MODBUS_TCP_PRESET_REQ_LENGTH;
+
+    uint16_t uiLength;
+
+    uiLength = SetHeader(puiRequest);
+    puiRequest[uiLength++] = uiSlave;
+    puiRequest[uiLength++] = uiFunctionCode;
+
+    return uiLength;
+}
+
+//-----------------------------------------------------------------------------------------------------
+uint16_t CGooseEthernet::ResponseBasis(uint8_t uiSlave,
+                                       uint8_t uiFunctionCode,
+                                       uint8_t *puiResponse)
+{
+    uint16_t uiLength;
+
+    uiLength = SetHeader(puiResponse);
+    puiResponse[uiLength++] = uiSlave;
+    puiResponse[uiLength++] = uiFunctionCode;
 
     return uiLength;
 }
@@ -256,136 +248,53 @@ void CGooseEthernet::Fsm(void)
 //-----------------------------------------------------------------------------------------
 // GooseServer
     case REQUEST_ENABLE:
-        std::cout << "CGooseEthernet::Fsm REQUEST_ENABLE"  << std::endl;
-//        m_pxCommunicationDevice -> Listen();
-//        GetTimerPointer() -> Set(m_uiReceiveTimeout);
-//        SetFsmState(WAITING_ACCEPT);
+//        std::cout << "CGooseEthernet::Fsm REQUEST_ENABLE"  << std::endl;
         ReceiveDisable();
-        GetTimerPointer() -> Set(m_uiReceiveTimeout);
         SetMessageLength(0);
         ReceiveEnable();
         SetFsmState(START_REQUEST);
         break;
 
-//    case WAITING_ACCEPT:
-//        if (m_pxCommunicationDevice -> Accept())
-//        {
-//            SetFsmState(START_REQUEST);
-//        }
-//
-//        // Закончилось время ожидания запроса(15 секунд)?
-//        if (GetTimerPointer() -> IsOverflow())
-//        {
-//            SetFsmState(REQUEST_ERROR);
-//        }
-//        break;
-
     case START_REQUEST:
-//    std::cout << "CGooseEthernet::Fsm START_REQUEST"  << std::endl;
-//        ReceiveDisable();
-        GetTimerPointer() -> Set(m_uiReceiveTimeout);
+//        std::cout << "CGooseEthernet::Fsm START_REQUEST"  << std::endl;
         SetMessageLength(0);
-//        ReceiveEnable();
-        SetFsmState(WAITING_MESSAGE_REQUEST);
-        break;
-
-    case WAITING_MESSAGE_REQUEST:
-        iBytesNumber = Receive((m_puiRxBuffer + GetMessageLength()), (GOOSE_ETHERNET_MAX_FRAME_LENGTH - GetMessageLength()));
-
-//        if (iBytesNumber > 0)
-//        {
-//            SetMessageLength(GetMessageLength() + iBytesNumber);
-////            GetTimerPointer() -> Set(m_uiGuardTimeout);
-//            SetFsmState(RECEIVE_MESSAGE_REQUEST);
-//        }
-//        else if (iBytesNumber == 0)
-//        {
-//            SetFsmState(REQUEST_ERROR);
-//        }
-//
-//        // Закончилось время ожидания запроса(15 секунд)?
-//        if (GetTimerPointer() -> IsOverflow())
-//        {
-//            SetFsmState(REQUEST_ERROR);
-//        }
-
+        SetFsmState(RECEIVE_MESSAGE_REQUEST);
         break;
 
     case RECEIVE_MESSAGE_REQUEST:
-        iBytesNumber = Receive((m_puiRxBuffer + GetMessageLength()), (GOOSE_ETHERNET_MAX_FRAME_LENGTH - GetMessageLength()));
+//        std::cout << "CGooseEthernet::Fsm RECEIVE_MESSAGE_REQUEST"  << std::endl;
+        iBytesNumber = Receive((GetRxBuffer() + GetMessageLength()), (GOOSE_ETHERNET_MAX_FRAME_LENGTH - GetMessageLength()));
 
         if (iBytesNumber > 0)
         {
             SetMessageLength(GetMessageLength() + iBytesNumber);
-//            GetTimerPointer() -> Set(m_uiGuardTimeout);
+            SetFsmState(REQUEST_PROCESSING_REQUEST);
         }
-        else if (iBytesNumber == 0)
+        else
         {
-            SetFsmState(REQUEST_ERROR);
-        }
-
-        // Принят пакет(закончилось время ожидания следующего бода(3.5 бод))?
-        if (GetTimerPointer() -> IsOverflow())
-        {
-            if (FrameCheck(m_puiRxBuffer, GetMessageLength()))
-            {
-                SetFsmState(REQUEST_PROCESSING_REQUEST);
-            }
-            else
-            {
-                SetFsmState(STOP_REQUEST);
-            }
+            SetFsmState(STOP_REQUEST);
         }
 
         break;
 
     case REQUEST_PROCESSING_REQUEST:
-        m_uiResponseTransactionId = (m_puiRxBuffer[0] << 8) + m_puiRxBuffer[1];
+//        std::cout << "CGooseEthernet::Fsm REQUEST_PROCESSING_REQUEST"  << std::endl;
+        m_uiResponseTransactionId++;
 
-        if (RequestProcessing(m_puiRxBuffer, m_puiTxBuffer, GetMessageLength()))
+        if (RequestProcessing(GetRxBuffer(), GetTxBuffer(), GetMessageLength()))
         {
-//            CPlatform::TxLedOn();
             SetFsmState(FRAME_TRANSMIT_CONFIRMATION);
         }
         else
         {
-            //            CPlatform::TxLedOff();
             SetFsmState(STOP_REQUEST);
         }
         break;
 
     case FRAME_TRANSMIT_CONFIRMATION:
-        GetTimerPointer() -> Set(m_uiTransmitDelayTimeout);
-        ReceiveDisable();
-        SetFsmState(WAITING_FRAME_TRANSMIT_CONFIRMATION);
-        break;
-
-    case WAITING_FRAME_TRANSMIT_CONFIRMATION:
-        // Закончилось время паузы между приёмом и передачей(5 милисекунд)?
-        if (GetTimerPointer() -> IsOverflow())
-        {
-            GetTimerPointer() -> Set(m_uiConfirmationTimeout);
-            TransmitEnable();
-            Send(m_puiTxBuffer, GetMessageLength());
-            SetFsmState(END_WAITING_FRAME_TRANSMIT_CONFIRMATION);
-        }
-        break;
-
-    case END_WAITING_FRAME_TRANSMIT_CONFIRMATION:
-        if (IsDataWrited())
-        {
-            TransmitDisable();
-//            CPlatform::TxLedOff();
-            SetFsmState(STOP_REQUEST);
-        }
-
-        // Закончилось время ожидания окончания передачи?
-        if (GetTimerPointer() -> IsOverflow())
-        {
-//            CPlatform::TxLedOff();
-            SetFsmState(REQUEST_ERROR);
-        }
-
+//        std::cout << "CGooseEthernet::Fsm FRAME_TRANSMIT_CONFIRMATION"  << std::endl;
+        Send(GetTxBuffer(), GetMessageLength());
+        SetFsmState(STOP_REQUEST);
         break;
 
     case STOP_REQUEST:
@@ -395,7 +304,6 @@ void CGooseEthernet::Fsm(void)
 
     case REQUEST_ERROR:
 //        ReceiveDisable();
-        m_pxCommunicationDevice -> Close();
         SetFsmState(REQUEST_ENABLE);
         break;
 
@@ -410,7 +318,7 @@ void CGooseEthernet::Fsm(void)
 //        break;
 //
 //    case WAITING_MESSAGE_CONFIRMATION:
-//        iBytesNumber = Receive((m_puiRxBuffer + GetMessageLength()), (MODBUS_TCP_MAX_ADU_LENGTH - GetMessageLength()));
+//        iBytesNumber = Receive((GetRxBuffer() + GetMessageLength()), (MODBUS_TCP_MAX_ADU_LENGTH - GetMessageLength()));
 //
 //        if (iBytesNumber > 0)
 //        {
@@ -432,7 +340,7 @@ void CGooseEthernet::Fsm(void)
 //        break;
 //
 //    case RECEIVE_MESSAGE_CONFIRMATION:
-//        iBytesNumber = Receive((m_puiRxBuffer + GetMessageLength()), (MODBUS_TCP_MAX_ADU_LENGTH - GetMessageLength()));
+//        iBytesNumber = Receive((GetRxBuffer() + GetMessageLength()), (MODBUS_TCP_MAX_ADU_LENGTH - GetMessageLength()));
 //
 //        if (iBytesNumber > 0)
 //        {
@@ -447,7 +355,7 @@ void CGooseEthernet::Fsm(void)
 //        // Принят пакет(закончилось время ожидания следующего бода(3.5 бод))?
 //        if (GetTimerPointer() -> IsOverflow())
 //        {
-//            if (FrameCheck(m_puiRxBuffer, GetMessageLength()))
+//            if (FrameCheck(GetRxBuffer(), GetMessageLength()))
 //            {
 //                SetFsmState(ANSWER_PROCESSING_CONFIRMATION);
 //            }
@@ -460,7 +368,7 @@ void CGooseEthernet::Fsm(void)
 //        break;
 //
 //    case ANSWER_PROCESSING_CONFIRMATION:
-//        if (AnswerProcessing(m_puiRxBuffer, GetMessageLength()))
+//        if (AnswerProcessing(GetRxBuffer(), GetMessageLength()))
 //        {
 //            SetFsmState(STOP_CONFIRMATION);
 //        }
@@ -482,7 +390,7 @@ void CGooseEthernet::Fsm(void)
 //        {
 //            GetTimerPointer() -> Set(m_uiConfirmationTimeout);
 //            TransmitEnable();
-//            SendMessage(m_puiTxBuffer, GetMessageLength());
+//            SendMessage(GetTxBuffer(), GetMessageLength());
 //            SetFsmState(END_WAITING_FRAME_TRANSMIT_REQUEST);
 //        }
 //        break;
