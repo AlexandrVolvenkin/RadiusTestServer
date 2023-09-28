@@ -13,6 +13,7 @@
 
 #include "Goose.h"
 #include "MainProductionCycle.h"
+#include "Rte.h"
 
 //-----------------------------------------------------------------------------------------
 class CProductionInterface
@@ -28,6 +29,9 @@ public:
 
     virtual void Place(CMainProductionCycleInterface* pxMainProductionCycleInterface) {};
     static void Process(CMainProductionCycleInterface* pxMainProductionCycleInterface) {};
+
+    virtual void Place(CRte* pxRte) {};
+    static void Process(CRte* pxRte) {};
 };
 
 //-----------------------------------------------------------------------------------------
@@ -103,6 +107,34 @@ public:
 //    void Start(void);
 //    void Stop(void);
     static void Process(CGooseInterface* pxGooseInterface);
+
+protected:
+
+private:
+    std::thread m_xThread;
+};
+
+//-----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------------
+class CRteThreadProduction : public CProduction
+{
+public:
+    CRteThreadProduction();
+    virtual ~CRteThreadProduction();
+
+//    void Create(CRte* pxRte);
+    void Place(CRte* pxRte);
+//    void Start(void);
+//    void Stop(void);
+    static void Process(CRte* pxRte);
 
 protected:
 

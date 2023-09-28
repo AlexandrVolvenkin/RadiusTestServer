@@ -1,19 +1,10 @@
-////============================================================================
-//// Name        : RadiusTestServer.cpp
-//// Author      : Alexandr Volvenkin
-//// Version     :
-//// Copyright   : Your copyright notice
-//// Description : Hello World in C++, Ansi-style
-////============================================================================
-//
-//#include <iostream>
-//using namespace std;
-//
-//int main() {
-//	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
-//	return 0;
-//}
-
+//-----------------------------------------------------------------------------------------
+//  Source      : FileName.cpp
+//  Created     : 01.06.2022
+//  Author      : Alexandr Volvenkin
+//  email       : aav-36@mail.ru
+//  GitHub      : https://github.com/AlexandrVolvenkin
+//-----------------------------------------------------------------------------------------
 
 
 
@@ -41,8 +32,9 @@ static void help(char *progname)
     fprintf(stderr, "Usage: %s\n" \
             "  -m | --mode <mode> - set mode to <mode> (default is server)\n" \
             "  -e | --ethernet <name> - set ethernet to <name> (default is eth0)\n" \
-            "  -c | --comm <name> - set comm port to <name> (default is comm0)\n" \
+            "  -c | --comport <name> - set comport to <name> (default is com0)\n" \
             "  -p | --period <time> - set task period  to <time> (default is 10mc)\n" \
+            "  -l | --load <percent> - set load percent  to <percent> (default is 50)\n" \
             " [-h | --help ]........: display this help\n" \
             " [-v | --version ].....: display version information\n" \
             " [-b | --background]...: fork to the background, daemon mode\n", progname);
@@ -52,27 +44,6 @@ static void help(char *progname)
 //-----------------------------------------------------------------------------------------
 // test
 
-
-void thread_func(uint8_t* puiData)
-{
-
-    while (1)
-    {
-        std::cout << "thread_func puiData" << " " << (int)*puiData << std::endl;
-//    std::cout << "thread_func uiData" << " " << (int)uiData << std::endl;
-        std::cout << "thread_func" << " " << std::this_thread::get_id() << std::endl;
-        usleep(1000000);
-    }
-}
-
-//int main(int argc, char * argv[])
-//{
-//    std::thread th(thread_func);
-//    std::thread::id th_id = th.get_id();
-//    th.join();
-//    std::cout << th_id << std::endl;
-//    return 0;
-//}
 //-----------------------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------------------
@@ -90,7 +61,8 @@ int main(int argc, char** argv)
     const char *pccMode = "server";
     const char *pccGooseInterfaceName = "eth0";
     const char *pccCommInterfaceName = "ttyO1";
-    uint8_t uiCalculationPeriodTime = 5;
+    uint32_t uiCalculationPeriodTime = 5000;
+    uint8_t uiLoadPercent = 50;
 
     /* parameter parsing */
     while(1)
@@ -101,14 +73,15 @@ int main(int argc, char** argv)
             {"help", no_argument, NULL, 'h'},
             {"mode", required_argument, NULL, 'm'},
             {"ethernet", required_argument, NULL, 'e'},
-            {"comm", required_argument, NULL, 'c'},
+            {"comport", required_argument, NULL, 'c'},
             {"period", required_argument, NULL, 'p'},
+            {"load", required_argument, NULL, 'l'},
             {"version", no_argument, NULL, 'v'},
             {"background", no_argument, NULL, 'b'},
             {NULL, 0, NULL, 0}
         };
 
-        iOption = getopt_long(argc, argv, "hm:e:c:p:vb", long_options, NULL);
+        iOption = getopt_long(argc, argv, "hm:e:c:p:l:vb", long_options, NULL);
 
 //        cout << "iOption = " << iOption << endl;
         /* no more options to parse */
@@ -138,7 +111,13 @@ int main(int argc, char** argv)
         case 'p':
             cout << "case 'p' " << optarg << endl;
             // получим длину периода задачи
-            uiCalculationPeriodTime = atoi(optarg);
+            uiCalculationPeriodTime = atol(optarg);
+            break;
+
+        case 'l':
+            cout << "case 'l' " << optarg << endl;
+//            // получим длину периода задачи
+            uiLoadPercent = atoi(optarg);
             break;
 
         case 'v':
@@ -192,22 +171,68 @@ int main(int argc, char** argv)
     CGooseInterface* pxGooseEthernet;
     // создадим объект "Goose задачи"
     pxGooseEthernet = new CGooseEthernet();
+    // создадим и добавим объект "наблюдатель"
+    pxGooseEthernet -> SetGooseServerObserver(new CGooseServerObserver());
     // установим имя интерфейса
     pxGooseEthernet -> GetCommunicationDevice() -> SetPortName(pccGooseInterfaceName);
+
+
+    // создадим указатель на объект "производственная площадка Rte задачи"
+    CProductionInterface* pxRteThreadProduction;
+    // создадим объект "производственная площадка Rte задачи"
+    pxRteThreadProduction = new CRteThreadProduction();
+
+    // создадим указатель на объект "Rte задачи"
+    CRte* pxRte;
+    // создадим объект "Rte задачи"
+    pxRte = new CRte();
+    // установим имя интерфейса
+    pxRte -> GetCommunicationDevice() -> SetPortName(pccCommInterfaceName);
+    pxRte -> GetCommunicationDevice() -> SetBaudRate(115200);
+    pxRte -> GetCommunicationDevice() -> SetDataBits(8);
+    pxRte -> GetCommunicationDevice() -> SetParity('N');
+    pxRte -> GetCommunicationDevice() -> SetStopBit(1);
+    // установим период вычислений
+    pxRte -> SetPeriodTime(uiCalculationPeriodTime);
+    // установим процент нагрузки
+    pxRte -> SetLoadPercent(uiLoadPercent);
+    // разместим задачу на производственной площадке
+    pxRteThreadProduction -> Place(pxRte);
+
 
     // режим работы - сервер?
     if (strcmp(pccMode, "server") == 0)
     {
         std::cout << "main mode server"  << std::endl;
+        pxGooseEthernet -> SetOwnAddress(7);
         // установим начальное состояние автомата задачи, режим работы - сервер
         pxGooseEthernet -> SetFsmState(CGooseEthernet::REQUEST_ENABLE);
     }
-    else
+    // режим работы - клиент?
+    else if (strcmp(pccMode, "client") == 0)
     {
         std::cout << "main mode client"  << std::endl;
-        // установим начальное состояние автомата задачи, режим работы - клиент
-        pxGooseEthernet -> SetFsmState(CGooseEthernet::REQUEST_ENABLE);
+        pxGooseEthernet -> SetOwnAddress(7);
+        pxGooseEthernet -> SetAttemptNumber(CGooseEthernet::PING_ATTEMPTS_NUMBER);
+        pxGooseEthernet -> ReportSlaveIDRequest(7);
+        pxGooseEthernet -> SetFsmState(CGooseEthernet::CONFIRMATION_ENABLE);
     }
+    else
+    {
+        help(argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+//    std::cout << "main mode server"  << std::endl;
+//    pxGooseEthernet -> SetOwnAddress(7);
+//    // установим начальное состояние автомата задачи, режим работы - сервер
+//    pxGooseEthernet -> SetFsmState(CGooseEthernet::REQUEST_ENABLE);
+
+//        std::cout << "main mode client"  << std::endl;
+//        pxGooseEthernet -> SetOwnAddress(7);
+//        pxGooseEthernet -> SetAttemptNumber(CGooseEthernet::PING_ATTEMPTS_NUMBER);
+//        pxGooseEthernet -> ReportSlaveIDRequest(1);
+//        pxGooseEthernet -> SetFsmState(CGooseEthernet::CONFIRMATION_ENABLE);
 
     // разместим задачу на производственной площадке
     pxGooseThreadProduction -> Place(pxGooseEthernet);
@@ -231,6 +256,7 @@ int main(int argc, char** argv)
 //        usleep(1000000);
 //    }
 
+
     CMainThreadProduction::Process(pxMainProductionCycle);
 
     delete[] pxMainProductionCycle;
@@ -246,91 +272,3 @@ int main(int argc, char** argv)
 //-----------------------------------------------------------------------------------------
 
 
-//
-////    std::thread th(thread_func, &uiData);
-////    std::thread::id th_id = th.get_id();
-//////    th.join(); // ждем завершения работы функции блокируем здесь
-////    th.detach(); // не ждем завершения работы функции
-//
-//
-//
-//    pxGooseEthernet -> SetFsmState(2);
-//    pxGooseEthernet -> SetOwnAddress(78);
-////    pxGooseEthernet -> GetOwnAddress();
-//
-//    while (1)
-//    {
-////        pxGooseEthernet -> Fsm();
-//
-//        std::cout << "main FsmState" << " " << (int)pxGooseEthernet -> GetFsmState() << std::endl;
-//        std::cout << "main OwnAddress" << " " << (int)pxGooseEthernet -> GetOwnAddress() << std::endl;
-//        std::cout << "main uiData" << " " << (int)uiData << std::endl;
-//        usleep(1000000);
-//    }
-//
-//    delete[] pxMainProductionCycle;
-//    delete[] pxMainThreadProduction;
-//
-//    delete[] pxGooseEthernet;
-//    delete[] pxGooseThreadProduction;
-//
-
-
-
-
-
-//    for (int i = 0; i < argc; i++) {
-//        // Выводим список аргументов в цикле
-//        cout << "Argument " << i << " : " << argv[i] << endl;
-//    }
-
-//    int opt;
-//    string input = "";
-//    bool flagA = false;
-//    bool flagB = false;
-//
-//    // Retrieve the (non-option) argument:
-//    if ( (argc <= 1) || (argv[argc-1] == NULL) || (argv[argc-1][0] == '-') )    // there is NO input...
-//    {
-//        cerr << "No argument provided!" << endl;
-//        //return 1;
-//    }
-//    else    // there is an input...
-//    {
-//        input = argv[argc-1];
-//    }
-//
-//    // Debug:
-//    cout << "input = " << input << endl;
-//
-//    // Shut GetOpt error messages down (return '?'):
-//    opterr = 0;
-//
-//    // Retrieve the options:
-//    while ( (opt = getopt(argc, argv, "ab")) != -1 )    // for each option...
-//    {
-//        switch ( opt )
-//        {
-//        case 'a':
-//            flagA = true;
-//            break;
-//        case 'b':
-//            flagB = true;
-//            break;
-//        case '?':  // unknown option...
-//            cerr << "Unknown option: '" << char(optopt) << "'!" << endl;
-//            break;
-//        }
-//    }
-//
-//    // Debug:
-//    cout << "flagA = " << flagA << endl;
-//    cout << "flagB = " << flagB << endl;
-//
-//    return 0;
-
-
-
-//    // Debug:
-//    input = argv[argc-1];
-//    cout << "input = " << input << endl;

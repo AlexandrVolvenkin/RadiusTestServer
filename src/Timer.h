@@ -10,8 +10,11 @@
 
 #include <stdint.h>
 
+#include "Platform.h"
+
+//class CTimeMeasure
 //-----------------------------------------------------------------------------------------
-class CTimer
+class CTimer// : public CTimeMeasure
 {
 public:
 //-----------------------------------------------------------------------------------------
@@ -27,5 +30,48 @@ private:
     uint16_t m_uiTime;
     uint16_t m_uiLastSystemTick;
 };
+//-----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------------
+class CTimeMeasure
+{
+public:
+    typedef enum
+    {
+        STORED_MEASURE_NUMBER = 36000,
+        TIME_MEASURE_COUNTER_NUMBER = 100
+    };
+
+    CTimeMeasure();
+    ~CTimeMeasure();
+
+    void Begin(void);
+    void End(void);
+    void Store(void);
+//    uint8_t LastMoreThan(int32_t );
+
+
+
+private:
+//    ofstream outdata; // outdata is like cin
+//    const char* pccOutDataFileName;
+    struct timeval  xTimeCur;
+    struct timeval xTimeLast;
+    struct timeval  xTimeMax;
+    struct timeval  xTimeDelta;
+//    int iTimeMeasureCounter;
+//    int iMeasureCounter;
+//    int aiTimeMeasureAverage[CTimeMeasure::TIME_MEASURE_COUNTER_NUMBER];
+
+
+};
+//    extern CTimeMeasure xTimeMeasure;
 //-----------------------------------------------------------------------------------------
 #endif // TIMERS_H_INCLUDED

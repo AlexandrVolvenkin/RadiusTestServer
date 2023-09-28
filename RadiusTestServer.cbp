@@ -47,11 +47,15 @@
 		<Unit filename="src/Goose/GooseEthernet.h" />
 		<Unit filename="src/MainProductionCycle.cpp" />
 		<Unit filename="src/MainProductionCycle.h" />
+		<Unit filename="src/Observer.cpp" />
+		<Unit filename="src/Observer.h" />
 		<Unit filename="src/Platform.cpp" />
 		<Unit filename="src/Platform.h" />
 		<Unit filename="src/Production.cpp" />
 		<Unit filename="src/Production.h" />
 		<Unit filename="src/RadiusTestServer.cpp" />
+		<Unit filename="src/Rte.cpp" />
+		<Unit filename="src/Rte.h" />
 		<Unit filename="src/Task.cpp" />
 		<Unit filename="src/Task.h" />
 		<Unit filename="src/Timer.cpp" />

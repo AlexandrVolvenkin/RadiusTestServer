@@ -170,3 +170,79 @@ void CGooseThreadProduction::Process(CGooseInterface* pxGooseInterface)
 }
 
 //-----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------------
+CRteThreadProduction::CRteThreadProduction()
+{
+
+}
+
+//-----------------------------------------------------------------------------------------
+CRteThreadProduction::~CRteThreadProduction()
+{
+
+    m_xThread.join();
+}
+
+////-----------------------------------------------------------------------------------------
+//void CRteThreadProduction::Create(void)
+//{
+//
+////    std::thread th(Process);
+////    // не ждем завершения работы функции
+////    th.detach();
+//}
+
+////-----------------------------------------------------------------------------------------
+//void CRteThreadProduction::Create(CRte* pxRte)
+//{
+//
+//    std::thread th(CRteThreadProduction::Process, pxRte);
+//    std::thread::id th_id = th.get_id();
+//    std::cout << "CRteThreadProduction th_id" << " " << th_id << std::endl;
+//    // не ждем завершения работы функции
+//    th.detach();
+//}
+
+//-----------------------------------------------------------------------------------------
+void CRteThreadProduction::Place(CRte* pxRte)
+{
+    std::thread m_xThread(CRteThreadProduction::Process, pxRte);
+    std::thread::id th_id = m_xThread.get_id();
+    std::cout << "CRteThreadProduction th_id" << " " << th_id << std::endl;
+    // не ждем завершения работы функции
+    m_xThread.detach();
+}
+
+////-----------------------------------------------------------------------------------------
+//void CRteThreadProduction::Start(void)
+//{
+//
+//}
+//
+////-----------------------------------------------------------------------------------------
+//void CRteThreadProduction::Stop(void)
+//{
+//
+//}
+
+//-----------------------------------------------------------------------------------------
+void CRteThreadProduction::Process(CRte* pxRte)
+{
+    while (1)
+    {
+        pxRte -> Fsm();
+        std::cout << "CRteThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
+        usleep(1000000);
+//        usleep(1000);
+    }
+}
+
+//-----------------------------------------------------------------------------------------

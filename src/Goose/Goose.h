@@ -12,6 +12,7 @@
 
 #include "Platform.h"
 #include "Task.h"
+#include "Observer.h"
 
 
 
@@ -62,7 +63,7 @@ typedef enum
 class CGooseInterface : public CTask
 {
 public:
-    virtual void SlaveSet(uint8_t uiSlave) {};
+//    virtual void SlaveSet(uint8_t uiSlave) {};
     virtual uint16_t SetHeader(uint8_t *puiResponse) {};
     virtual int8_t MessengerIsReady(void) {};
 
@@ -94,23 +95,33 @@ public:
     virtual void SetMessageLength(uint16_t uiLength) {};
     virtual uint16_t GetMessageLength(void) {};
 
+    virtual void SetAttemptNumber(uint16_t uiAttemptNumber) {};
+    virtual uint16_t GetAttemptNumber(void) {};
+
     virtual CEthernetCommunicationDevice* GetCommunicationDevice(void) {};
+
+    virtual CGooseServerObserver* GetGooseServerObserver(void) {};
+    virtual void SetGooseServerObserver(CGooseServerObserver* pxPointer) {};
 
     virtual uint8_t* GetRxBuffer(void) {};
     virtual uint8_t* GetTxBuffer(void) {};
 
     virtual uint16_t HEADER_LENGTH(void) {};
 
-private:
     virtual uint16_t RequestProcessing(uint8_t *puiRequest,
                                        uint8_t *puiResponse,
                                        uint16_t uiFrameLength) {};
     virtual uint16_t AnswerProcessing(uint8_t *puiResponse,
                                       uint16_t uiFrameLength) {};
+
+//-----------------------------------------------------------------------------------------
+// Client
+    virtual int8_t ReportSlaveIDRequest(uint8_t uiSlaveAddress) {};
+    virtual uint16_t ReportSlaveIDReceive(uint8_t *puiMessage,
+                                          uint16_t uiLength) {};
 };
 
 //-----------------------------------------------------------------------------------------
-
 
 
 
@@ -126,6 +137,7 @@ public:
     {
 //        OWN_ADDRESS_OFFSET = 0,
 //        OWN_ADDRESS_OFFSET = 0,
+        PING_ATTEMPTS_NUMBER = 10000,
 
     };
 
@@ -167,7 +179,7 @@ public:
     CGoose();
     virtual ~CGoose();
 
-    void SlaveSet(uint8_t uiSlave);
+//    void SlaveSet(uint8_t uiSlave);
     uint16_t ResponseException(uint8_t uiSlave,
                                uint8_t uiFunctionCode,
                                uint8_t uiExceptionCode,
@@ -233,17 +245,37 @@ public:
         return m_uiMessageLength;
     };
 
+    void SetAttemptNumber(uint16_t uiAttemptNumber)
+    {
+        m_uiAttemptNumber = uiAttemptNumber;
+    };
+    uint16_t GetAttemptNumber(void)
+    {
+        return m_uiAttemptNumber;
+    };
+
+    CGooseServerObserver* GetGooseServerObserver(void)
+    {
+        return m_pxGooseServerObserver;
+    };
+    void SetGooseServerObserver(CGooseServerObserver* pxPointer)
+    {
+        m_pxGooseServerObserver = pxPointer;
+    };
+
 //-----------------------------------------------------------------------------------------
 private:
     uint8_t m_uiOwnAddress;
     uint8_t m_uiSlaveAddress;
     uint8_t m_uiFunctionCode;
-    uint16_t m_uiQuantity;
+    uint16_t m_uiAttemptNumber;
 
 //    uint32_t m_uiOwnAddress;
     uint32_t m_uiServerAddress;
     uint32_t m_uiMagicCode;
     uint16_t m_uiMessageLength;
+
+    CGooseServerObserver* m_pxGooseServerObserver;
 
 };
 

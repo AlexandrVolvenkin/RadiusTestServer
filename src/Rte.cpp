@@ -1,4 +1,3 @@
-
 //-----------------------------------------------------------------------------------------
 //  Source      : FileName.cpp
 //  Created     : 01.06.2022
@@ -7,42 +6,44 @@
 //  GitHub      : https://github.com/AlexandrVolvenkin
 //-----------------------------------------------------------------------------------------
 
-#include <iostream>
-#include <string.h>
+#include "Rte.h"
+#include "Platform.h"
 
-#include "MainProductionCycle.h"
+// Namespaces:
+using namespace std;
 
 //-----------------------------------------------------------------------------------------
-CMainProductionCycle::CMainProductionCycle()
+CRte::CRte()
 {
-    std::cout << "CMainProductionCycle constructor"  << std::endl;
+    m_pxCommunicationDevice = new CSerialPort();
+    SetFsmState(IDDLE);
 }
 
 //-----------------------------------------------------------------------------------------
-CMainProductionCycle::~CMainProductionCycle()
+CRte::~CRte()
 {
-    std::cout << "CMainProductionCycle destructor"  << std::endl;
+    //dtor
 }
 
 //-----------------------------------------------------------------------------------------
-void CMainProductionCycle::Fsm(void)
+void CRte::Fsm(void)
 {
     switch (GetFsmState())
     {
-    case IDDLE:
-        break;
-
-    case START_SERVER:
-//        SetFsmState(START_SERVER);
-        break;
-
-    case START_CLIENT:
-//SetAttemptNumber(PING_ATTEMPTS_NUMBER)
-        break;
+//    case IDDLE:
+//        break;
+//
+//    case START_SERVER:
+//        GetCommunicationDevice()-> Open();
+//        GetCommunicationDevice()-> Close();
+////        SetFsmState(START_SERVER);
+//        break;
+//
+//    case START_CLIENT:
+////SetAttemptNumber(PING_ATTEMPTS_NUMBER)
+//        break;
 
     default:
         break;
     }
 }
-
-//-----------------------------------------------------------------------------------------

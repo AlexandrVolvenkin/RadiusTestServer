@@ -165,15 +165,15 @@ void CSerialPort::Init(void)
     m_xTios.c_cc[VTIME] = 0;
 
 
-    memset(&m_xRs485Conf, 0x0, sizeof(struct serial_rs485));
-
-    m_xRs485Conf.flags |= SER_RS485_ENABLED;
-    m_xRs485Conf.flags |= SER_RS485_RTS_ON_SEND;
-    //m_xRs485Conf.flags &= ~(SER_RS485_RTS_ON_SEND);
-    m_xRs485Conf.flags &= ~SER_RS485_RTS_AFTER_SEND;
-    //m_xRs485Conf.flags |= SER_RS485_RTS_AFTER_SEND;
-    m_xRs485Conf.delay_rts_before_send = 0;
-    m_xRs485Conf.delay_rts_after_send = 0;
+//    memset(&m_xRs485Conf, 0x0, sizeof(struct serial_rs485));
+//
+//    m_xRs485Conf.flags |= SER_RS485_ENABLED;
+//    m_xRs485Conf.flags |= SER_RS485_RTS_ON_SEND;
+//    //m_xRs485Conf.flags &= ~(SER_RS485_RTS_ON_SEND);
+//    m_xRs485Conf.flags &= ~SER_RS485_RTS_AFTER_SEND;
+//    //m_xRs485Conf.flags |= SER_RS485_RTS_AFTER_SEND;
+//    m_xRs485Conf.delay_rts_before_send = 0;
+//    m_xRs485Conf.delay_rts_after_send = 0;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -362,11 +362,11 @@ int8_t CSerialPort::Open(void)
         return -1;
     }
 
-    if (ioctl(m_iDeviceDescriptor, TIOCSRS485, &m_xRs485Conf) < 0)
-    {
-        printf("Error! set rs485 ioctl: %d %s\n", errno, strerror(errno));
-        return -1;
-    }
+//    if (ioctl(m_iDeviceDescriptor, TIOCSRS485, &m_xRs485Conf) < 0)
+//    {
+//        printf("Error! set rs485 ioctl: %d %s\n", errno, strerror(errno));
+//        return -1;
+//    }
 
     // Сделаем не блокирующим.
     int flags = fcntl(m_iDeviceDescriptor, F_GETFL, 0);
@@ -1086,6 +1086,20 @@ int16_t CEthernetCommunicationDevice::Read(uint8_t *puiDestination, uint16_t uiL
         {
             if (rc)
             {
+
+                cout << "Read" << endl;
+                unsigned char *pucSourceTemp;
+                pucSourceTemp = (unsigned char*)puiDestination;
+                for(int i=0; i<32; )
+                {
+                    for(int j=0; j<8; j++)
+                    {
+                        cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
+                    }
+                    cout << endl;
+                    i += 8;
+                }
+
 //            std::cout << "CTcpCommunicationDevice::Read recv rc "  << (int)rc  << std::endl;
                 return rc;
             }
@@ -1095,19 +1109,6 @@ int16_t CEthernetCommunicationDevice::Read(uint8_t *puiDestination, uint16_t uiL
                 return 0;
             }
         }
-    }
-
-    cout << "Read" << endl;
-    unsigned char *pucSourceTemp;
-    pucSourceTemp = (unsigned char*)puiDestination;
-    for(int i=0; i<32; )
-    {
-        for(int j=0; j<8; j++)
-        {
-            cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
-        }
-        cout << endl;
-        i += 8;
     }
 
 //        std::cout << "CTcpCommunicationDevice::Read return 0"  << std::endl;
@@ -1123,8 +1124,40 @@ int16_t CEthernetCommunicationDevice::Read(uint8_t *puiDestination, uint16_t uiL
 //-----------------------------------------------------------------------------------------
 int16_t CEthernetCommunicationDevice::Write(uint8_t *puiSource, uint16_t uiLength)
 {
+
+    cout << "Write" << endl;
+    unsigned char *pucSourceTemp;
+    pucSourceTemp = (unsigned char*)puiSource;
+    for(int i=0; i<32; )
+    {
+        for(int j=0; j<8; j++)
+        {
+            cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
+        }
+        cout << endl;
+        i += 8;
+    }
+
     SetDataIsWrited(true);
-    return write(m_iDeviceDescriptor, puiSource, uiLength);
+//    return write(m_iDeviceDescriptor, puiSource, uiLength);
+
+    /* Send packet */
+    if (sendto( m_iDeviceDescriptor,
+               puiSource,
+               uiLength,
+               0,
+               (struct sockaddr*)&socket_address,
+               sizeof(struct sockaddr_ll)) < 0)
+//    if (write(sockfd, buf, tx_len) < 0)
+    {
+        printf("Send failed\n");
+        return 1;
+    }
+    else
+    {
+        printf("Send ok\n");
+        return 1;
+    }
 }
 
 //-----------------------------------------------------------------------------------------

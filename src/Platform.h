@@ -24,8 +24,12 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <linux/spi/spidev.h>
+#include <time.h>
+#include <sys/time.h>
 
 #include <sys/socket.h>
+#include <linux/if_packet.h>
+#include <net/ethernet.h> /* the L2 protocols */
 
 #if defined(__OpenBSD__) || (defined(__FreeBSD__) && __FreeBSD__ < 5)
 # define OS_BSD
@@ -40,6 +44,7 @@
 # include <netdb.h>
 #include <net/if.h>
 #include <netinet/if_ether.h>
+
 
 #include <unistd.h>
 
@@ -333,9 +338,10 @@ public:
                  int iLength,
                  int iSpeed);
 
+struct sockaddr_ll socket_address;
 //-----------------------------------------------------------------------------------------
-private:
-protected:
+//private:
+//protected:
     const char *m_pccDeviceName;
     const char *m_pccIpAddress;
     uint32_t m_uiIpAddress;

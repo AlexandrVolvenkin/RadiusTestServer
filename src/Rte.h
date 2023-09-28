@@ -1,4 +1,5 @@
-
+#ifndef CRTE_H
+#define CRTE_H
 //-----------------------------------------------------------------------------------------
 //  Source      : FileName.cpp
 //  Created     : 01.06.2022
@@ -6,49 +7,72 @@
 //  email       : aav-36@mail.ru
 //  GitHub      : https://github.com/AlexandrVolvenkin
 //-----------------------------------------------------------------------------------------
-#ifndef CMAINPRODUCTIONCYCLE_H
-#define CMAINPRODUCTIONCYCLE_H
 
-#include <iostream>
-#include <string.h>
+#include <stdint.h>
 
 #include "Platform.h"
 #include "Task.h"
 
 //-----------------------------------------------------------------------------------------
-class CMainProductionCycleInterface : public CTask
+class CRteInterface
 {
 public:
-
 };
-//-----------------------------------------------------------------------------------------
-
-
-
-
-
-
-
 
 //-----------------------------------------------------------------------------------------
-class CMainProductionCycle : public CMainProductionCycleInterface
+
+
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------------
+class CRte : public CTask
 {
 public:
+
     enum
     {
         IDDLE = 0,
-        START_SERVER,
-        START_CLIENT,
-
+        START,
     };
 
-    CMainProductionCycle();
-    virtual ~CMainProductionCycle();
+    CRte();
+    virtual ~CRte();
+
     void Fsm(void);
 
-protected:
+
+    CSerialPort* GetCommunicationDevice(void)
+    {
+        return m_pxCommunicationDevice;
+    };
+
+    void SetPeriodTime(uint32_t uiValue)
+    {
+        m_uiPeriodTime = uiValue;
+    };
+    uint32_t GetPeriodTime(void)
+    {
+        return m_uiPeriodTime;
+    };
+
+    void SetLoadPercent(uint8_t uiValue)
+    {
+        m_uiLoadPercent = uiValue;
+    };
+    uint8_t GetLoadPercent(void)
+    {
+        return m_uiLoadPercent;
+    };
+
 private:
+    CSerialPort* m_pxCommunicationDevice;
+    uint32_t m_uiPeriodTime;
+    uint8_t m_uiLoadPercent;
 };
 
 //-----------------------------------------------------------------------------------------
-#endif // CMAINPRODUCTIONCYCLE_H
+#endif // CRTE_H

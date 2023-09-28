@@ -6,27 +6,33 @@
 CPP_SRCS += \
 ../src/Crc.cpp \
 ../src/MainProductionCycle.cpp \
+../src/Observer.cpp \
 ../src/Platform.cpp \
 ../src/Production.cpp \
 ../src/RadiusTestServer.cpp \
+../src/Rte.cpp \
 ../src/Task.cpp \
 ../src/Timer.cpp 
 
 CPP_DEPS += \
 ./src/Crc.d \
 ./src/MainProductionCycle.d \
+./src/Observer.d \
 ./src/Platform.d \
 ./src/Production.d \
 ./src/RadiusTestServer.d \
+./src/Rte.d \
 ./src/Task.d \
 ./src/Timer.d 
 
 OBJS += \
 ./src/Crc.o \
 ./src/MainProductionCycle.o \
+./src/Observer.o \
 ./src/Platform.o \
 ./src/Production.o \
 ./src/RadiusTestServer.o \
+./src/Rte.o \
 ./src/Task.o \
 ./src/Timer.o 
 
@@ -43,7 +49,7 @@ src/%.o: ../src/%.cpp src/subdir.mk
 clean: clean-src
 
 clean-src:
-	-$(RM) ./src/Crc.d ./src/Crc.o ./src/MainProductionCycle.d ./src/MainProductionCycle.o ./src/Platform.d ./src/Platform.o ./src/Production.d ./src/Production.o ./src/RadiusTestServer.d ./src/RadiusTestServer.o ./src/Task.d ./src/Task.o ./src/Timer.d ./src/Timer.o
+	-$(RM) ./src/Crc.d ./src/Crc.o ./src/MainProductionCycle.d ./src/MainProductionCycle.o ./src/Observer.d ./src/Observer.o ./src/Platform.d ./src/Platform.o ./src/Production.d ./src/Production.o ./src/RadiusTestServer.d ./src/RadiusTestServer.o ./src/Rte.d ./src/Rte.o ./src/Task.d ./src/Task.o ./src/Timer.d ./src/Timer.o
 
 .PHONY: clean-src
 
