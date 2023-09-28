@@ -9,6 +9,7 @@
 #include "Goose.h"
 #include "Platform.h"
 
+using namespace std;
 //-----------------------------------------------------------------------------------------
 CGoose::CGoose()
 {
@@ -145,7 +146,7 @@ uint16_t CGoose::RequestProcessing(uint8_t *puiRequest,
 // Client
 int8_t CGoose::ReportSlaveIDRequest(uint8_t uiSlaveAddress)
 {
-    usleep(500);
+    usleep(GetPeriodTime());
 //    if (MessengerIsReady())
 //    {
     m_uiSlaveAddress = uiSlaveAddress;
@@ -176,17 +177,37 @@ uint16_t CGoose::AnswerProcessing(uint8_t *puiResponse, uint16_t uiFrameLength)
     uint8_t uiSlave = puiResponse[uiOffset];
     uint8_t uiFunctionCode = puiResponse[uiOffset + 1];
 
+
+//                cout << "CGoose::AnswerProcessing Read" << endl;
+//                unsigned char *pucSourceTemp;
+//                pucSourceTemp = (unsigned char*)puiResponse;
+//                for(int i=0; i<32; )
+//                {
+//                    for(int j=0; j<8; j++)
+//                    {
+//                        cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
+//                    }
+//                    cout << endl;
+//                    i += 8;
+//                }
+//
+//    std::cout << "CGoose::AnswerProcessing uiLength " << (int)uiLength << std::endl;
+//    std::cout << "CGoose::AnswerProcessing m_uiSlaveAddress " << (int)m_uiSlaveAddress << std::endl;
+//    std::cout << "CGoose::AnswerProcessing uiSlave " << (int)uiSlave << std::endl;
+//    std::cout << "CGoose::AnswerProcessing m_uiFunctionCode " << (int)m_uiFunctionCode << std::endl;
+//    std::cout << "CGoose::AnswerProcessing uiFunctionCode " << (int)uiFunctionCode << std::endl;
+
     if ((m_uiSlaveAddress == uiSlave) &&
             (m_uiFunctionCode == uiFunctionCode))
     {
         switch (uiFunctionCode)
         {
         case _FC_REPORT_SLAVE_ID:
-        std::cout << "CGoose::AnswerProcessing _FC_REPORT_SLAVE_ID"  << std::endl;
+            std::cout << "CGoose::AnswerProcessing _FC_REPORT_SLAVE_ID"  << std::endl;
             break;
 
         default:
-        std::cout << "CGoose::AnswerProcessing default"  << std::endl;
+            std::cout << "CGoose::AnswerProcessing default"  << std::endl;
             break;
         }
 
@@ -194,6 +215,8 @@ uint16_t CGoose::AnswerProcessing(uint8_t *puiResponse, uint16_t uiFrameLength)
     }
     else
     {
+        std::cout << "CGoose::AnswerProcessing if ((m_uiSlaveAddress == uiSlave)"  << std::endl;
+
         return 0;
     }
 }

@@ -858,7 +858,7 @@ int CTcpCommunicationDevice::Exchange(uint8_t uiAddress,
 //-----------------------------------------------------------------------------------------
 CEthernetCommunicationDevice::CEthernetCommunicationDevice()
 {
-
+    m_pxSocketLowAddress = new struct sockaddr_ll;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -1146,7 +1146,7 @@ int16_t CEthernetCommunicationDevice::Write(uint8_t *puiSource, uint16_t uiLengt
                puiSource,
                uiLength,
                0,
-               (struct sockaddr*)&socket_address,
+               (struct sockaddr*)GetSocketLowAddress(),
                sizeof(struct sockaddr_ll)) < 0)
 //    if (write(sockfd, buf, tx_len) < 0)
     {

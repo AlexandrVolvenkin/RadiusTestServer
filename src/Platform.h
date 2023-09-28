@@ -44,6 +44,7 @@
 # include <netdb.h>
 #include <net/if.h>
 #include <netinet/if_ether.h>
+#include <netinet/ether.h>
 
 
 #include <unistd.h>
@@ -58,6 +59,9 @@ class CCommunicationDeviceInterface
 {
 public:
     virtual void Init(void) {};
+
+    virtual void SetSocketLowAddress(struct sockaddr_ll* pxSocketLowAddress) {};
+    virtual struct sockaddr_ll* GetSocketLowAddress(void) {};
 
     virtual void SetPortName(const char* pccDeviceName) {};
     virtual const char* GetPortName(void) {};
@@ -311,6 +315,15 @@ public:
     CEthernetCommunicationDevice();
     virtual ~CEthernetCommunicationDevice();
 
+    void SetSocketLowAddress(struct sockaddr_ll* pxSocketLowAddress)
+    {
+        m_pxSocketLowAddress = pxSocketLowAddress;
+    };
+    struct sockaddr_ll* GetSocketLowAddress(void)
+    {
+        return m_pxSocketLowAddress;
+    };
+
 //-----------------------------------------------------------------------------------------
     void Init(void);
 
@@ -338,7 +351,6 @@ public:
                  int iLength,
                  int iSpeed);
 
-struct sockaddr_ll socket_address;
 //-----------------------------------------------------------------------------------------
 //private:
 //protected:
@@ -352,6 +364,7 @@ struct sockaddr_ll socket_address;
     int32_t m_iDeviceDescriptor;
     int32_t m_iDeviceDescriptorAccept;
     struct sockaddr_in m_Address;
+    struct sockaddr_ll* m_pxSocketLowAddress;
 };
 //-----------------------------------------------------------------------------------------
 

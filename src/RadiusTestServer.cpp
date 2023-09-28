@@ -32,6 +32,7 @@ static void help(char *progname)
     fprintf(stderr, "Usage: %s\n" \
             "  -m | --mode <mode> - set mode to <mode> (default is server)\n" \
             "  -e | --ethernet <name> - set ethernet to <name> (default is eth0)\n" \
+            "  -a | --mac <mac> - set mac address to <mac> (default is 00:00:00:00:00:00)\n" \
             "  -c | --comport <name> - set comport to <name> (default is com0)\n" \
             "  -p | --period <time> - set task period  to <time> (default is 10mc)\n" \
             "  -l | --load <percent> - set load percent  to <percent> (default is 50)\n" \
@@ -56,10 +57,34 @@ int main(int argc, char** argv)
     uint8_t uiData = 56;
 //    return 0;
 
+////uint8_t ether_dhost[6];
+//    const char* pcMacAddress = "64:cf:d9:55:ca:1e";
+////    struct ether_addr *ether_aton(pcMacAddress);
+//
+//    struct ether_addr* pxEthernetAddress;
+//    pxEthernetAddress = ether_aton(pcMacAddress);
+//
+//    cout << "Read" << endl;
+//    unsigned char *pucSourceTemp;
+//    pucSourceTemp = (unsigned char*)pxEthernetAddress -> ether_addr_octet;
+//    for(int i=0; i<8; )
+//    {
+//        for(int j=0; j<8; j++)
+//        {
+//            cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
+//        }
+//        cout << endl;
+//        i += 8;
+//    }
+
+//  struct ether_addr {
+//        uint8_t ether_addr_octet[6];
+//  }
 //-----------------------------------------------------------------------------------------
 
     const char *pccMode = "server";
     const char *pccGooseInterfaceName = "eth0";
+    const char *pccEthernetAddress = "00:00:00:00:00:00";
     const char *pccCommInterfaceName = "ttyO1";
     uint32_t uiCalculationPeriodTime = 5000;
     uint8_t uiLoadPercent = 50;
@@ -73,6 +98,7 @@ int main(int argc, char** argv)
             {"help", no_argument, NULL, 'h'},
             {"mode", required_argument, NULL, 'm'},
             {"ethernet", required_argument, NULL, 'e'},
+            {"mac", required_argument, NULL, 'a'},
             {"comport", required_argument, NULL, 'c'},
             {"period", required_argument, NULL, 'p'},
             {"load", required_argument, NULL, 'l'},
@@ -81,7 +107,7 @@ int main(int argc, char** argv)
             {NULL, 0, NULL, 0}
         };
 
-        iOption = getopt_long(argc, argv, "hm:e:c:p:l:vb", long_options, NULL);
+        iOption = getopt_long(argc, argv, "hm:e:a:c:p:l:vb", long_options, NULL);
 
 //        cout << "iOption = " << iOption << endl;
         /* no more options to parse */
@@ -101,6 +127,11 @@ int main(int argc, char** argv)
             cout << "case 'e' " << optarg << endl;
             // получим имя интекфейса ethernet
             pccGooseInterfaceName = optarg;
+            break;
+        case 'a':
+            cout << "case 'a' " << optarg << endl;
+            // получим mac адрес
+            pccEthernetAddress = optarg;
             break;
 
         case 'c':
@@ -175,6 +206,10 @@ int main(int argc, char** argv)
     pxGooseEthernet -> SetGooseServerObserver(new CGooseServerObserver());
     // установим имя интерфейса
     pxGooseEthernet -> GetCommunicationDevice() -> SetPortName(pccGooseInterfaceName);
+    // установим mac адрес назначения
+    pxGooseEthernet -> GetCommunicationDevice() -> SetDestinationMacAddress(ether_aton(pccEthernetAddress) -> ether_addr_octet);
+    // установим период
+    pxGooseEthernet -> SetPeriodTime(uiCalculationPeriodTime);
 
 
     // создадим указатель на объект "производственная площадка Rte задачи"

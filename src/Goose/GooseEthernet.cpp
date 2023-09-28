@@ -174,7 +174,7 @@ uint16_t CGooseEthernet::SetHeader(uint8_t *puiData)
 
 
 //struct sockaddr_ll socket_address;
-struct ifreq if_idx;
+    struct ifreq if_idx;
     // передача.
     /* Get the index of the interface to send on */
     memset(&if_idx, 0, sizeof(struct ifreq));
@@ -184,19 +184,27 @@ struct ifreq if_idx;
 //        perror("SIOCGIFINDEX");
         return 0;
     }
-
     /* Index of the network device */
-    m_pxCommunicationDevice -> socket_address.sll_ifindex = if_idx.ifr_ifindex;
+    //    m_pxCommunicationDevice -> socket_address.sll_ifindex = if_idx.ifr_ifindex;
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_ifindex = if_idx.ifr_ifindex;
 //    printf("if_idx.ifr_ifindex: %x\n", if_idx.ifr_ifindex);
     /* Address length*/
-    m_pxCommunicationDevice -> socket_address.sll_halen = ETH_ALEN;
+//    m_pxCommunicationDevice -> socket_address.sll_halen = ETH_ALEN;
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_halen = ETH_ALEN;
 
-    m_pxCommunicationDevice -> socket_address.sll_addr[0] = pxEthernetHeader -> ether_dhost[0];
-    m_pxCommunicationDevice -> socket_address.sll_addr[1] = pxEthernetHeader -> ether_dhost[1];
-    m_pxCommunicationDevice -> socket_address.sll_addr[2] = pxEthernetHeader -> ether_dhost[2];
-    m_pxCommunicationDevice -> socket_address.sll_addr[3] = pxEthernetHeader -> ether_dhost[3];
-    m_pxCommunicationDevice -> socket_address.sll_addr[4] = pxEthernetHeader -> ether_dhost[4];
-    m_pxCommunicationDevice -> socket_address.sll_addr[5] = pxEthernetHeader -> ether_dhost[5];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[0] = pxEthernetHeader -> ether_dhost[0];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[1] = pxEthernetHeader -> ether_dhost[1];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[2] = pxEthernetHeader -> ether_dhost[2];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[3] = pxEthernetHeader -> ether_dhost[3];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[4] = pxEthernetHeader -> ether_dhost[4];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[5] = pxEthernetHeader -> ether_dhost[5];
+
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[0] = pxEthernetHeader -> ether_dhost[0];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[1] = pxEthernetHeader -> ether_dhost[1];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[2] = pxEthernetHeader -> ether_dhost[2];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[3] = pxEthernetHeader -> ether_dhost[3];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[4] = pxEthernetHeader -> ether_dhost[4];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[5] = pxEthernetHeader -> ether_dhost[5];
 
 
     uiLength += sizeof(struct ether_header);
@@ -214,37 +222,6 @@ struct ifreq if_idx;
     puiData[uiLength++] = (m_uiRequestTransactionId & 0x00ff);
 
 
-//    cout << "Write" << endl;
-//    unsigned char *pucSourceTemp;
-//    pucSourceTemp = (unsigned char*)puiData;
-//    for(int i=0; i<32; )
-//    {
-//        for(int j=0; j<8; j++)
-//        {
-//            cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
-//        }
-//        cout << endl;
-//        i += 8;
-//    }
-
-
-//    /* Send packet */
-//    if (sendto(m_pxCommunicationDevice -> m_iDeviceDescriptor,
-//               puiData,
-//               uiLength,
-//               0,
-//               (struct sockaddr*)&socket_address,
-//               sizeof(struct sockaddr_ll)) < 0)
-////    if (write(sockfd, buf, tx_len) < 0)
-//    {
-//        printf("Send failed\n");
-//        return 1;
-//    }
-//    else
-//    {
-//        printf("Send ok\n");
-//        return 1;
-//    }
 
     return uiLength;
 }
@@ -254,43 +231,82 @@ uint16_t CGooseEthernet::RequestBasis(uint8_t uiSlave,
                                       uint8_t uiFunctionCode,
                                       uint8_t *puiRequest)
 {
-//    /* Extract from MODBUS Messaging on TCP/IP Implementation Guide V1.0b
-//       (page 23/46):
-//       The transaction identifier is used to associate the future response
-//       with the request. So, at a time, on a TCP connection, this identifier
-//       must be unique. */
-//
-//    /* Transaction ID */
-//    if (m_uiRequestTransactionId < UINT16_MAX)
-//    {
-//        m_uiRequestTransactionId++;
-//    }
-//    else
-//    {
-//        m_uiRequestTransactionId = 0;
-//    }
-//    puiRequest[0] = (m_uiRequestTransactionId >> 8);
-//    puiRequest[1] = (m_uiRequestTransactionId & 0x00ff);
-//
-//    /* Protocol Modbus */
-//    puiRequest[2] = 0;
-//    puiRequest[3] = 0;
-//
-//    /* Length will be defined later by set_puiRequest_length_tcp at offsets 4
-//       and 5 */
-//
-//    puiRequest[6] = uiSlave;
-//    puiRequest[7] = uiFunctionCode;
-//    puiRequest[8] = (static_cast<uint8_t>(uiAddress >> 8));
-//    puiRequest[9] = (static_cast<uint8_t>(uiAddress & 0x00ff));
-//    puiRequest[10] = (static_cast<uint8_t>(uiBitNumber >> 8));
-//    puiRequest[11] = (static_cast<uint8_t>(uiBitNumber & 0x00ff));
-//
-//    return _MODBUS_TCP_PRESET_REQ_LENGTH;
+//    std::cout << "CGooseEthernet::RequestBasis"  << std::endl;
+    uint16_t uiLength = 0;
 
-    uint16_t uiLength;
+    struct ether_header* pxEthernetHeader;
+    pxEthernetHeader = (struct ether_header*)puiRequest;
 
-    uiLength = SetHeader(puiRequest);
+    memcpy(pxEthernetHeader -> ether_dhost,
+           m_pxCommunicationDevice -> GetDestnationMacAddress(),
+           CEthernetCommunicationDevice::MAC_ADDRESS_LENGTH);
+
+//    pxEthernetHeader -> ether_dhost[0] = DEST_MAC0;
+//    pxEthernetHeader -> ether_dhost[1] = DEST_MAC1;
+//    pxEthernetHeader -> ether_dhost[2] = DEST_MAC2;
+//    pxEthernetHeader -> ether_dhost[3] = DEST_MAC3;
+//    pxEthernetHeader -> ether_dhost[4] = DEST_MAC4;
+//    pxEthernetHeader -> ether_dhost[5] = DEST_MAC5;
+
+    memcpy(pxEthernetHeader -> ether_shost,
+           m_pxCommunicationDevice -> GetSourseMacAddress(),
+           CEthernetCommunicationDevice::MAC_ADDRESS_LENGTH);
+
+    /* Ethertype field */
+    pxEthernetHeader -> ether_type = htons(ETH_P_IP);
+
+
+//struct sockaddr_ll socket_address;
+    struct ifreq if_idx;
+    // передача.
+    /* Get the index of the interface to send on */
+    memset(&if_idx, 0, sizeof(struct ifreq));
+    strncpy(if_idx.ifr_name, m_pxCommunicationDevice -> m_pccDeviceName, strlen(m_pxCommunicationDevice -> m_pccDeviceName));
+    if (ioctl(m_pxCommunicationDevice -> m_iDeviceDescriptor, SIOCGIFINDEX, &if_idx) < 0)
+    {
+//        perror("SIOCGIFINDEX");
+        return 0;
+    }
+    /* Index of the network device */
+    //    m_pxCommunicationDevice -> socket_address.sll_ifindex = if_idx.ifr_ifindex;
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_ifindex = if_idx.ifr_ifindex;
+//    printf("if_idx.ifr_ifindex: %x\n", if_idx.ifr_ifindex);
+    /* Address length*/
+//    m_pxCommunicationDevice -> socket_address.sll_halen = ETH_ALEN;
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_halen = ETH_ALEN;
+
+//    m_pxCommunicationDevice -> socket_address.sll_addr[0] = pxEthernetHeader -> ether_dhost[0];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[1] = pxEthernetHeader -> ether_dhost[1];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[2] = pxEthernetHeader -> ether_dhost[2];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[3] = pxEthernetHeader -> ether_dhost[3];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[4] = pxEthernetHeader -> ether_dhost[4];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[5] = pxEthernetHeader -> ether_dhost[5];
+
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[0] = pxEthernetHeader -> ether_dhost[0];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[1] = pxEthernetHeader -> ether_dhost[1];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[2] = pxEthernetHeader -> ether_dhost[2];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[3] = pxEthernetHeader -> ether_dhost[3];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[4] = pxEthernetHeader -> ether_dhost[4];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[5] = pxEthernetHeader -> ether_dhost[5];
+
+
+    uiLength += sizeof(struct ether_header);
+
+    if (m_uiRequestTransactionId < UINT16_MAX)
+    {
+        m_uiRequestTransactionId++;
+    }
+    else
+    {
+        m_uiRequestTransactionId = 0;
+    }
+
+    puiRequest[uiLength++] = (m_uiRequestTransactionId >> 8);
+    puiRequest[uiLength++] = (m_uiRequestTransactionId & 0x00ff);
+
+//    uint16_t uiLength;
+//
+//    uiLength = SetHeader(puiRequest);
     puiRequest[uiLength++] = uiSlave;
     puiRequest[uiLength++] = uiFunctionCode;
 
@@ -302,9 +318,83 @@ uint16_t CGooseEthernet::ResponseBasis(uint8_t uiSlave,
                                        uint8_t uiFunctionCode,
                                        uint8_t *puiResponse)
 {
-    uint16_t uiLength;
 
-    uiLength = SetHeader(puiResponse);
+//    std::cout << "CGooseEthernet::ResponseBasis"  << std::endl;
+    uint16_t uiLength = 0;
+
+    struct ether_header* pxEthernetHeader;
+    pxEthernetHeader = (struct ether_header*)puiResponse;
+
+    memcpy(pxEthernetHeader -> ether_dhost,
+           m_pxCommunicationDevice -> GetDestnationMacAddress(),
+           CEthernetCommunicationDevice::MAC_ADDRESS_LENGTH);
+
+//    pxEthernetHeader -> ether_dhost[0] = DEST_MAC0;
+//    pxEthernetHeader -> ether_dhost[1] = DEST_MAC1;
+//    pxEthernetHeader -> ether_dhost[2] = DEST_MAC2;
+//    pxEthernetHeader -> ether_dhost[3] = DEST_MAC3;
+//    pxEthernetHeader -> ether_dhost[4] = DEST_MAC4;
+//    pxEthernetHeader -> ether_dhost[5] = DEST_MAC5;
+
+    memcpy(pxEthernetHeader -> ether_shost,
+           m_pxCommunicationDevice -> GetSourseMacAddress(),
+           CEthernetCommunicationDevice::MAC_ADDRESS_LENGTH);
+
+    /* Ethertype field */
+    pxEthernetHeader -> ether_type = htons(ETH_P_IP);
+
+
+//struct sockaddr_ll socket_address;
+    struct ifreq if_idx;
+    // передача.
+    /* Get the index of the interface to send on */
+    memset(&if_idx, 0, sizeof(struct ifreq));
+    strncpy(if_idx.ifr_name, m_pxCommunicationDevice -> m_pccDeviceName, strlen(m_pxCommunicationDevice -> m_pccDeviceName));
+    if (ioctl(m_pxCommunicationDevice -> m_iDeviceDescriptor, SIOCGIFINDEX, &if_idx) < 0)
+    {
+//        perror("SIOCGIFINDEX");
+        return 0;
+    }
+    /* Index of the network device */
+    //    m_pxCommunicationDevice -> socket_address.sll_ifindex = if_idx.ifr_ifindex;
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_ifindex = if_idx.ifr_ifindex;
+//    printf("if_idx.ifr_ifindex: %x\n", if_idx.ifr_ifindex);
+    /* Address length*/
+//    m_pxCommunicationDevice -> socket_address.sll_halen = ETH_ALEN;
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_halen = ETH_ALEN;
+
+//    m_pxCommunicationDevice -> socket_address.sll_addr[0] = pxEthernetHeader -> ether_dhost[0];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[1] = pxEthernetHeader -> ether_dhost[1];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[2] = pxEthernetHeader -> ether_dhost[2];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[3] = pxEthernetHeader -> ether_dhost[3];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[4] = pxEthernetHeader -> ether_dhost[4];
+//    m_pxCommunicationDevice -> socket_address.sll_addr[5] = pxEthernetHeader -> ether_dhost[5];
+
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[0] = pxEthernetHeader -> ether_dhost[0];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[1] = pxEthernetHeader -> ether_dhost[1];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[2] = pxEthernetHeader -> ether_dhost[2];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[3] = pxEthernetHeader -> ether_dhost[3];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[4] = pxEthernetHeader -> ether_dhost[4];
+    m_pxCommunicationDevice -> GetSocketLowAddress() -> sll_addr[5] = pxEthernetHeader -> ether_dhost[5];
+
+
+    uiLength += sizeof(struct ether_header);
+
+    if (m_uiRequestTransactionId < UINT16_MAX)
+    {
+        m_uiRequestTransactionId++;
+    }
+    else
+    {
+        m_uiRequestTransactionId = 0;
+    }
+
+    puiResponse[uiLength++] = (m_uiRequestTransactionId >> 8);
+    puiResponse[uiLength++] = (m_uiRequestTransactionId & 0x00ff);
+
+//    uint16_t uiLength;
+
+//    uiLength = SetHeader(puiResponse);
     puiResponse[uiLength++] = uiSlave;
     puiResponse[uiLength++] = uiFunctionCode;
 
@@ -429,7 +519,7 @@ void CGooseEthernet::Fsm(void)
 //-----------------------------------------------------------------------------------------
 // GooseClient
     case CONFIRMATION_ENABLE:
-        std::cout << "CGooseEthernet::Fsm REQUEST_ENABLE"  << std::endl;
+//        std::cout << "CGooseEthernet::Fsm REQUEST_ENABLE"  << std::endl;
         ReceiveDisable();
         SetMessageLength(0);
         ReceiveEnable();
@@ -444,7 +534,7 @@ void CGooseEthernet::Fsm(void)
         break;
 
     case RECEIVE_MESSAGE_CONFIRMATION:
-        std::cout << "CGooseEthernet::Fsm RECEIVE_MESSAGE_CONFIRMATION"  << std::endl;
+//        std::cout << "CGooseEthernet::Fsm RECEIVE_MESSAGE_CONFIRMATION"  << std::endl;
         iBytesNumber = Receive((GetRxBuffer() + GetMessageLength()), (GOOSE_ETHERNET_MAX_FRAME_LENGTH - GetMessageLength()));
 
         if (iBytesNumber > 0)
@@ -460,7 +550,7 @@ void CGooseEthernet::Fsm(void)
         break;
 
     case ANSWER_PROCESSING_CONFIRMATION:
-        std::cout << "CGooseEthernet::Fsm ANSWER_PROCESSING_CONFIRMATION"  << std::endl;
+//        std::cout << "CGooseEthernet::Fsm ANSWER_PROCESSING_CONFIRMATION"  << std::endl;
         if (AnswerProcessing(GetRxBuffer(), GetMessageLength()))
         {
             SetFsmState(FRAME_TRANSMIT_REQUEST);
@@ -472,16 +562,17 @@ void CGooseEthernet::Fsm(void)
         break;
 
     case FRAME_TRANSMIT_REQUEST:
-        std::cout << "CGooseEthernet::Fsm FRAME_TRANSMIT_REQUEST"  << std::endl;
+//        std::cout << "CGooseEthernet::Fsm FRAME_TRANSMIT_REQUEST"  << std::endl;
         ReportSlaveIDRequest(7);
         Send(GetTxBuffer(), GetMessageLength());
 //        GetTimerPointer() -> Begin();
         xTimeMeasure.Begin();
+        SetMessageLength(0);
         SetFsmState(END_WAITING_FRAME_TRANSMIT_REQUEST);
         break;
 
     case END_WAITING_FRAME_TRANSMIT_REQUEST:
-        std::cout << "CGooseEthernet::Fsm END_WAITING_FRAME_TRANSMIT_REQUEST"  << std::endl;
+//        std::cout << "CGooseEthernet::Fsm END_WAITING_FRAME_TRANSMIT_REQUEST"  << std::endl;
         if (GetAttemptNumber() > 0)
         {
             SetAttemptNumber(GetAttemptNumber() - 1);
@@ -494,7 +585,7 @@ void CGooseEthernet::Fsm(void)
         break;
 
     case STOP_CONFIRMATION:
-        std::cout << "CGooseEthernet::Fsm STOP_CONFIRMATION"  << std::endl;
+//        std::cout << "CGooseEthernet::Fsm STOP_CONFIRMATION"  << std::endl;
         ReceiveDisable();
         SetFsmState(IDDLE);
         break;

@@ -103,6 +103,9 @@ public:
     virtual CGooseServerObserver* GetGooseServerObserver(void) {};
     virtual void SetGooseServerObserver(CGooseServerObserver* pxPointer) {};
 
+    virtual void SetPeriodTime(uint32_t uiValue) {};
+    virtual uint32_t GetPeriodTime(void) {};
+
     virtual uint8_t* GetRxBuffer(void) {};
     virtual uint8_t* GetTxBuffer(void) {};
 
@@ -263,12 +266,22 @@ public:
         m_pxGooseServerObserver = pxPointer;
     };
 
+    void SetPeriodTime(uint32_t uiValue)
+    {
+        m_uiPeriodTime = uiValue;
+    };
+    uint32_t GetPeriodTime(void)
+    {
+        return m_uiPeriodTime;
+    };
+
 //-----------------------------------------------------------------------------------------
 private:
     uint8_t m_uiOwnAddress;
     uint8_t m_uiSlaveAddress;
     uint8_t m_uiFunctionCode;
     uint16_t m_uiAttemptNumber;
+    uint32_t m_uiPeriodTime;
 
 //    uint32_t m_uiOwnAddress;
     uint32_t m_uiServerAddress;
