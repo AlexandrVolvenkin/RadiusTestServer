@@ -1087,18 +1087,18 @@ int16_t CEthernetCommunicationDevice::Read(uint8_t *puiDestination, uint16_t uiL
             if (rc)
             {
 
-                cout << "Read" << endl;
-                unsigned char *pucSourceTemp;
-                pucSourceTemp = (unsigned char*)puiDestination;
-                for(int i=0; i<32; )
-                {
-                    for(int j=0; j<8; j++)
-                    {
-                        cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
-                    }
-                    cout << endl;
-                    i += 8;
-                }
+//                cout << "Read" << endl;
+//                unsigned char *pucSourceTemp;
+//                pucSourceTemp = (unsigned char*)puiDestination;
+//                for(int i=0; i<32; )
+//                {
+//                    for(int j=0; j<8; j++)
+//                    {
+//                        cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
+//                    }
+//                    cout << endl;
+//                    i += 8;
+//                }
 
 //            std::cout << "CTcpCommunicationDevice::Read recv rc "  << (int)rc  << std::endl;
                 return rc;
@@ -1125,18 +1125,18 @@ int16_t CEthernetCommunicationDevice::Read(uint8_t *puiDestination, uint16_t uiL
 int16_t CEthernetCommunicationDevice::Write(uint8_t *puiSource, uint16_t uiLength)
 {
 
-    cout << "Write" << endl;
-    unsigned char *pucSourceTemp;
-    pucSourceTemp = (unsigned char*)puiSource;
-    for(int i=0; i<32; )
-    {
-        for(int j=0; j<8; j++)
-        {
-            cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
-        }
-        cout << endl;
-        i += 8;
-    }
+//    cout << "Write" << endl;
+//    unsigned char *pucSourceTemp;
+//    pucSourceTemp = (unsigned char*)puiSource;
+//    for(int i=0; i<32; )
+//    {
+//        for(int j=0; j<8; j++)
+//        {
+//            cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
+//        }
+//        cout << endl;
+//        i += 8;
+//    }
 
     SetDataIsWrited(true);
 //    return write(m_iDeviceDescriptor, puiSource, uiLength);
@@ -1150,12 +1150,12 @@ int16_t CEthernetCommunicationDevice::Write(uint8_t *puiSource, uint16_t uiLengt
                sizeof(struct sockaddr_ll)) < 0)
 //    if (write(sockfd, buf, tx_len) < 0)
     {
-        printf("Send failed\n");
+//        printf("Send failed\n");
         return 1;
     }
     else
     {
-        printf("Send ok\n");
+//        printf("Send ok\n");
         return 1;
     }
 }

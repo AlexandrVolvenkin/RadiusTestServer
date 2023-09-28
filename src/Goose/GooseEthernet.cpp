@@ -175,7 +175,7 @@ uint16_t CGooseEthernet::SetHeader(uint8_t *puiData)
 
 //struct sockaddr_ll socket_address;
 struct ifreq if_idx;
-    // ïåðåäà÷à.
+    // Ð¿ÐµÑ€ÐµÐ´Ð°Ñ‡Ð°.
     /* Get the index of the interface to send on */
     memset(&if_idx, 0, sizeof(struct ifreq));
     strncpy(if_idx.ifr_name, m_pxCommunicationDevice -> m_pccDeviceName, strlen(m_pxCommunicationDevice -> m_pccDeviceName));
@@ -408,7 +408,7 @@ void CGooseEthernet::Fsm(void)
 
     case FRAME_TRANSMIT_CONFIRMATION:
 //        std::cout << "CGooseEthernet::Fsm FRAME_TRANSMIT_CONFIRMATION"  << std::endl;
-        // óâåëè÷èì êîëè÷åñòâî îòïðàâëåííûõ ïàêåòîâ
+        // ÑƒÐ²ÐµÐ»Ð¸Ñ‡Ð¸Ð¼ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð¾Ñ‚Ð¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð½Ñ‹Ñ… Ð¿Ð°ÐºÐµÑ‚Ð¾Ð²
         GetGooseServerObserver() ->
         SetTransmitPacketNumber(GetGooseServerObserver() ->
                                 GetTransmitPacketNumber() + 1);

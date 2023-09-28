@@ -88,7 +88,7 @@ void CMainThreadProduction::Process(CMainProductionCycleInterface* pxMainProduct
     while (1)
     {
         pxMainProductionCycleInterface -> Fsm();
-        std::cout << "CMainThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
+//        std::cout << "CMainThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
         usleep(1000000);
     }
 }
@@ -239,7 +239,7 @@ void CRteThreadProduction::Process(CRte* pxRte)
     while (1)
     {
         pxRte -> Fsm();
-        std::cout << "CRteThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
+//        std::cout << "CRteThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
         usleep(1000000);
 //        usleep(1000);
     }

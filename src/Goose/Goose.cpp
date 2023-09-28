@@ -47,28 +47,28 @@ uint16_t CGoose::ResponseException(uint8_t uiSlave,
 //-----------------------------------------------------------------------------------------------------
 uint16_t CGoose::ReportSlaveID(uint8_t *puiRequest, uint8_t *puiResponse, uint16_t uiLength)
 {
-    std::cout << "CGoose::ReportSlaveID"  << std::endl;
+//    std::cout << "CGoose::ReportSlaveID"  << std::endl;
     uint16_t uiOffset = HEADER_LENGTH();
     int8_t uiSlave = puiRequest[uiOffset];
     int8_t uiFunctionCode = puiRequest[uiOffset + 1];
 
 
-    // увеличим количество принятых пакетов
+    // СѓРІРµР»РёС‡РёРј РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРёРЅСЏС‚С‹С… РїР°РєРµС‚РѕРІ
     GetGooseServerObserver() ->
     SetReceivePacketNumber(GetGooseServerObserver() ->
                            GetReceivePacketNumber() + 1);
 
-    // получим индекс пакета
+    // РїРѕР»СѓС‡РёРј РёРЅРґРµРєСЃ РїР°РєРµС‚Р°
     uint16_t uiIndex = 0;
-    // младштй байт
+    // РјР»Р°РґС€С‚Р№ Р±Р°Р№С‚
     uiIndex = (uint16_t)(puiRequest[sizeof(struct ether_header) + 1]);
-    // старший байт
+    // СЃС‚Р°СЂС€РёР№ Р±Р°Р№С‚
     uiIndex |= ((uint16_t)(puiRequest[sizeof(struct ether_header)]) << 8);
     GetGooseServerObserver() ->
     CalculateLostPacketNumber(uiIndex);
     GetGooseServerObserver() ->
     SetLastReceivedPacketIndex(uiIndex);
-    // Это не первый принятый пакет?
+    // Р­С‚Рѕ РЅРµ РїРµСЂРІС‹Р№ РїСЂРёРЅСЏС‚С‹Р№ РїР°РєРµС‚?
     if (GetGooseServerObserver() ->
             GetReceivePacketNumber())
     {
@@ -80,7 +80,7 @@ uint16_t CGoose::ReportSlaveID(uint8_t *puiRequest, uint8_t *puiResponse, uint16
                              uiFunctionCode,
                              puiResponse);
 
-    // установим идентификатор устройства
+    // СѓСЃС‚Р°РЅРѕРІРёРј РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СѓСЃС‚СЂРѕР№СЃС‚РІР°
     puiResponse[uiLength++] = 1;
     puiResponse[uiLength++] = 50;
 
@@ -114,7 +114,7 @@ uint16_t CGoose::RequestProcessing(uint8_t *puiRequest,
     switch (uiFunctionCode)
     {
     case _FC_REPORT_SLAVE_ID:
-        std::cout << "CGoose::RequestProcessing _FC_REPORT_SLAVE_ID"  << std::endl;
+//        std::cout << "CGoose::RequestProcessing _FC_REPORT_SLAVE_ID"  << std::endl;
         uiLength = ReportSlaveID(puiRequest, puiResponse, uiLength);
         break;
 
@@ -182,9 +182,11 @@ uint16_t CGoose::AnswerProcessing(uint8_t *puiResponse, uint16_t uiFrameLength)
         switch (uiFunctionCode)
         {
         case _FC_REPORT_SLAVE_ID:
+        std::cout << "CGoose::AnswerProcessing _FC_REPORT_SLAVE_ID"  << std::endl;
             break;
 
         default:
+        std::cout << "CGoose::AnswerProcessing default"  << std::endl;
             break;
         }
 
