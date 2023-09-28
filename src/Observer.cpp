@@ -40,7 +40,7 @@ CGooseServerObserver::CGooseServerObserver()
     m_uiReceivePacketNumber = 0;
     m_uiLostPacketNumber = 0;
 
-    m_uiMinReceivePacketTimeout = 0;
+    m_uiMinReceivePacketTimeout = 1000000000;
     m_uiMaxReceivePacketTimeout = 0;
     m_uiAverageReceivePacketTimeout = 0;
 }
@@ -59,7 +59,7 @@ void CGooseServerObserver::Reset(void)
     m_uiReceivePacketNumber = 0;
     m_uiLostPacketNumber = 0;
 
-    m_uiMinReceivePacketTimeout = 0;
+    m_uiMinReceivePacketTimeout = 1000000000;
     m_uiMaxReceivePacketTimeout = 0;
     m_uiAverageReceivePacketTimeout = 0;
 }
@@ -68,7 +68,7 @@ void CGooseServerObserver::Reset(void)
 void CGooseServerObserver::CalculateLostPacketNumber(uint16_t uiIndex)
 {
     SetLostPacketNumber(GetLostPacketNumber() +
-                        ((uiIndex - GetLastReceivedPacketIndex()) - 1));
+                        ((uiIndex - 1) - GetLastReceivedPacketIndex()));
 }
 
 //-----------------------------------------------------------------------------------------

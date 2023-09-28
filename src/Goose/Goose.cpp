@@ -10,6 +10,7 @@
 #include "Platform.h"
 
 using namespace std;
+extern CTimeMeasure xTimeMeasure;
 //-----------------------------------------------------------------------------------------
 CGoose::CGoose()
 {
@@ -54,36 +55,79 @@ uint16_t CGoose::ReportSlaveID(uint8_t *puiRequest, uint8_t *puiResponse, uint16
     int8_t uiFunctionCode = puiRequest[uiOffset + 1];
 
 
-    // увеличим количество принятых пакетов
-    GetGooseServerObserver() ->
-    SetReceivePacketNumber(GetGooseServerObserver() ->
-                           GetReceivePacketNumber() + 1);
 
-    // получим индекс пакета
-    uint16_t uiIndex = 0;
-    // младштй байт
-    uiIndex = (uint16_t)(puiRequest[sizeof(struct ether_header) + 1]);
-    // старший байт
-    uiIndex |= ((uint16_t)(puiRequest[sizeof(struct ether_header)]) << 8);
-    GetGooseServerObserver() ->
-    CalculateLostPacketNumber(uiIndex);
-    GetGooseServerObserver() ->
-    SetLastReceivedPacketIndex(uiIndex);
-    // Это не первый принятый пакет?
-    if (GetGooseServerObserver() ->
-            GetReceivePacketNumber())
-    {
-
-    }
-
+//    uint16_t uiIndex = 0;
+//    // Это не первый принятый пакет?
+//    if (GetGooseServerObserver() ->
+//            GetReceivePacketNumber())
+//    {
+//        // получим индекс пакета
+//        // младштй байт
+//        uiIndex = (uint16_t)(puiRequest[sizeof(struct ether_header) + 1]);
+//        // старший байт
+//        uiIndex |= ((uint16_t)(puiRequest[sizeof(struct ether_header)]) << 8);
+//
+//        // не было потери пакета?
+//        if ((uiIndex - 1) ==
+//                GetGooseServerObserver() ->
+//                GetLastReceivedPacketIndex())
+//        {
+//            // получим время окончания замера
+//            uint32_t uiTime = xTimeMeasure.End();
+//            // при получении времени не произошло ошибок?
+//            if (uiTime)
+//            {
+//                // результат текущего измерения времени меньше минимального значения?
+//                if (uiTime <
+//                        GetGooseServerObserver() ->
+//                        GetMinReceivePacketTimeout())
+//                {
+//                    // сохраним новое минимального значение
+//                    GetGooseServerObserver() ->
+//                    SetMinReceivePacketTimeout(uiTime);
+//                }
+//
+//                // результат текущего измерения времени больше максимального значения?
+//                if (uiTime >
+//                        GetGooseServerObserver() ->
+//                        GetMaxReceivePacketTimeout())
+//                {
+//                    // сохраним новое максимальное значение
+//                    GetGooseServerObserver() ->
+//                    SetMaxReceivePacketTimeout(uiTime);
+//                }
+//
+////                SetAverageReceivePacketTimeout(uint32_t uiData)
+////                GetAverageReceivePacketTimeout(void)
+//            }
+//        }
+//        else
+//        {
+//            // получим и вычислим количество потерянных пакетов
+//            GetGooseServerObserver() ->
+//            CalculateLostPacketNumber(uiIndex);
+//        }
+//    }
+//
+//    // сохраним индекс принятого пакета
+//    GetGooseServerObserver() ->
+//    SetLastReceivedPacketIndex(uiIndex);
+//
+//    // увеличим количество принятых пакетов
+//    GetGooseServerObserver() ->
+//    SetReceivePacketNumber(GetGooseServerObserver() ->
+//                           GetReceivePacketNumber() + 1);
+//
+//    // получим время начала замера
+//    xTimeMeasure.Begin();
 
     uiLength = ResponseBasis(uiSlave,
                              uiFunctionCode,
                              puiResponse);
 
     // установим идентификатор устройства
-    puiResponse[uiLength++] = 1;
-    puiResponse[uiLength++] = 50;
+    puiResponse[uiLength++] = 3;
+    puiResponse[uiLength++] = 14;
 
     return uiLength;
 }
@@ -164,8 +208,90 @@ int8_t CGoose::ReportSlaveIDRequest(uint8_t uiSlaveAddress)
 }
 
 //-----------------------------------------------------------------------------------------
-uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiMessage, uint16_t uiLength)
+uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
 {
+    std::cout << "CGoose::ReportSlaveIDReceive"  << std::endl;
+    uint16_t uiOffset = HEADER_LENGTH();
+    int8_t uiSlave = puiResponse[uiOffset];
+    int8_t uiFunctionCode = puiResponse[uiOffset + 1];
+
+
+    uint16_t uiIndex = 0;
+    // Это не первый принятый пакет?
+    if (GetGooseServerObserver() ->
+            GetReceivePacketNumber())
+    {
+        // получим индекс пакета
+        // младштй байт
+        uiIndex = (uint16_t)(puiResponse[sizeof(struct ether_header) + 1]);
+        // старший байт
+        uiIndex |= ((uint16_t)(puiResponse[sizeof(struct ether_header)]) << 8);
+
+        // не было потери пакета?
+        if ((uiIndex - 1) ==
+                GetGooseServerObserver() ->
+                GetLastReceivedPacketIndex())
+        {
+            // получим время окончания замера
+            uint32_t uiTime = xTimeMeasure.End();
+            // при получении времени не произошло ошибок?
+            if (uiTime)
+            {
+                // результат текущего измерения времени меньше минимального значения?
+                if (uiTime <
+                        GetGooseServerObserver() ->
+                        GetMinReceivePacketTimeout())
+                {
+                    // сохраним новое минимального значение
+                    GetGooseServerObserver() ->
+                    SetMinReceivePacketTimeout(uiTime);
+                }
+
+                // результат текущего измерения времени больше максимального значения?
+                if (uiTime >
+                        GetGooseServerObserver() ->
+                        GetMaxReceivePacketTimeout())
+                {
+                    // сохраним новое максимальное значение
+                    GetGooseServerObserver() ->
+                    SetMaxReceivePacketTimeout(uiTime);
+                }
+
+//                SetAverageReceivePacketTimeout(uint32_t uiData)
+//                GetAverageReceivePacketTimeout(void)
+            }
+        }
+        else
+        {
+            // получим и вычислим количество потерянных пакетов
+            GetGooseServerObserver() ->
+            CalculateLostPacketNumber(uiIndex);
+        }
+    }
+
+    // сохраним индекс принятого пакета
+    GetGooseServerObserver() ->
+    SetLastReceivedPacketIndex(uiIndex);
+
+    // увеличим количество принятых пакетов
+    GetGooseServerObserver() ->
+    SetReceivePacketNumber(GetGooseServerObserver() ->
+                           GetReceivePacketNumber() + 1);
+    // увеличим количество отправленных пакетов
+    GetGooseServerObserver() ->
+    SetTransmitPacketNumber(GetGooseServerObserver() ->
+                           GetTransmitPacketNumber() + 1);
+
+    std::cout << "Index: " << (int)GetGooseServerObserver() -> GetLastReceivedPacketIndex() << std::endl;
+    std::cout << "Transmited: " << (int)GetGooseServerObserver() -> GetTransmitPacketNumber() << std::endl;
+    std::cout << "Received: " << (int)GetGooseServerObserver() -> GetReceivePacketNumber() << std::endl;
+    std::cout << "Lost: " << (int)GetGooseServerObserver() -> GetLostPacketNumber() << std::endl;
+    std::cout << "Min: " << (int)GetGooseServerObserver() -> GetMinReceivePacketTimeout() << std::endl;
+    std::cout << "Max: " << (int)GetGooseServerObserver() -> GetMaxReceivePacketTimeout() << std::endl;
+
+    // получим время начала замера
+    xTimeMeasure.Begin();
+
     return 1;
 }
 
@@ -204,6 +330,7 @@ uint16_t CGoose::AnswerProcessing(uint8_t *puiResponse, uint16_t uiFrameLength)
         {
         case _FC_REPORT_SLAVE_ID:
             std::cout << "CGoose::AnswerProcessing _FC_REPORT_SLAVE_ID"  << std::endl;
+            ReportSlaveIDReceive(puiResponse, uiLength);
             break;
 
         default:

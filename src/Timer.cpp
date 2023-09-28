@@ -9,7 +9,7 @@
 #include "Timer.h"
 #include "Platform.h"
 
-    CTimeMeasure xTimeMeasure;
+CTimeMeasure xTimeMeasure;
 //-----------------------------------------------------------------------------------------
 CTimer::CTimer()
 {
@@ -95,16 +95,27 @@ void CTimeMeasure::Begin(void)
 }
 
 //-----------------------------------------------------------------------------------------
-void CTimeMeasure::End(void)
+uint32_t CTimeMeasure::End(void)
 {
     if( gettimeofday( &xTimeCur, NULL ) != 0 )
     {
         /* gettimeofday failed - retry next time. */
         xTimeCur.tv_usec = 0;
+        return 0;
     }
     else
     {
-        Store();
+//        Store();
+        if (xTimeCur.tv_usec &&
+                xTimeLast.tv_usec &&
+                (xTimeCur.tv_usec > xTimeLast.tv_usec))
+        {
+            return ((uint32_t)(xTimeCur.tv_usec - xTimeLast.tv_usec));
+        }
+        else
+        {
+            return 0;
+        }
     }
 }
 

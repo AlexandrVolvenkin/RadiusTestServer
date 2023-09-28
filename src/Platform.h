@@ -53,6 +53,7 @@
 #include <sys/ioctl.h>
 
 #include "Configuration.h"
+#include "Timer.h"
 
 //-----------------------------------------------------------------------------------------
 class CCommunicationDeviceInterface
