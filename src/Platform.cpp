@@ -953,7 +953,7 @@ int8_t CEthernetCommunicationDevice::Open(void)
     }
 
     cout << "socket open ok." << endl;
-    cout << "CEthernetCommunicationDevice m_pccDeviceName " << m_pccDeviceName << endl;
+//    cout << "CEthernetCommunicationDevice m_pccDeviceName " << m_pccDeviceName << endl;
 
     struct ifreq ifopts;	/* set promiscuous mode */
     /* Set interface to promiscuous mode - do we need to do this every time? */
@@ -977,7 +977,7 @@ int8_t CEthernetCommunicationDevice::Open(void)
         close(m_iDeviceDescriptor);
         return -1;
     }
-    cout << "setsockopt SO_REUSEADDR ok." << endl;
+//    cout << "setsockopt SO_REUSEADDR ok." << endl;
     /* Bind to device */
     if (setsockopt(m_iDeviceDescriptor, SOL_SOCKET, SO_BINDTODEVICE, m_pccDeviceName, strlen(m_pccDeviceName)) == -1)
     {
@@ -985,7 +985,7 @@ int8_t CEthernetCommunicationDevice::Open(void)
         close(m_iDeviceDescriptor);
         return -1;
     }
-    cout << "setsockopt SO_REUSEADDR ok." << endl;
+//    cout << "setsockopt SO_REUSEADDR ok." << endl;
 
     /* Get the MAC address of the interface to send on */
     struct ifreq if_mac;

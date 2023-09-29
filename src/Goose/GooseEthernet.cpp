@@ -564,6 +564,10 @@ void CGooseEthernet::Fsm(void)
     case FRAME_TRANSMIT_REQUEST:
 //        std::cout << "CGooseEthernet::Fsm FRAME_TRANSMIT_REQUEST"  << std::endl;
         ReportSlaveIDRequest(7);
+
+        // получим время начала замера
+        xTimeMeasure.Begin();
+
         Send(GetTxBuffer(), GetMessageLength());
 
         // увеличим количество отправленных пакетов

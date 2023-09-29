@@ -140,7 +140,7 @@ void CGooseThreadProduction::Place(CGooseInterface* pxGooseInterface)
 {
     std::thread m_xThread(CGooseThreadProduction::Process, pxGooseInterface);
     std::thread::id th_id = m_xThread.get_id();
-    std::cout << "CGooseThreadProduction th_id" << " " << th_id << std::endl;
+//    std::cout << "CGooseThreadProduction th_id" << " " << th_id << std::endl;
     // не ждем завершения работы функции
     m_xThread.detach();
 }
@@ -216,7 +216,7 @@ void CRteThreadProduction::Place(CRte* pxRte)
 {
     std::thread m_xThread(CRteThreadProduction::Process, pxRte);
     std::thread::id th_id = m_xThread.get_id();
-    std::cout << "CRteThreadProduction th_id" << " " << th_id << std::endl;
+//    std::cout << "CRteThreadProduction th_id" << " " << th_id << std::endl;
     // не ждем завершения работы функции
     m_xThread.detach();
 }

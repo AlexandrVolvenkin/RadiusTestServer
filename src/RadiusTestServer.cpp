@@ -119,40 +119,40 @@ int main(int argc, char** argv)
         switch(iOption)
         {
         case 'm':
-            cout << "case 'm' " << optarg << endl;
+//            cout << "case 'm' " << optarg << endl;
             // получим имя интекфейса ethernet
             pccMode = optarg;
             break;
         case 'e':
-            cout << "case 'e' " << optarg << endl;
+//            cout << "case 'e' " << optarg << endl;
             // получим имя интекфейса ethernet
             pccGooseInterfaceName = optarg;
             break;
         case 'a':
-            cout << "case 'a' " << optarg << endl;
+//            cout << "case 'a' " << optarg << endl;
             // получим mac адрес
             pccEthernetAddress = optarg;
             break;
 
         case 'c':
-            cout << "case 'c' " << optarg << endl;
+//            cout << "case 'c' " << optarg << endl;
             pccCommInterfaceName = optarg;
             break;
 
         case 'p':
-            cout << "case 'p' " << optarg << endl;
+//            cout << "case 'p' " << optarg << endl;
             // получим длину периода задачи
             uiCalculationPeriodTime = atol(optarg);
             break;
 
         case 'l':
-            cout << "case 'l' " << optarg << endl;
+//            cout << "case 'l' " << optarg << endl;
 //            // получим длину периода задачи
             uiLoadPercent = atoi(optarg);
             break;
 
         case 'v':
-            cout << "case 'v' " << optarg << endl;
+//            cout << "case 'v' " << optarg << endl;
             // опция -v версия
             printf("RadiusTestServer Version: %s\n",
 #ifdef GIT_HASH
@@ -165,7 +165,7 @@ int main(int argc, char** argv)
             break;
 
         case 'b':
-            cout << "case 'b' " << optarg << endl;
+//            cout << "case 'b' " << optarg << endl;
 //            // опция - работать в фоновом режиме
 //            daemon = 1;
             break;
@@ -298,11 +298,14 @@ int main(int argc, char** argv)
 
     CMainThreadProduction::Process(pxMainProductionCycle);
 
-    delete[] pxMainProductionCycle;
-    delete[] pxMainThreadProduction;
+    delete pxMainProductionCycle;
+    delete pxMainThreadProduction;
 
-    delete[] pxGooseEthernet;
-    delete[] pxGooseThreadProduction;
+    delete pxGooseEthernet;
+    delete pxGooseThreadProduction;
+
+//    delete pxRte;
+    delete pxRteThreadProduction;
 
     return 0;
 }

@@ -316,9 +316,6 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
         GetTimerPointer() -> Set(1000);
     }
 
-    // получим время начала замера
-    xTimeMeasure.Begin();
-
     return 1;
 }
 
