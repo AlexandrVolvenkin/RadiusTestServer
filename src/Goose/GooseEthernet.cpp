@@ -565,6 +565,12 @@ void CGooseEthernet::Fsm(void)
 //        std::cout << "CGooseEthernet::Fsm FRAME_TRANSMIT_REQUEST"  << std::endl;
         ReportSlaveIDRequest(7);
         Send(GetTxBuffer(), GetMessageLength());
+
+        // увеличим количество отправленных пакетов
+        GetGooseServerObserver() ->
+        SetTransmitPacketNumber(GetGooseServerObserver() ->
+                                GetTransmitPacketNumber() + 1);
+
         SetMessageLength(0);
         SetFsmState(END_WAITING_FRAME_TRANSMIT_REQUEST);
         break;

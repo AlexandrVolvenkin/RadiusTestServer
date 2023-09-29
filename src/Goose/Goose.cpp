@@ -280,10 +280,10 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
     GetGooseServerObserver() ->
     SetReceivePacketNumber(GetGooseServerObserver() ->
                            GetReceivePacketNumber() + 1);
-    // увеличим количество отправленных пакетов
-    GetGooseServerObserver() ->
-    SetTransmitPacketNumber(GetGooseServerObserver() ->
-                            GetTransmitPacketNumber() + 1);
+//    // увеличим количество отправленных пакетов
+//    GetGooseServerObserver() ->
+//    SetTransmitPacketNumber(GetGooseServerObserver() ->
+//                            GetTransmitPacketNumber() + 1);
 
     if ((GetTimerPointer() -> IsOverflow()))
     {
