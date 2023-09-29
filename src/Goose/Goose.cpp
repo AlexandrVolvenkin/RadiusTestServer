@@ -296,9 +296,9 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
 
         std::cout << std::endl;
         std::cout << "//----------------------------------------" << std::endl;
-        std::cout << "Client statistics" << std::endl;
+        std::cout << "Client statistics session: " << (int)GetGooseServerObserver() -> GetCommonStatisticsOutCounter() << std::endl;
         std::cout << std::endl;
-        std::cout << "Last packet index: " << (int)GetGooseServerObserver() -> GetLastReceivedPacketIndex() << std::endl;
+//        std::cout << "Last packet index: " << (int)GetGooseServerObserver() -> GetLastReceivedPacketIndex() << std::endl;
         std::cout << "Transmited: " << (int)GetGooseServerObserver() -> GetTransmitPacketNumber() << std::endl;
         std::cout << "Received: " << (int)GetGooseServerObserver() -> GetReceivePacketNumber() << std::endl;
         std::cout << "Lost: " << (int)GetGooseServerObserver() -> GetLostPacketNumber() << std::endl;
@@ -307,6 +307,11 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
         std::cout << "Average: " << (int)GetGooseServerObserver() -> GetAverageReceivePacketTimeout() << std::endl;
         std::cout << std::endl;
         std::cout << "//----------------------------------------" << std::endl;
+
+        // увеличим номер сессии вывода статистики
+        GetGooseServerObserver() ->
+        SetCommonStatisticsOutCounter(GetGooseServerObserver() ->
+                                      GetCommonStatisticsOutCounter() + 1);
 
         GetTimerPointer() -> Set(1000);
     }

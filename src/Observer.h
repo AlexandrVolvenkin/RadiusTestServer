@@ -131,6 +131,15 @@ public:
         return m_uiLastReceivedPacketIndex;
     }
 
+    void SetCommonStatisticsOutCounter(uint32_t uiData)
+    {
+        m_uiCommonStatisticsOutCounter = uiData;
+    }
+    uint32_t GetCommonStatisticsOutCounter(void)
+    {
+        return m_uiCommonStatisticsOutCounter;
+    }
+
 private:
     uint32_t m_uiTransmitPacketNumber;
     uint32_t m_uiReceivePacketNumber;
@@ -142,6 +151,7 @@ private:
     uint32_t m_uiCommonReceivePacketTimeout;
 
     uint16_t m_uiLastReceivedPacketIndex;
+    uint32_t m_uiCommonStatisticsOutCounter;
 };
 //-----------------------------------------------------------------------------------------
 
