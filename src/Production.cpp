@@ -165,7 +165,7 @@ void CGooseThreadProduction::Process(CGooseInterface* pxGooseInterface)
         pxGooseInterface -> Fsm();
 //        std::cout << "CGooseThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
 //        usleep(1000000);
-        usleep(1000);
+//        usleep(1000);
     }
 }
 
@@ -240,7 +240,7 @@ void CRteThreadProduction::Process(CRte* pxRte)
     {
         pxRte -> Fsm();
 //        std::cout << "CRteThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
-        usleep(1000000);
+//        usleep(1000000);
 //        usleep(1000);
     }
 }

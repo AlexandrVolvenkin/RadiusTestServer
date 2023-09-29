@@ -62,7 +62,7 @@ extern CTimeMeasure xTimeMeasure;
 //-----------------------------------------------------------------------------------------
 CGooseEthernet::CGooseEthernet()
 {
-    std::cout << "CGooseEthernet constructor"  << std::endl;
+//    std::cout << "CGooseEthernet constructor"  << std::endl;
     m_pxCommunicationDevice = new CEthernetCommunicationDevice();
     m_puiRxBuffer = new uint8_t[GOOSE_ETHERNET_MAX_FRAME_LENGTH];
     m_puiTxBuffer = new uint8_t[GOOSE_ETHERNET_MAX_FRAME_LENGTH];
@@ -72,7 +72,7 @@ CGooseEthernet::CGooseEthernet()
 //-----------------------------------------------------------------------------------------
 CGooseEthernet::~CGooseEthernet()
 {
-    std::cout << "CGooseEthernet desstructor"  << std::endl;
+//    std::cout << "CGooseEthernet desstructor"  << std::endl;
     delete[] m_puiTxBuffer;
     delete[] m_puiRxBuffer;
     delete m_pxCommunicationDevice;
@@ -484,7 +484,7 @@ void CGooseEthernet::Fsm(void)
 
     case REQUEST_PROCESSING_REQUEST:
 //        std::cout << "CGooseEthernet::Fsm REQUEST_PROCESSING_REQUEST"  << std::endl;
-        m_uiResponseTransactionId++;
+//        m_uiResponseTransactionId++;
 
         if (RequestProcessing(GetRxBuffer(), GetTxBuffer(), GetMessageLength()))
         {

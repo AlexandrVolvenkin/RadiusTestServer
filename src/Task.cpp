@@ -13,7 +13,7 @@
 //-----------------------------------------------------------------------------------------
 CTask::CTask()
 {
-    std::cout << "CTask constructor"  << std::endl;
+//    std::cout << "CTask constructor"  << std::endl;
 
 }
 
@@ -21,7 +21,7 @@ CTask::CTask()
 //-----------------------------------------------------------------------------------------
 CTask::~CTask()
 {
-    std::cout << "CTask destructor"  << std::endl;
+//    std::cout << "CTask destructor"  << std::endl;
 
 }
 

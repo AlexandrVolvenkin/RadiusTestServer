@@ -35,7 +35,7 @@ CObserver::~CObserver()
 //-----------------------------------------------------------------------------------------
 CGooseServerObserver::CGooseServerObserver()
 {
-    std::cout << "CGooseServerObserver constructor"  << std::endl;
+//    std::cout << "CGooseServerObserver constructor"  << std::endl;
     m_uiTransmitPacketNumber = 0;
     m_uiReceivePacketNumber = 0;
     m_uiLostPacketNumber = 0;
@@ -48,7 +48,7 @@ CGooseServerObserver::CGooseServerObserver()
 //-----------------------------------------------------------------------------------------
 CGooseServerObserver::~CGooseServerObserver()
 {
-    std::cout << "CGooseServerObserver destructor"  << std::endl;
+//    std::cout << "CGooseServerObserver destructor"  << std::endl;
 
 }
 

@@ -82,11 +82,11 @@ int main(int argc, char** argv)
 //  }
 //-----------------------------------------------------------------------------------------
 
-    const char *pccMode = "server";
+    const char *pccMode = "server";//"client";//
     const char *pccGooseInterfaceName = "eth0";
     const char *pccEthernetAddress = "00:00:00:00:00:00";
     const char *pccCommInterfaceName = "ttyO1";
-    uint32_t uiCalculationPeriodTime = 5000;
+    uint32_t uiCalculationPeriodTime = 5000;//1000000;//
     uint8_t uiLoadPercent = 50;
 
     /* parameter parsing */
@@ -210,29 +210,12 @@ int main(int argc, char** argv)
     pxGooseEthernet -> GetCommunicationDevice() -> SetDestinationMacAddress(ether_aton(pccEthernetAddress) -> ether_addr_octet);
     // установим период
     pxGooseEthernet -> SetPeriodTime(uiCalculationPeriodTime);
+    // установим период вывода статистики
+    pxGooseEthernet -> GetTimerPointer() -> Set(1000);
 
 
     // создадим указатель на объект "производственная площадка Rte задачи"
     CProductionInterface* pxRteThreadProduction;
-    // создадим объект "производственная площадка Rte задачи"
-    pxRteThreadProduction = new CRteThreadProduction();
-
-    // создадим указатель на объект "Rte задачи"
-    CRte* pxRte;
-    // создадим объект "Rte задачи"
-    pxRte = new CRte();
-    // установим имя интерфейса
-    pxRte -> GetCommunicationDevice() -> SetPortName(pccCommInterfaceName);
-    pxRte -> GetCommunicationDevice() -> SetBaudRate(115200);
-    pxRte -> GetCommunicationDevice() -> SetDataBits(8);
-    pxRte -> GetCommunicationDevice() -> SetParity('N');
-    pxRte -> GetCommunicationDevice() -> SetStopBit(1);
-    // установим период вычислений
-    pxRte -> SetPeriodTime(uiCalculationPeriodTime);
-    // установим процент нагрузки
-    pxRte -> SetLoadPercent(uiLoadPercent);
-    // разместим задачу на производственной площадке
-    pxRteThreadProduction -> Place(pxRte);
 
 
     // режим работы - сервер?
@@ -242,6 +225,27 @@ int main(int argc, char** argv)
         pxGooseEthernet -> SetOwnAddress(7);
         // установим начальное состояние автомата задачи, режим работы - сервер
         pxGooseEthernet -> SetFsmState(CGooseEthernet::REQUEST_ENABLE);
+        // создадим объект "производственная площадка Rte задачи"
+        pxRteThreadProduction = new CRteThreadProduction();
+
+        // создадим указатель на объект "Rte задачи"
+        CRte* pxRte;
+        // создадим объект "Rte задачи"
+        pxRte = new CRte();
+        // установим имя интерфейса
+        pxRte -> GetCommunicationDevice() -> SetPortName(pccCommInterfaceName);
+        pxRte -> GetCommunicationDevice() -> SetBaudRate(115200);
+        pxRte -> GetCommunicationDevice() -> SetDataBits(8);
+        pxRte -> GetCommunicationDevice() -> SetParity('N');
+        pxRte -> GetCommunicationDevice() -> SetStopBit(1);
+        // установим период вычислений
+        pxRte -> SetPeriodTime(uiCalculationPeriodTime);
+        // установим процент нагрузки
+        pxRte -> SetLoadPercent(uiLoadPercent);
+        // установим начальное состояние автомата задачи, режим работы
+        pxRte -> SetFsmState(CRte::START);
+        // разместим задачу на производственной площадке
+        pxRteThreadProduction -> Place(pxRte);
     }
     // режим работы - клиент?
     else if (strcmp(pccMode, "client") == 0)

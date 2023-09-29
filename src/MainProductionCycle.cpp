@@ -15,13 +15,13 @@
 //-----------------------------------------------------------------------------------------
 CMainProductionCycle::CMainProductionCycle()
 {
-    std::cout << "CMainProductionCycle constructor"  << std::endl;
+//    std::cout << "CMainProductionCycle constructor"  << std::endl;
 }
 
 //-----------------------------------------------------------------------------------------
 CMainProductionCycle::~CMainProductionCycle()
 {
-    std::cout << "CMainProductionCycle destructor"  << std::endl;
+//    std::cout << "CMainProductionCycle destructor"  << std::endl;
 }
 
 //-----------------------------------------------------------------------------------------

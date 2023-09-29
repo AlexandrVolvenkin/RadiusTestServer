@@ -106,6 +106,8 @@ public:
     virtual void SetPeriodTime(uint32_t uiValue) {};
     virtual uint32_t GetPeriodTime(void) {};
 
+    virtual CTimer* GetTimerPointer(void) {};
+
     virtual uint8_t* GetRxBuffer(void) {};
     virtual uint8_t* GetTxBuffer(void) {};
 
@@ -140,7 +142,7 @@ public:
     {
 //        OWN_ADDRESS_OFFSET = 0,
 //        OWN_ADDRESS_OFFSET = 0,
-        PING_ATTEMPTS_NUMBER = 10000,
+        PING_ATTEMPTS_NUMBER = 1000000,
 
     };
 

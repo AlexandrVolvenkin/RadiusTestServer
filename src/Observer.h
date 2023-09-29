@@ -113,6 +113,15 @@ public:
         return m_uiAverageReceivePacketTimeout;
     }
 
+    void SetCommonReceivePacketTimeout(uint32_t uiData)
+    {
+        m_uiCommonReceivePacketTimeout = uiData;
+    }
+    uint32_t GetCommonReceivePacketTimeout(void)
+    {
+        return m_uiCommonReceivePacketTimeout;
+    }
+
     void SetLastReceivedPacketIndex(uint16_t uiData)
     {
         m_uiLastReceivedPacketIndex = uiData;
@@ -130,6 +139,7 @@ private:
     uint32_t m_uiMinReceivePacketTimeout;
     uint32_t m_uiMaxReceivePacketTimeout;
     uint32_t m_uiAverageReceivePacketTimeout;
+    uint32_t m_uiCommonReceivePacketTimeout;
 
     uint16_t m_uiLastReceivedPacketIndex;
 };

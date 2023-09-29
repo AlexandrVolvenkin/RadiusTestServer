@@ -14,14 +14,14 @@ extern CTimeMeasure xTimeMeasure;
 //-----------------------------------------------------------------------------------------
 CGoose::CGoose()
 {
-    std::cout << "CGoose constructor"  << std::endl;
+//    std::cout << "CGoose constructor"  << std::endl;
 
 }
 
 //-----------------------------------------------------------------------------------------
 CGoose::~CGoose()
 {
-    std::cout << "CGoose desstructor"  << std::endl;
+//    std::cout << "CGoose desstructor"  << std::endl;
 
 }
 
@@ -210,7 +210,7 @@ int8_t CGoose::ReportSlaveIDRequest(uint8_t uiSlaveAddress)
 //-----------------------------------------------------------------------------------------
 uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
 {
-    std::cout << "CGoose::ReportSlaveIDReceive"  << std::endl;
+//    std::cout << "CGoose::ReportSlaveIDReceive"  << std::endl;
     uint16_t uiOffset = HEADER_LENGTH();
     int8_t uiSlave = puiResponse[uiOffset];
     int8_t uiFunctionCode = puiResponse[uiOffset + 1];
@@ -257,8 +257,11 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
                     SetMaxReceivePacketTimeout(uiTime);
                 }
 
-//                SetAverageReceivePacketTimeout(uint32_t uiData)
-//                GetAverageReceivePacketTimeout(void)
+                // суммируем с общим временем отклика всех пакетов
+                GetGooseServerObserver() ->
+                SetCommonReceivePacketTimeout(GetGooseServerObserver() ->
+                                              GetCommonReceivePacketTimeout() + uiTime);
+
             }
         }
         else
@@ -280,14 +283,33 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
     // увеличим количество отправленных пакетов
     GetGooseServerObserver() ->
     SetTransmitPacketNumber(GetGooseServerObserver() ->
-                           GetTransmitPacketNumber() + 1);
+                            GetTransmitPacketNumber() + 1);
 
-    std::cout << "Index: " << (int)GetGooseServerObserver() -> GetLastReceivedPacketIndex() << std::endl;
-    std::cout << "Transmited: " << (int)GetGooseServerObserver() -> GetTransmitPacketNumber() << std::endl;
-    std::cout << "Received: " << (int)GetGooseServerObserver() -> GetReceivePacketNumber() << std::endl;
-    std::cout << "Lost: " << (int)GetGooseServerObserver() -> GetLostPacketNumber() << std::endl;
-    std::cout << "Min: " << (int)GetGooseServerObserver() -> GetMinReceivePacketTimeout() << std::endl;
-    std::cout << "Max: " << (int)GetGooseServerObserver() -> GetMaxReceivePacketTimeout() << std::endl;
+    if ((GetTimerPointer() -> IsOverflow()))
+    {
+        // вычислим среднее время отклика
+        GetGooseServerObserver() ->
+        SetAverageReceivePacketTimeout(GetGooseServerObserver() ->
+                                       GetCommonReceivePacketTimeout() /
+                                       GetGooseServerObserver() ->
+                                       GetReceivePacketNumber());
+
+        std::cout << std::endl;
+        std::cout << "//----------------------------------------" << std::endl;
+        std::cout << "Client statistics" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Last packet index: " << (int)GetGooseServerObserver() -> GetLastReceivedPacketIndex() << std::endl;
+        std::cout << "Transmited: " << (int)GetGooseServerObserver() -> GetTransmitPacketNumber() << std::endl;
+        std::cout << "Received: " << (int)GetGooseServerObserver() -> GetReceivePacketNumber() << std::endl;
+        std::cout << "Lost: " << (int)GetGooseServerObserver() -> GetLostPacketNumber() << std::endl;
+        std::cout << "Min: " << (int)GetGooseServerObserver() -> GetMinReceivePacketTimeout() << std::endl;
+        std::cout << "Max: " << (int)GetGooseServerObserver() -> GetMaxReceivePacketTimeout() << std::endl;
+        std::cout << "Average: " << (int)GetGooseServerObserver() -> GetAverageReceivePacketTimeout() << std::endl;
+        std::cout << std::endl;
+        std::cout << "//----------------------------------------" << std::endl;
+
+        GetTimerPointer() -> Set(1000);
+    }
 
     // получим время начала замера
     xTimeMeasure.Begin();
@@ -304,19 +326,6 @@ uint16_t CGoose::AnswerProcessing(uint8_t *puiResponse, uint16_t uiFrameLength)
     uint8_t uiFunctionCode = puiResponse[uiOffset + 1];
 
 
-//                cout << "CGoose::AnswerProcessing Read" << endl;
-//                unsigned char *pucSourceTemp;
-//                pucSourceTemp = (unsigned char*)puiResponse;
-//                for(int i=0; i<32; )
-//                {
-//                    for(int j=0; j<8; j++)
-//                    {
-//                        cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
-//                    }
-//                    cout << endl;
-//                    i += 8;
-//                }
-//
 //    std::cout << "CGoose::AnswerProcessing uiLength " << (int)uiLength << std::endl;
 //    std::cout << "CGoose::AnswerProcessing m_uiSlaveAddress " << (int)m_uiSlaveAddress << std::endl;
 //    std::cout << "CGoose::AnswerProcessing uiSlave " << (int)uiSlave << std::endl;
@@ -329,7 +338,7 @@ uint16_t CGoose::AnswerProcessing(uint8_t *puiResponse, uint16_t uiFrameLength)
         switch (uiFunctionCode)
         {
         case _FC_REPORT_SLAVE_ID:
-            std::cout << "CGoose::AnswerProcessing _FC_REPORT_SLAVE_ID"  << std::endl;
+//            std::cout << "CGoose::AnswerProcessing _FC_REPORT_SLAVE_ID"  << std::endl;
             ReportSlaveIDReceive(puiResponse, uiLength);
             break;
 
@@ -342,8 +351,21 @@ uint16_t CGoose::AnswerProcessing(uint8_t *puiResponse, uint16_t uiFrameLength)
     }
     else
     {
-        std::cout << "CGoose::AnswerProcessing if ((m_uiSlaveAddress == uiSlave)"  << std::endl;
-
+//        std::cout << "CGoose::AnswerProcessing if ((m_uiSlaveAddress == uiSlave)"  << std::endl;
+//
+//        cout << "CGoose::AnswerProcessing Read" << endl;
+//        unsigned char *pucSourceTemp;
+//        pucSourceTemp = (unsigned char*)puiResponse;
+//        for(int i=0; i<32; )
+//        {
+//            for(int j=0; j<8; j++)
+//            {
+//                cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
+//            }
+//            cout << endl;
+//            i += 8;
+//        }
+//
         return 0;
     }
 }

@@ -28,6 +28,7 @@ public:
 
 
 
+
 //-----------------------------------------------------------------------------------------
 class CRte : public CTask
 {
@@ -37,6 +38,11 @@ public:
     {
         IDDLE = 0,
         START,
+        FULL_LOAD_MODE_START,
+        FULL_LOAD_MODE,
+        STANDBY_MODE_START,
+        STANDBY_MODE,
+        STOP,
     };
 
     CRte();
@@ -72,6 +78,7 @@ private:
     CSerialPort* m_pxCommunicationDevice;
     uint32_t m_uiPeriodTime;
     uint8_t m_uiLoadPercent;
+    CTimeMeasure xTimeMeasure;
 };
 
 //-----------------------------------------------------------------------------------------

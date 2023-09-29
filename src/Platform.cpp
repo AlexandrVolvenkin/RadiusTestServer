@@ -998,7 +998,7 @@ int8_t CEthernetCommunicationDevice::Open(void)
     }
 
     SetSourseMacAddress(((uint8_t *)&if_mac.ifr_hwaddr.sa_data));
-    printf("sourse MAC: %x:%x:%x:%x:%x:%x\n",
+    printf("Own MAC: %x:%x:%x:%x:%x:%x\n",
            GetSourseMacAddress()[0],
            GetSourseMacAddress()[1],
            GetSourseMacAddress()[2],
