@@ -44,6 +44,8 @@ CGooseServerObserver::CGooseServerObserver()
     m_uiMaxReceivePacketTimeout = 0;
     m_uiAverageReceivePacketTimeout = 0;
     m_uiCommonReceivePacketTimeout = 0;
+    m_uiCommonReceivePacketNumber = 0;
+    m_uiCommonStatisticsOutCounter = 0;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -64,6 +66,8 @@ void CGooseServerObserver::Reset(void)
     m_uiMaxReceivePacketTimeout = 0;
     m_uiAverageReceivePacketTimeout = 0;
     m_uiCommonReceivePacketTimeout = 0;
+    m_uiCommonReceivePacketNumber = 0;
+    m_uiCommonStatisticsOutCounter = 0;
 }
 
 //-----------------------------------------------------------------------------------------

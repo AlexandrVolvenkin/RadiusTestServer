@@ -95,8 +95,8 @@ public:
     virtual void SetMessageLength(uint16_t uiLength) {};
     virtual uint16_t GetMessageLength(void) {};
 
-    virtual void SetAttemptNumber(uint16_t uiAttemptNumber) {};
-    virtual uint16_t GetAttemptNumber(void) {};
+    virtual void SetAttemptNumber(uint32_t uiAttemptNumber) {};
+    virtual uint32_t GetAttemptNumber(void) {};
 
     virtual CEthernetCommunicationDevice* GetCommunicationDevice(void) {};
 
@@ -142,7 +142,7 @@ public:
     {
 //        OWN_ADDRESS_OFFSET = 0,
 //        OWN_ADDRESS_OFFSET = 0,
-        PING_ATTEMPTS_NUMBER = 1000000,
+        PING_ATTEMPTS_NUMBER = 100000,
 
     };
 
@@ -250,11 +250,11 @@ public:
         return m_uiMessageLength;
     };
 
-    void SetAttemptNumber(uint16_t uiAttemptNumber)
+    void SetAttemptNumber(uint32_t uiAttemptNumber)
     {
         m_uiAttemptNumber = uiAttemptNumber;
     };
-    uint16_t GetAttemptNumber(void)
+    uint32_t GetAttemptNumber(void)
     {
         return m_uiAttemptNumber;
     };

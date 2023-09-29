@@ -217,16 +217,16 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
 
 
     uint16_t uiIndex = 0;
+    // получим индекс пакета
+    // младштй байт
+    uiIndex = (uint16_t)(puiResponse[sizeof(struct ether_header) + 1]);
+    // старший байт
+    uiIndex |= ((uint16_t)(puiResponse[sizeof(struct ether_header)]) << 8);
+
     // Это не первый принятый пакет?
     if (GetGooseServerObserver() ->
-            GetReceivePacketNumber())
+            GetReceivePacketNumber() > 1)
     {
-        // получим индекс пакета
-        // младштй байт
-        uiIndex = (uint16_t)(puiResponse[sizeof(struct ether_header) + 1]);
-        // старший байт
-        uiIndex |= ((uint16_t)(puiResponse[sizeof(struct ether_header)]) << 8);
-
         // не было потери пакета?
         if ((uiIndex - 1) ==
                 GetGooseServerObserver() ->
@@ -262,6 +262,11 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
                 SetCommonReceivePacketTimeout(GetGooseServerObserver() ->
                                               GetCommonReceivePacketTimeout() + uiTime);
 
+                // увеличим количество успешно принятых пакетов за сессию вывода статистики - 1с
+                GetGooseServerObserver() ->
+                SetCommonReceivePacketNumber(GetGooseServerObserver() ->
+                                             GetCommonReceivePacketNumber() + 1);
+
             }
         }
         else
@@ -292,19 +297,26 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
         SetAverageReceivePacketTimeout(GetGooseServerObserver() ->
                                        GetCommonReceivePacketTimeout() /
                                        GetGooseServerObserver() ->
-                                       GetReceivePacketNumber());
+                                       GetCommonReceivePacketNumber());
+
+        // очистим общее время отклика всех пакетов за сессию вывода статистики - 1с
+        GetGooseServerObserver() ->
+        SetCommonReceivePacketTimeout(0);
+        // очистим количество успешно принятых пакетов за сессию вывода статистики - 1с
+        GetGooseServerObserver() ->
+        SetCommonReceivePacketNumber(0);
 
         std::cout << std::endl;
         std::cout << "//----------------------------------------" << std::endl;
-        std::cout << "Client statistics session: " << (int)GetGooseServerObserver() -> GetCommonStatisticsOutCounter() << std::endl;
+        std::cout << "Client statistics session: " << (uint)GetGooseServerObserver() -> GetCommonStatisticsOutCounter() << std::endl;
         std::cout << std::endl;
 //        std::cout << "Last packet index: " << (int)GetGooseServerObserver() -> GetLastReceivedPacketIndex() << std::endl;
-        std::cout << "Transmited: " << (int)GetGooseServerObserver() -> GetTransmitPacketNumber() << std::endl;
-        std::cout << "Received: " << (int)GetGooseServerObserver() -> GetReceivePacketNumber() << std::endl;
-        std::cout << "Lost: " << (int)GetGooseServerObserver() -> GetLostPacketNumber() << std::endl;
-        std::cout << "Min: " << (int)GetGooseServerObserver() -> GetMinReceivePacketTimeout() << std::endl;
-        std::cout << "Max: " << (int)GetGooseServerObserver() -> GetMaxReceivePacketTimeout() << std::endl;
-        std::cout << "Average: " << (int)GetGooseServerObserver() -> GetAverageReceivePacketTimeout() << std::endl;
+        std::cout << "Transmited: " << (uint)GetGooseServerObserver() -> GetTransmitPacketNumber() << std::endl;
+        std::cout << "Received: " << (uint)GetGooseServerObserver() -> GetReceivePacketNumber() << std::endl;
+        std::cout << "Lost: " << (uint)GetGooseServerObserver() -> GetLostPacketNumber() << std::endl;
+        std::cout << "Min: " << (uint)GetGooseServerObserver() -> GetMinReceivePacketTimeout() << std::endl;
+        std::cout << "Max: " << (uint)GetGooseServerObserver() -> GetMaxReceivePacketTimeout() << std::endl;
+        std::cout << "Average: " << (uint)GetGooseServerObserver() -> GetAverageReceivePacketTimeout() << std::endl;
         std::cout << std::endl;
         std::cout << "//----------------------------------------" << std::endl;
 
