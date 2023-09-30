@@ -122,18 +122,20 @@ private:
         return m_pxCommunicationDevice;
     };
 
-    uint8_t* GetRxBuffer(void)
-    {
-        return m_puiRxBuffer;
-    };
-
-    uint8_t* GetTxBuffer(void)
-    {
-        return m_puiTxBuffer;
-    };
+//    uint8_t* GetRxBuffer(void)
+//    {
+//        return m_puiRxBuffer;
+//    };
+//
+//    uint8_t* GetTxBuffer(void)
+//    {
+//        return m_puiTxBuffer;
+//    };
 
 
 private:
+    uint8_t* m_puiRxBuffer;
+    uint8_t* m_puiTxBuffer;
 
     CEthernetCommunicationDevice* m_pxCommunicationDevice;
     uint16_t m_uiRequestTransactionId = 0;
@@ -144,9 +146,6 @@ private:
     // таймоут по отсутствию подтверждения.
     const static uint16_t m_uiConfirmationTimeout = 500;
     const static uint16_t m_uiTransmitDelayTimeout = 5;
-
-    uint8_t* m_puiRxBuffer;
-    uint8_t* m_puiTxBuffer;
 
 };
 

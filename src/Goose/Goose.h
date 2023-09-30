@@ -98,6 +98,7 @@ public:
                                    uint8_t *puiResponse,
                                    uint16_t uiLength) {};
 
+
     virtual void SetOwnAddress(uint8_t uiAddress) {};
     virtual uint8_t GetOwnAddress(void) {};
 //    virtual void SetOwnAddress(uint32_t uiAddress) {};
@@ -245,6 +246,16 @@ public:
                                          uint16_t uiLength);
 
 public:
+    uint8_t* GetRxBuffer(void)
+    {
+        return m_puiRxBuffer;
+    };
+
+    uint8_t* GetTxBuffer(void)
+    {
+        return m_puiTxBuffer;
+    };
+
     void SetOwnAddress(uint8_t uiAddress)
     {
         m_uiOwnAddress = uiAddress;
@@ -318,6 +329,9 @@ public:
 
 //-----------------------------------------------------------------------------------------
 private:
+    uint8_t* m_puiRxBuffer;
+    uint8_t* m_puiTxBuffer;
+
     uint8_t m_uiOwnAddress;
     uint8_t m_uiSlaveAddress;
     uint8_t m_uiFunctionCode;

@@ -405,7 +405,9 @@ int8_t CGoose::ReadHoldingRegistersRequest(uint8_t uiSlaveAddress,
         m_uiFunctionCode = _FC_READ_HOLDING_REGISTERS;
         m_uiMessageLength = RequestBasis(uiSlaveAddress,
                                          m_uiFunctionCode,
-                                         GetTxBuffer());
+                                         uiAddress,
+                                         uiBitNumber,
+                                         m_puiTxBuffer);
         SetFsmState(FRAME_TRANSMIT_REQUEST);
         return 1;
     }
