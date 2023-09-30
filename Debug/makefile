@@ -8,6 +8,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/Modbus/subdir.mk
 -include src/Goose/subdir.mk
 -include src/subdir.mk
 ifneq ($(MAKECMDGOALS),clean)

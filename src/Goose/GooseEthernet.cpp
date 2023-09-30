@@ -87,6 +87,26 @@ void CGooseEthernet::CommunicationDeviceInit(const char* pccIpAddress,
     m_pxCommunicationDevice -> SetPort(uiPort);
 }
 
+//-----------------------------------------------------------------------------------------------------
+void CGooseEthernet::WorkingArraysInit(uint8_t *puiCoils,
+                                       uint8_t *puiDiscreteInputs,
+                                       uint16_t *pui16HoldingRegisters,
+                                       uint16_t *pui16InputRegisters,
+                                       uint16_t uiCoilsNumber,
+                                       uint16_t uiDiscreteInputsNumber,
+                                       uint16_t uiHoldingRegistersNumber,
+                                       uint16_t uiInputRegistersNumber)
+{
+    m_puiCoils = puiCoils;
+    m_puiDiscreteInputs = puiDiscreteInputs;
+    m_pui16HoldingRegisters = pui16HoldingRegisters;
+    m_pui16InputRegisters = pui16InputRegisters;
+    m_uiCoilsNumber = uiCoilsNumber;
+    m_uiDiscreteInputsNumber = uiDiscreteInputsNumber;
+    m_uiHoldingRegistersNumber = uiHoldingRegistersNumber;
+    m_uiInputRegistersNumber = uiInputRegistersNumber;
+}
+
 //-----------------------------------------------------------------------------------------
 void CGooseEthernet::ReceiveEnable(void)
 {
@@ -311,6 +331,23 @@ uint16_t CGooseEthernet::RequestBasis(uint8_t uiSlave,
     puiRequest[uiLength++] = uiFunctionCode;
 
     return uiLength;
+}
+
+//-----------------------------------------------------------------------------------------
+uint16_t CGooseEthernet::RequestBasis(uint8_t uiSlave,
+                                      uint8_t uiFunctionCode,
+                                      uint16_t uiAddress,
+                                      uint16_t uiBitNumber,
+                                      uint8_t *puiRequest)
+{
+    puiRequest[0] = uiSlave;
+    puiRequest[1] = uiFunctionCode;
+    puiRequest[2] = (static_cast<uint8_t>(uiAddress >> 8));
+    puiRequest[3] = (static_cast<uint8_t>(uiAddress & 0x00ff));
+    puiRequest[4] = (static_cast<uint8_t>(uiBitNumber >> 8));
+    puiRequest[5] = (static_cast<uint8_t>(uiBitNumber & 0x00ff));
+
+    return 0;//_MODBUS_RTU_PRESET_REQ_LENGTH;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -565,6 +602,7 @@ void CGooseEthernet::Fsm(void)
 //        std::cout << "CGooseEthernet::Fsm FRAME_TRANSMIT_REQUEST"  << std::endl;
         ReportSlaveIDRequest(7);
 
+        usleep(GetPeriodTime());
         // получим время начала замера
         xTimeMeasure.Begin();
 

@@ -8,6 +8,7 @@
 
 #include "Goose.h"
 #include "Platform.h"
+#include "Modbus.h"
 
 using namespace std;
 extern CTimeMeasure xTimeMeasure;
@@ -47,12 +48,60 @@ uint16_t CGoose::ResponseException(uint8_t uiSlave,
 //}
 
 //-----------------------------------------------------------------------------------------------------
+uint16_t CGoose::ReadHoldingRegisters(uint8_t *puiRequest, uint8_t *puiResponse, uint16_t uiLength)
+{
+    uint16_t uiOffset = HEADER_LENGTH();
+    int8_t uiSlave = puiRequest[uiOffset - 1];
+    int8_t uiFunctionCode = puiRequest[uiOffset];
+    uint16_t uiAddress = ((static_cast<uint16_t>(puiRequest[uiOffset + 1]) << 8) |
+                          (static_cast<uint16_t>(puiRequest[uiOffset + 2])));
+
+    uint16_t uiNumberB = ((static_cast<uint16_t>(puiRequest[uiOffset + 3]) << 8) |
+                          (static_cast<uint16_t>(puiRequest[uiOffset + 4])));
+
+    if (uiNumberB < 1 || MODBUS_MAX_READ_REGISTERS < uiNumberB)
+    {
+        uiLength = ResponseException(uiSlave,
+                                     uiFunctionCode,
+                                     MODBUS_EXCEPTION_ILLEGAL_DATA_VALUE,
+                                     puiResponse);
+    }
+    else if ((uiAddress + uiNumberB) > m_uiHoldingRegistersNumber)
+    {
+        uiLength = ResponseException(uiSlave,
+                                     uiFunctionCode,
+                                     MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS,
+                                     puiResponse);
+    }
+    else
+    {
+        uiLength = ResponseBasis(uiSlave, uiFunctionCode, puiResponse);
+        puiResponse[uiLength++] = (uiNumberB << 1);
+        for (uint16_t i = 0; i < uiNumberB; i++)
+        {
+//            int8_t uiData = 0;
+//            uiData = (static_cast<uint8_t>(m_pui16HoldingRegisters[uiAddress] >> 8));
+//            uiData = (static_cast<uint8_t>(m_pui16HoldingRegisters[uiAddress] & 0x00FF));
+            puiResponse[uiLength++] = (static_cast<uint8_t>(m_pui16HoldingRegisters[uiAddress] >> 8));
+            puiResponse[uiLength++] = (static_cast<uint8_t>(m_pui16HoldingRegisters[uiAddress] & 0x00FF));
+            uiAddress++;
+        }
+    }
+
+    return uiLength;
+}
+
+//-----------------------------------------------------------------------------------------------------
 uint16_t CGoose::ReportSlaveID(uint8_t *puiRequest, uint8_t *puiResponse, uint16_t uiLength)
 {
 //    std::cout << "CGoose::ReportSlaveID"  << std::endl;
+//    uint16_t uiOffset = HEADER_LENGTH();
+//    int8_t uiSlave = puiRequest[uiOffset];
+//    int8_t uiFunctionCode = puiRequest[uiOffset + 1];
+
     uint16_t uiOffset = HEADER_LENGTH();
-    int8_t uiSlave = puiRequest[uiOffset];
-    int8_t uiFunctionCode = puiRequest[uiOffset + 1];
+    int8_t uiSlave = puiRequest[uiOffset - 1];
+    int8_t uiFunctionCode = puiRequest[uiOffset];
 
 
 
@@ -140,9 +189,13 @@ uint16_t CGoose::RequestProcessing(uint8_t *puiRequest,
 {
 //    std::cout << "CGoose::RequestProcessing"  << std::endl;
     uint16_t uiLength = uiFrameLength;
+//    uint16_t uiOffset = HEADER_LENGTH();
+//    int8_t uiSlave = puiRequest[uiOffset];
+//    int8_t uiFunctionCode = puiRequest[uiOffset + 1];
+
     uint16_t uiOffset = HEADER_LENGTH();
-    int8_t uiSlave = puiRequest[uiOffset];
-    int8_t uiFunctionCode = puiRequest[uiOffset + 1];
+    int8_t uiSlave = puiRequest[uiOffset - 1];
+    int8_t uiFunctionCode = puiRequest[uiOffset];
 
     /* Filter on the Modbus unit identifier (slave) in RTU mode */
     if (uiSlave != m_uiOwnAddress && uiSlave != 0)
@@ -158,6 +211,11 @@ uint16_t CGoose::RequestProcessing(uint8_t *puiRequest,
 
     switch (uiFunctionCode)
     {
+
+    case _FC_READ_HOLDING_REGISTERS:
+        uiLength = ReadHoldingRegisters(puiRequest, puiResponse, uiLength);
+        break;
+
     case _FC_REPORT_SLAVE_ID:
 //        std::cout << "CGoose::RequestProcessing _FC_REPORT_SLAVE_ID"  << std::endl;
         uiLength = ReportSlaveID(puiRequest, puiResponse, uiLength);
@@ -190,7 +248,7 @@ uint16_t CGoose::RequestProcessing(uint8_t *puiRequest,
 // Client
 int8_t CGoose::ReportSlaveIDRequest(uint8_t uiSlaveAddress)
 {
-    usleep(GetPeriodTime());
+//    usleep(GetPeriodTime());
 //    if (MessengerIsReady())
 //    {
     m_uiSlaveAddress = uiSlaveAddress;
@@ -211,9 +269,13 @@ int8_t CGoose::ReportSlaveIDRequest(uint8_t uiSlaveAddress)
 uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
 {
 //    std::cout << "CGoose::ReportSlaveIDReceive"  << std::endl;
+//    uint16_t uiOffset = HEADER_LENGTH();
+//    int8_t uiSlave = puiResponse[uiOffset];
+//    int8_t uiFunctionCode = puiResponse[uiOffset + 1];
+
     uint16_t uiOffset = HEADER_LENGTH();
-    int8_t uiSlave = puiResponse[uiOffset];
-    int8_t uiFunctionCode = puiResponse[uiOffset + 1];
+    int8_t uiSlave = puiResponse[uiOffset - 1];
+    int8_t uiFunctionCode = puiResponse[uiOffset];
 
 
     uint16_t uiIndex = 0;
@@ -332,12 +394,48 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
 }
 
 //-----------------------------------------------------------------------------------------
+// Client
+int8_t CGoose::ReadHoldingRegistersRequest(uint8_t uiSlaveAddress,
+        uint16_t uiAddress,
+        uint16_t uiBitNumber)
+{
+    if (MessengerIsReady())
+    {
+        m_uiSlaveAddress = uiSlaveAddress;
+        m_uiFunctionCode = _FC_READ_HOLDING_REGISTERS;
+        m_uiMessageLength = RequestBasis(uiSlaveAddress,
+                                         m_uiFunctionCode,
+                                         GetTxBuffer());
+        SetFsmState(FRAME_TRANSMIT_REQUEST);
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+//-----------------------------------------------------------------------------------------
+uint16_t CGoose::ReadHoldingRegistersReceive(uint8_t *puiResponse, uint16_t uiLength)
+{
+    uint16_t uiOffset = HEADER_LENGTH();
+    int8_t uiSlave = puiResponse[uiOffset - 1];
+    int8_t uiFunctionCode = puiResponse[uiOffset];
+
+    return 1;
+}
+
+//-----------------------------------------------------------------------------------------
 uint16_t CGoose::AnswerProcessing(uint8_t *puiResponse, uint16_t uiFrameLength)
 {
     uint16_t uiLength = uiFrameLength;
+//    uint16_t uiOffset = HEADER_LENGTH();
+//    uint8_t uiSlave = puiResponse[uiOffset];
+//    uint8_t uiFunctionCode = puiResponse[uiOffset + 1];
+
     uint16_t uiOffset = HEADER_LENGTH();
-    uint8_t uiSlave = puiResponse[uiOffset];
-    uint8_t uiFunctionCode = puiResponse[uiOffset + 1];
+    int8_t uiSlave = puiResponse[uiOffset - 1];
+    int8_t uiFunctionCode = puiResponse[uiOffset];
 
 
 //    std::cout << "CGoose::AnswerProcessing uiLength " << (int)uiLength << std::endl;
@@ -346,14 +444,20 @@ uint16_t CGoose::AnswerProcessing(uint8_t *puiResponse, uint16_t uiFrameLength)
 //    std::cout << "CGoose::AnswerProcessing m_uiFunctionCode " << (int)m_uiFunctionCode << std::endl;
 //    std::cout << "CGoose::AnswerProcessing uiFunctionCode " << (int)uiFunctionCode << std::endl;
 
+    // (uiFunctionCode & 0x7f) при формировании ответа об исключительной ситуации
+    // сервер добавляет старший бит - 0x80. здесь его нужно очистить перед проверкой
     if ((m_uiSlaveAddress == uiSlave) &&
-            (m_uiFunctionCode == uiFunctionCode))
+            (m_uiFunctionCode == (uiFunctionCode & 0x7f)))
     {
         switch (uiFunctionCode)
         {
         case _FC_REPORT_SLAVE_ID:
 //            std::cout << "CGoose::AnswerProcessing _FC_REPORT_SLAVE_ID"  << std::endl;
             ReportSlaveIDReceive(puiResponse, uiLength);
+            break;
+//
+        case _FC_READ_HOLDING_REGISTERS:
+            ReadHoldingRegistersReceive(puiResponse, uiLength);
             break;
 
         default:
@@ -363,6 +467,23 @@ uint16_t CGoose::AnswerProcessing(uint8_t *puiResponse, uint16_t uiFrameLength)
 
         return 1;
     }
+//    // (uiFunctionCode & 0x7f) при формировании ответа об исключительной ситуации
+//    // сервер добавляет старший бит - 0x80. здесь его нужно очистить перед проверкой
+//    else if (uiLength == (uiOffset + 2 + CRC_LENGTH()) &&
+//             (uiFunctionCode & 0x7f))
+//    {
+//        /* EXCEPTION CODE RECEIVED */
+//        int8_t uiExceptionCode =
+//            puiResponse[uiOffset + MODBUS_EXCEPTION_CODE_OFFSET];
+//        if (uiExceptionCode < MODBUS_EXCEPTION_MAX)
+//        {
+//            return MODBUS_ENOBASE + uiExceptionCode;
+//        }
+//        else
+//        {
+//            return EMBBADEXC;
+//        }
+//    }
     else
     {
 //        std::cout << "CGoose::AnswerProcessing if ((m_uiSlaveAddress == uiSlave)"  << std::endl;

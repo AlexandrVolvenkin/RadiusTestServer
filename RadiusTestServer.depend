@@ -1,0 +1,143 @@
+# depslib dependency file v1.0
+1695952465 source:/media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Crc.cpp
+	<stdint.h>
+	"Crc.h"
+
+1695952465 /media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Crc.h
+	<stdint.h>
+
+1695952465 source:/media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/MainProductionCycle.cpp
+	<iostream>
+	<string.h>
+	"MainProductionCycle.h"
+
+1695952465 /media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/MainProductionCycle.h
+	<iostream>
+	<string.h>
+	"Platform.h"
+	"Task.h"
+
+1695954303 /media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Platform.h
+	<iostream>
+	<random>
+	<iomanip>
+	<stdint.h>
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<errno.h>
+	<assert.h>
+	<termios.h>
+	<linux/serial.h>
+	<sys/types.h>
+	<sys/select.h>
+	<unistd.h>
+	<sys/mman.h>
+	<linux/spi/spidev.h>
+	<time.h>
+	<sys/time.h>
+	<sys/socket.h>
+	<linux/if_packet.h>
+	<net/ethernet.h>
+	<netinet/in_systm.h>
+	<netinet/in.h>
+	<netinet/ip.h>
+	<netinet/tcp.h>
+	<arpa/inet.h>
+	<poll.h>
+	<netdb.h>
+	<net/if.h>
+	<netinet/if_ether.h>
+	<netinet/ether.h>
+	<unistd.h>
+	<sys/ioctl.h>
+	"Configuration.h"
+	"Timer.h"
+
+1695952465 /media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Configuration.h
+
+1695952465 /media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Timer.h
+	<stdint.h>
+	"Platform.h"
+
+1695952465 /media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Task.h
+	<stdint.h>
+
+1695966653 source:/media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Observer.cpp
+	"Observer.h"
+	"Platform.h"
+
+1695966558 /media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Observer.h
+	<stdint.h>
+	"Platform.h"
+	"Task.h"
+
+1695962243 source:/media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Platform.cpp
+	<iostream>
+	<sys/time.h>
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<fcntl.h>
+	<string.h>
+	"Platform.h"
+
+1695968134 source:/media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Goose/Goose.cpp
+	"Goose.h"
+	"Platform.h"
+
+1695965579 /media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Goose/Goose.h
+	<stdint.h>
+	"Platform.h"
+	"Task.h"
+	"Observer.h"
+
+1695963622 source:/media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Goose/GooseEthernet.cpp
+	"GooseEthernet.h"
+	"Platform.h"
+
+1695952465 /media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Goose/GooseEthernet.h
+	<stdint.h>
+	"Platform.h"
+	"Timer.h"
+	"Goose.h"
+
+1695962180 source:/media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Production.cpp
+	"Production.h"
+
+1695952465 /media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Production.h
+	<stdint.h>
+	<thread>
+	"Goose.h"
+	"MainProductionCycle.h"
+	"Rte.h"
+
+1695952465 /media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Rte.h
+	<stdint.h>
+	"Platform.h"
+	"Task.h"
+
+1695962560 source:/media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/RadiusTestServer.cpp
+	<string>
+	<iostream>
+	<unistd.h>
+	<getopt.h>
+	<thread>
+	"Platform.h"
+	"Configuration.h"
+	"Goose.h"
+	"GooseEthernet.h"
+	"Production.h"
+
+1695955846 source:/media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Rte.cpp
+	"Rte.h"
+	"Platform.h"
+
+1695952465 source:/media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Task.cpp
+	"Task.h"
+	"Platform.h"
+
+1695952465 source:/media/ghost/559787AD42546355/Projects/CurrentProjects/RadiusAutomatic/RadiusTestServer/RadiusTestServer/src/Timer.cpp
+	"Timer.h"
+	"Platform.h"
+

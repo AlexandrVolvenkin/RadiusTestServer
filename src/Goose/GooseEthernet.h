@@ -64,7 +64,8 @@ public:
 
     uint16_t HEADER_LENGTH(void)
     {
-        return sizeof(struct ether_header) + 2;
+        // два байта - номер пакета и один адрес слейва
+        return sizeof(struct ether_header) + 3;
     };
 
     CGooseEthernet();
@@ -75,6 +76,14 @@ public:
 private:
     void CommunicationDeviceInit(const char* pccIpAddress,
                                  uint16_t uiPort);
+    void WorkingArraysInit(uint8_t *puiCoils,
+                           uint8_t *puiDiscreteInputs,
+                           uint16_t *pui16HoldingRegisters,
+                           uint16_t *pui16InputRegisters,
+                           uint16_t uiCoilsNumber,
+                           uint16_t uiDiscreteInputsNumber,
+                           uint16_t uiHoldingRegistersNumber,
+                           uint16_t uiInputRegistersNumber);
     void ReceiveEnable(void);
     void ReceiveDisable(void);
     void TransmitEnable(void);
@@ -83,6 +92,11 @@ private:
     uint16_t SetHeader(uint8_t *puiResponse);
     uint16_t RequestBasis(uint8_t uiSlave,
                           uint8_t uiFunctionCode,
+                          uint8_t *puiRequest);
+    uint16_t RequestBasis(uint8_t uiSlave,
+                          uint8_t uiFunctionCode,
+                          uint16_t uiAddress,
+                          uint16_t uiBitNumber,
                           uint8_t *puiRequest);
     uint16_t ResponseBasis(uint8_t uiSlave,
                            uint8_t uiFunctionCode,

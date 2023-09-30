@@ -89,6 +89,11 @@ int main(int argc, char** argv)
     uint32_t uiCalculationPeriodTime = 5000;//1000000;//
     uint8_t uiLoadPercent = 50;
 
+    static uint8_t m_aucRtuCoilsArray[COILS_WORK_ARRAY_LENGTH];
+    static uint8_t m_aucRtuDiscreteInputsArray[DISCRETE_INPUTS_ARRAY_LENGTH];
+    static uint16_t m_aucRtuHoldingRegistersArray[HOLDING_REGISTERS_ARRAY_LENGTH] = {1, 2, 3, 4, 5, 6, 7};
+    static uint16_t m_aucRtuInputRegistersArray[INPUT_REGISTERS_ARRAY_LENGTH];
+
     /* parameter parsing */
     while(1)
     {
@@ -213,6 +218,15 @@ int main(int argc, char** argv)
     // установим период вывода статистики
     pxGooseEthernet -> GetTimerPointer() -> Set(1000);
 
+    pxGooseEthernet -> WorkingArraysInit(m_aucRtuCoilsArray,
+                                         m_aucRtuDiscreteInputsArray,
+                                         m_aucRtuHoldingRegistersArray,
+                                         m_aucRtuInputRegistersArray,
+                                         COILS_WORK_ARRAY_LENGTH,
+                                         DISCRETE_INPUTS_ARRAY_LENGTH,
+                                         HOLDING_REGISTERS_ARRAY_LENGTH,
+                                         INPUT_REGISTERS_ARRAY_LENGTH
+                                        );
 
     // создадим указатель на объект "производственная площадка Rte задачи"
     CProductionInterface* pxRteThreadProduction;

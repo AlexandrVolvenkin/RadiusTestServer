@@ -25,4 +25,5 @@ OBJS :=
 SUBDIRS := \
 src \
 src/Goose \
+src/Modbus \
 
