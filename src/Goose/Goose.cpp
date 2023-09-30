@@ -397,16 +397,24 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
 // Client
 int8_t CGoose::ReadHoldingRegistersRequest(uint8_t uiSlaveAddress,
         uint16_t uiAddress,
-        uint16_t uiBitNumber)
+        uint16_t uiNumber,
+        uint16_t* puiDestination)
 {
+
+    if (uiNumber > MODBUS_MAX_READ_REGISTERS)
+    {
+        return 0;
+    }
+
     if (MessengerIsReady())
     {
         m_uiSlaveAddress = uiSlaveAddress;
         m_uiFunctionCode = _FC_READ_HOLDING_REGISTERS;
+        m_pui16Destination = puiDestination;
         m_uiMessageLength = RequestBasis(uiSlaveAddress,
                                          m_uiFunctionCode,
                                          uiAddress,
-                                         uiBitNumber,
+                                         uiNumber,
                                          m_puiTxBuffer);
         SetFsmState(FRAME_TRANSMIT_REQUEST);
         return 1;
@@ -416,15 +424,21 @@ int8_t CGoose::ReadHoldingRegistersRequest(uint8_t uiSlaveAddress,
         return 0;
     }
 }
-
 //-----------------------------------------------------------------------------------------
 uint16_t CGoose::ReadHoldingRegistersReceive(uint8_t *puiResponse, uint16_t uiLength)
 {
     uint16_t uiOffset = HEADER_LENGTH();
     int8_t uiSlave = puiResponse[uiOffset - 1];
     int8_t uiFunctionCode = puiResponse[uiOffset];
+    uint16_t uiNumber = puiResponse[uiOffset + 1];
 
-    return 1;
+    for (uint16_t i, j = 0; i < (uiNumber / 2); i++, j + 2)
+    {
+        m_pui16Destination[i] = (puiResponse[uiOffset + 2 +j] << 8) |
+                                puiResponse[uiOffset + 3 + j];
+    }
+
+    return uiNumber;
 }
 
 //-----------------------------------------------------------------------------------------

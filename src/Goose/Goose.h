@@ -145,7 +145,8 @@ public:
 
     virtual int8_t ReadHoldingRegistersRequest(uint8_t uiSlaveAddress,
             uint16_t uiAddress,
-            uint16_t uiBitNumber) {};
+            uint16_t uiNumber,
+            uint16_t* puiDestination) {};
     virtual uint16_t ReadHoldingRegistersReceive(uint8_t *puiMessage,
             uint16_t uiLength) {};
 };
@@ -203,6 +204,19 @@ public:
         CONFIRMATION_ERROR,
 
         RESTART,
+
+        CLIENT_STOPED,
+        CLIENT_START,
+        CLIENT_IDDLE,
+        CLIENT_DATA_RECEIVE_PREPARE,
+        CLIENT_DATA_RECEIVE_WAITING,
+        CLIENT_RECEIVED_DATA_PROCESSING,
+        CLIENT_RECEIVED_DATA_ERROR_PROCESSING,
+        CLIENT_DATA_TRANSMIT_PREPARE,
+        CLIENT_DATA_TRANSMIT,
+        CLIENT_IDDLE_STATE_PREPARE,
+        CLIENT_STOP_STATE_PREPARE,
+
     };
 
     CGoose();
@@ -241,7 +255,8 @@ public:
 
     int8_t ReadHoldingRegistersRequest(uint8_t uiSlaveAddress,
                                        uint16_t uiAddress,
-                                       uint16_t uiBitNumber);
+                                       uint16_t uiNumber,
+                                       uint16_t* puiDestination);
     uint16_t ReadHoldingRegistersReceive(uint8_t *puiMessage,
                                          uint16_t uiLength);
 
@@ -335,6 +350,8 @@ private:
     uint8_t m_uiOwnAddress;
     uint8_t m_uiSlaveAddress;
     uint8_t m_uiFunctionCode;
+    uint16_t* m_pui8Destination;
+    uint16_t* m_pui16Destination;
     uint16_t m_uiAttemptNumber;
     uint32_t m_uiPeriodTime;
 
