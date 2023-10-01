@@ -51,6 +51,9 @@ public:
         MAIN_CYCLE_STOPED,
         MAIN_CYCLE_START,
         MAIN_CYCLE_IDDLE,
+        MAIN_CYCLE_SERVER_INIT,
+        MAIN_CYCLE_CLIENT_INIT,
+
         MAIN_CYCLE_DATA_RECEIVE_PREPARE,
         MAIN_CYCLE_DATA_RECEIVE_WAITING,
         MAIN_CYCLE_RECEIVED_DATA_PROCESSING,
@@ -64,6 +67,8 @@ public:
     CMainProductionCycle();
     virtual ~CMainProductionCycle();
     void Init(void);
+    void ServerInit(void);
+    void ClientInit(void);
     void Fsm(void);
 
     void SetProjectManager(CProjectManager* pxProjectManager)
@@ -84,6 +89,15 @@ public:
         return m_pxGooseEthernet;
     };
 
+    void SetRte(CRte* pxRte)
+    {
+        m_pxRte = pxRte;
+    };
+    CRte* GetRte(void)
+    {
+        return m_pxRte;
+    };
+
 private:
     // указатель на объект "управляющий проектом"
     CProjectManager* m_pxProjectManager;
@@ -91,11 +105,20 @@ private:
     CGooseInterface* m_pxGooseEthernet;
     // указатель на объект "производственная площадка Goose задачи"
     CProductionInterface* m_pxGooseThreadProduction;
-
     // указатель на объект "Rte задачи"
     CRte* pxRte;
     // указатель на объект "производственная площадка Rte задачи"
+    CProductionInterface* pxRteThreadProduction;
+
+    // указатель на объект "Rte задачи"
+    CRte* m_pxRte;
+    // указатель на объект "производственная площадка Rte задачи"
     CProductionInterface* m_pxRteThreadProduction;
+
+    uint8_t m_aucRtuCoilsArray[COILS_WORK_ARRAY_LENGTH];
+    uint8_t m_aucRtuDiscreteInputsArray[DISCRETE_INPUTS_ARRAY_LENGTH];
+    uint16_t m_aucRtuHoldingRegistersArray[HOLDING_REGISTERS_ARRAY_LENGTH] = {1, 2, 3, 4, 5, 6, 7};
+    uint16_t m_aucRtuInputRegistersArray[INPUT_REGISTERS_ARRAY_LENGTH];
 };
 
 //-----------------------------------------------------------------------------------------

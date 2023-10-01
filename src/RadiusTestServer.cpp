@@ -84,204 +84,205 @@ int main(int argc, char** argv)
 //  }
 //-----------------------------------------------------------------------------------------
 
-    const char *pccMode = "server";//"client";//
-    const char *pccGooseInterfaceName = "eth0";
-    const char *pccEthernetAddress = "00:00:00:00:00:00";
-    const char *pccCommInterfaceName = "ttyO1";
-    uint32_t uiCalculationPeriodTime = 5000;//1000000;//
-    uint8_t uiLoadPercent = 50;
-
-    static uint8_t m_aucRtuCoilsArray[COILS_WORK_ARRAY_LENGTH];
-    static uint8_t m_aucRtuDiscreteInputsArray[DISCRETE_INPUTS_ARRAY_LENGTH];
-    static uint16_t m_aucRtuHoldingRegistersArray[HOLDING_REGISTERS_ARRAY_LENGTH] = {1, 2, 3, 4, 5, 6, 7};
-    static uint16_t m_aucRtuInputRegistersArray[INPUT_REGISTERS_ARRAY_LENGTH];
-
-    /* parameter parsing */
-    while(1)
-    {
-        int iOption = 0;
-        static struct option long_options[] =
-        {
-            {"help", no_argument, NULL, 'h'},
-            {"mode", required_argument, NULL, 'm'},
-            {"ethernet", required_argument, NULL, 'e'},
-            {"mac", required_argument, NULL, 'a'},
-            {"comport", required_argument, NULL, 'c'},
-            {"period", required_argument, NULL, 'p'},
-            {"load", required_argument, NULL, 'l'},
-            {"version", no_argument, NULL, 'v'},
-            {"background", no_argument, NULL, 'b'},
-            {NULL, 0, NULL, 0}
-        };
-
-        iOption = getopt_long(argc, argv, "hm:e:a:c:p:l:vb", long_options, NULL);
-
-//        cout << "iOption = " << iOption << endl;
-        /* no more options to parse */
-        if(iOption == -1)
-        {
-            break;
-        }
-
-        switch(iOption)
-        {
-        case 'm':
-//            cout << "case 'm' " << optarg << endl;
-            // получим имя интекфейса ethernet
-            pccMode = optarg;
-            break;
-        case 'e':
-//            cout << "case 'e' " << optarg << endl;
-            // получим имя интекфейса ethernet
-            pccGooseInterfaceName = optarg;
-            break;
-        case 'a':
-//            cout << "case 'a' " << optarg << endl;
-            // получим mac адрес
-            pccEthernetAddress = optarg;
-            break;
-
-        case 'c':
-//            cout << "case 'c' " << optarg << endl;
-            pccCommInterfaceName = optarg;
-            break;
-
-        case 'p':
-//            cout << "case 'p' " << optarg << endl;
-            // получим длину периода задачи
-            uiCalculationPeriodTime = atol(optarg);
-            break;
-
-        case 'l':
-//            cout << "case 'l' " << optarg << endl;
+//    const char *pccMode = "server";//"client";//
+//    const char *pccGooseInterfaceName = "eth0";
+//    const char *pccEthernetAddress = "00:00:00:00:00:00";
+//    const char *pccCommInterfaceName = "ttyO1";
+//    uint32_t uiCalculationPeriodTime = 5000;//1000000;//
+//    uint8_t uiLoadPercent = 50;
+//
+//    static uint8_t m_aucRtuCoilsArray[COILS_WORK_ARRAY_LENGTH];
+//    static uint8_t m_aucRtuDiscreteInputsArray[DISCRETE_INPUTS_ARRAY_LENGTH];
+//    static uint16_t m_aucRtuHoldingRegistersArray[HOLDING_REGISTERS_ARRAY_LENGTH] = {1, 2, 3, 4, 5, 6, 7};
+//    static uint16_t m_aucRtuInputRegistersArray[INPUT_REGISTERS_ARRAY_LENGTH];
+//
+//    /* parameter parsing */
+//    while(1)
+//    {
+//        int iOption = 0;
+//        static struct option long_options[] =
+//        {
+//            {"help", no_argument, NULL, 'h'},
+//            {"mode", required_argument, NULL, 'm'},
+//            {"ethernet", required_argument, NULL, 'e'},
+//            {"mac", required_argument, NULL, 'a'},
+//            {"comport", required_argument, NULL, 'c'},
+//            {"period", required_argument, NULL, 'p'},
+//            {"load", required_argument, NULL, 'l'},
+//            {"version", no_argument, NULL, 'v'},
+//            {"background", no_argument, NULL, 'b'},
+//            {NULL, 0, NULL, 0}
+//        };
+//
+//        iOption = getopt_long(argc, argv, "hm:e:a:c:p:l:vb", long_options, NULL);
+//
+////        cout << "iOption = " << iOption << endl;
+//        /* no more options to parse */
+//        if(iOption == -1)
+//        {
+//            break;
+//        }
+//
+//        switch(iOption)
+//        {
+//        case 'm':
+////            cout << "case 'm' " << optarg << endl;
+//            // получим имя интекфейса ethernet
+//            pccMode = optarg;
+//            break;
+//        case 'e':
+////            cout << "case 'e' " << optarg << endl;
+//            // получим имя интекфейса ethernet
+//            pccGooseInterfaceName = optarg;
+//            break;
+//        case 'a':
+////            cout << "case 'a' " << optarg << endl;
+//            // получим mac адрес
+//            pccEthernetAddress = optarg;
+//            break;
+//
+//        case 'c':
+////            cout << "case 'c' " << optarg << endl;
+//            pccCommInterfaceName = optarg;
+//            break;
+//
+//        case 'p':
+////            cout << "case 'p' " << optarg << endl;
 //            // получим длину периода задачи
-            uiLoadPercent = atoi(optarg);
-            break;
+//            uiCalculationPeriodTime = atol(optarg);
+//            break;
+//
+//        case 'l':
+////            cout << "case 'l' " << optarg << endl;
+////            // получим длину периода задачи
+//            uiLoadPercent = atoi(optarg);
+//            break;
+//
+//        case 'v':
+////            cout << "case 'v' " << optarg << endl;
+//            // опция -v версия
+//            printf("RadiusTestServer Version: %s\n",
+//#ifdef GIT_HASH
+//                   GIT_HASH
+//#else
+//                   SOURCE_VERSION
+//#endif
+//                  );
+//            return 0;
+//            break;
+//
+//        case 'b':
+////            cout << "case 'b' " << optarg << endl;
+////            // опция - работать в фоновом режиме
+////            daemon = 1;
+//            break;
+//
+//        case 'h': /* fall through */
+//        default:
+//            help(argv[0]);
+//            exit(EXIT_FAILURE);
+//        }
+//    }
 
-        case 'v':
-//            cout << "case 'v' " << optarg << endl;
-            // опция -v версия
-            printf("RadiusTestServer Version: %s\n",
-#ifdef GIT_HASH
-                   GIT_HASH
-#else
-                   SOURCE_VERSION
-#endif
-                  );
-            return 0;
-            break;
 
-        case 'b':
-//            cout << "case 'b' " << optarg << endl;
-//            // опция - работать в фоновом режиме
-//            daemon = 1;
-            break;
-
-        case 'h': /* fall through */
-        default:
-            help(argv[0]);
-            exit(EXIT_FAILURE);
-        }
-    }
-
-
-    // создадим указатель на объект "производственная площадка главной задачи"
-    CProductionInterface* pxMainThreadProduction;
-    // создадим объект "производственная площадка главной задачи"
-    pxMainThreadProduction = new CMainThreadProduction();
 
     // создадим указатель на объект "главной задачи"
     CMainProductionCycleInterface* pxMainProductionCycle;
     // создадим объект "главной задачи"
     pxMainProductionCycle = new CMainProductionCycle();
     // установим начальное состояние автомата задачи
-    pxMainProductionCycle -> SetFsmState(CMainProductionCycle::IDDLE);
+    pxMainProductionCycle ->
+    SetFsmState(CMainProductionCycle::IDDLE);
+    // создадим указатель на объект "производственная площадка главной задачи"
+    CProductionInterface* pxMainThreadProduction;
+    // создадим объект "производственная площадка главной задачи"
+    pxMainThreadProduction = new CMainThreadProduction();
 //    // разместим задачу на производственной площадке
 //    pxMainThreadProduction -> Place(pxMainProductionCycle);
 
 
-    // создадим указатель на объект "производственная площадка Goose задачи"
-    CProductionInterface* pxGooseThreadProduction;
-    // создадим объект "производственная площадка Goose задачи"
-    pxGooseThreadProduction = new CGooseThreadProduction();
-
-    // создадим указатель на объект "Goose задачи"
-    CGooseInterface* pxGooseEthernet;
-    // создадим объект "Goose задачи"
-    pxGooseEthernet = new CGooseEthernet();
-    // создадим и добавим объект "наблюдатель"
-    pxGooseEthernet -> SetGooseServerObserver(new CGooseServerObserver());
-    // установим имя интерфейса
-    pxGooseEthernet -> GetCommunicationDevice() -> SetPortName(pccGooseInterfaceName);
-    // установим mac адрес назначения
-    pxGooseEthernet -> GetCommunicationDevice() -> SetDestinationMacAddress(ether_aton(pccEthernetAddress) -> ether_addr_octet);
-    // установим период
-    pxGooseEthernet -> SetPeriodTime(uiCalculationPeriodTime);
-    // установим период вывода статистики
-    pxGooseEthernet -> GetTimerPointer() -> Set(1000);
-
-    pxGooseEthernet -> WorkingArraysInit(m_aucRtuCoilsArray,
-                                         m_aucRtuDiscreteInputsArray,
-                                         m_aucRtuHoldingRegistersArray,
-                                         m_aucRtuInputRegistersArray,
-                                         COILS_WORK_ARRAY_LENGTH,
-                                         DISCRETE_INPUTS_ARRAY_LENGTH,
-                                         HOLDING_REGISTERS_ARRAY_LENGTH,
-                                         INPUT_REGISTERS_ARRAY_LENGTH
-                                        );
-
-
-    // создадим указатель на объект "производственная площадка Rte задачи"
-    CProductionInterface* pxRteThreadProduction;
-
-
-    // режим работы - сервер?
-    if (strcmp(pccMode, "server") == 0)
-    {
-        std::cout << "main mode server"  << std::endl;
-        pxGooseEthernet -> SetOwnAddress(7);
-        // установим начальное состояние автомата задачи, режим работы - сервер
-        pxGooseEthernet -> SetFsmState(CGooseEthernet::REQUEST_ENABLE);
-        // разместим задачу на производственной площадке
-        pxGooseThreadProduction -> Place(pxGooseEthernet);
-
-        // создадим объект "производственная площадка Rte задачи"
-        pxRteThreadProduction = new CRteThreadProduction();
-        // создадим указатель на объект "Rte задачи"
-        CRte* pxRte;
-        // создадим объект "Rte задачи"
-        pxRte = new CRte();
-        // установим имя интерфейса
-        pxRte -> GetCommunicationDevice() -> SetPortName(pccCommInterfaceName);
-        pxRte -> GetCommunicationDevice() -> SetBaudRate(115200);
-        pxRte -> GetCommunicationDevice() -> SetDataBits(8);
-        pxRte -> GetCommunicationDevice() -> SetParity('N');
-        pxRte -> GetCommunicationDevice() -> SetStopBit(1);
-        // установим период вычислений
-        pxRte -> SetPeriodTime(uiCalculationPeriodTime);
-        // установим процент нагрузки
-        pxRte -> SetLoadPercent(uiLoadPercent);
-        // установим начальное состояние автомата задачи, режим работы
-        pxRte -> SetFsmState(CRte::START);
-        // разместим задачу на производственной площадке
-        pxRteThreadProduction -> Place(pxRte);
-    }
-    // режим работы - клиент?
-    else if (strcmp(pccMode, "client") == 0)
-    {
-        std::cout << "main mode client"  << std::endl;
-        pxGooseEthernet -> SetOwnAddress(7);
-        pxGooseEthernet -> SetAttemptNumber(CGooseEthernet::PING_ATTEMPTS_NUMBER);
-        pxGooseEthernet -> ReportSlaveIDRequest(7);
-        pxGooseEthernet -> SetFsmState(CGooseEthernet::CONFIRMATION_ENABLE);
-        // создадим объект "производственная площадка Rte задачи"
-        pxRteThreadProduction = new CRteThreadProduction();
-    }
-    else
-    {
-        help(argv[0]);
-        exit(EXIT_FAILURE);
-    }
+//    // создадим указатель на объект "производственная площадка Goose задачи"
+//    CProductionInterface* pxGooseThreadProduction;
+//    // создадим объект "производственная площадка Goose задачи"
+//    pxGooseThreadProduction = new CGooseThreadProduction();
+//
+//    // создадим указатель на объект "Goose задачи"
+//    CGooseInterface* pxGooseEthernet;
+//    // создадим объект "Goose задачи"
+//    pxGooseEthernet = new CGooseEthernet();
+//    // создадим и добавим объект "наблюдатель"
+//    pxGooseEthernet -> SetGooseServerObserver(new CGooseServerObserver());
+//    // установим имя интерфейса
+//    pxGooseEthernet -> GetCommunicationDevice() -> SetPortName(pccGooseInterfaceName);
+//    // установим mac адрес назначения
+//    pxGooseEthernet -> GetCommunicationDevice() -> SetDestinationMacAddress(ether_aton(pccEthernetAddress) -> ether_addr_octet);
+//    // установим период
+//    pxGooseEthernet -> SetPeriodTime(uiCalculationPeriodTime);
+//    // установим период вывода статистики
+//    pxGooseEthernet -> GetTimerPointer() -> Set(1000);
+//
+//    pxGooseEthernet -> WorkingArraysInit(m_aucRtuCoilsArray,
+//                                         m_aucRtuDiscreteInputsArray,
+//                                         m_aucRtuHoldingRegistersArray,
+//                                         m_aucRtuInputRegistersArray,
+//                                         COILS_WORK_ARRAY_LENGTH,
+//                                         DISCRETE_INPUTS_ARRAY_LENGTH,
+//                                         HOLDING_REGISTERS_ARRAY_LENGTH,
+//                                         INPUT_REGISTERS_ARRAY_LENGTH
+//                                        );
+//
+//
+//    // создадим указатель на объект "производственная площадка Rte задачи"
+//    CProductionInterface* pxRteThreadProduction;
+//
+//
+//    // режим работы - сервер?
+//    if (strcmp(pccMode, "server") == 0)
+//    {
+//        std::cout << "main mode server"  << std::endl;
+//        pxGooseEthernet -> SetOwnAddress(7);
+//        // установим начальное состояние автомата задачи, режим работы - сервер
+//        pxGooseEthernet -> SetFsmState(CGooseEthernet::REQUEST_ENABLE);
+//        // разместим задачу на производственной площадке
+//        pxGooseThreadProduction -> Place(pxGooseEthernet);
+//
+//        // создадим объект "производственная площадка Rte задачи"
+//        pxRteThreadProduction = new CRteThreadProduction();
+//        // создадим указатель на объект "Rte задачи"
+//        CRte* pxRte;
+//        // создадим объект "Rte задачи"
+//        pxRte = new CRte();
+//        // установим имя интерфейса
+//        pxRte -> GetCommunicationDevice() -> SetPortName(pccCommInterfaceName);
+//        pxRte -> GetCommunicationDevice() -> SetBaudRate(115200);
+//        pxRte -> GetCommunicationDevice() -> SetDataBits(8);
+//        pxRte -> GetCommunicationDevice() -> SetParity('N');
+//        pxRte -> GetCommunicationDevice() -> SetStopBit(1);
+//        // установим период вычислений
+//        pxRte -> SetPeriodTime(uiCalculationPeriodTime);
+//        // установим процент нагрузки
+//        pxRte -> SetLoadPercent(uiLoadPercent);
+//        // установим начальное состояние автомата задачи, режим работы
+//        pxRte -> SetFsmState(CRte::START);
+//        // разместим задачу на производственной площадке
+//        pxRteThreadProduction -> Place(pxRte);
+//    }
+//    // режим работы - клиент?
+//    else if (strcmp(pccMode, "client") == 0)
+//    {
+//        std::cout << "main mode client"  << std::endl;
+//        pxGooseEthernet -> SetOwnAddress(7);
+//        pxGooseEthernet -> SetAttemptNumber(CGooseEthernet::PING_ATTEMPTS_NUMBER);
+//        pxGooseEthernet -> ReportSlaveIDRequest(7);
+//        pxGooseEthernet -> SetFsmState(CGooseEthernet::CONFIRMATION_ENABLE);
+//        // создадим объект "производственная площадка Rte задачи"
+//        pxRteThreadProduction = new CRteThreadProduction();
+//    }
+//    else
+//    {
+//        help(argv[0]);
+//        exit(EXIT_FAILURE);
+//    }
 
 //    std::cout << "main mode server"  << std::endl;
 //    pxGooseEthernet -> SetOwnAddress(7);
@@ -332,11 +333,11 @@ int main(int argc, char** argv)
     delete pxMainProductionCycle;
     delete pxMainThreadProduction;
 
-    delete pxGooseEthernet;
-    delete pxGooseThreadProduction;
+//    delete pxGooseEthernet;
+//    delete pxGooseThreadProduction;
 
 //    delete pxRte;
-    delete pxRteThreadProduction;
+//    delete pxRteThreadProduction;
 
     return 0;
 }

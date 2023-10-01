@@ -109,6 +109,15 @@ public:
         return m_uiLoadPercent;
     }
 
+    void SetOwnAddress(uint8_t uiData)
+    {
+        m_uiOwnAddress = uiData;
+    }
+    uint8_t GetOwnAddress(void)
+    {
+        return m_uiOwnAddress;
+    }
+
 private:
     const char* m_pccMode;
     const char* m_pccGooseInterfaceName;
@@ -116,6 +125,9 @@ private:
     const char* m_pccCommInterfaceName;
     uint32_t m_uiCalculationPeriodTime;
     uint8_t m_uiLoadPercent;
+    uint8_t m_uiOwnAddress;
+
+
 };
 
 //-----------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 src/MainProductionCycle.o: ../src/MainProductionCycle.cpp \
- ../src/MainProductionCycle.h ../src/Platform.h ../src/Configuration.h \
- ../src/Timer.h ../src/Task.h ../src/Production.h \
+ ../src/Platform.h ../src/Configuration.h ../src/Timer.h \
+ ../src/MainProductionCycle.h ../src/Task.h ../src/Production.h \
  D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src\Goose/Goose.h \
  D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Platform.h \
  D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Task.h \
@@ -14,13 +14,13 @@ src/MainProductionCycle.o: ../src/MainProductionCycle.cpp \
  D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src\Goose/Goose.h \
  ../src/ProjectManager.h ../src/Customer.h
 
-../src/MainProductionCycle.h:
-
 ../src/Platform.h:
 
 ../src/Configuration.h:
 
 ../src/Timer.h:
+
+../src/MainProductionCycle.h:
 
 ../src/Task.h:
 
