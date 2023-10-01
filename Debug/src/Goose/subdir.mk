@@ -20,7 +20,7 @@ OBJS += \
 src/Goose/%.o: ../src/Goose/%.cpp src/Goose/subdir.mk
 	@echo 'Building file: $<'
 	@echo 'Invoking: Cross G++ Compiler'
-	arm-linux-gnueabihf-g++ -I"D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src" -I"D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src\Modbus" -I"D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src\Goose" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-linux-gnueabihf-g++ -std=c++0x -I"D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src" -I"D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src\Modbus" -I"D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src\Goose" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

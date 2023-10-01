@@ -10,15 +10,23 @@
 
 #include <stdint.h>
 #include <thread>
+#include <chrono>
 
 #include "Goose.h"
-#include "MainProductionCycle.h"
+//#include "MainProductionCycle.h"
 #include "Rte.h"
+
+class CMainProductionCycleInterface;
 
 //-----------------------------------------------------------------------------------------
 class CProductionInterface
 {
 public:
+    virtual void SetThread(std::thread* pxThread) {};
+    virtual std::thread* GetThread(void) {};
+//    virtual void SetThisThread(std::this_thread* pxThisThread) {};
+//    virtual std::this_thread* GetThisThread(void) {};
+
 //    virtual void Create(void) {};
 //    virtual void Create(CGooseInterface* pxGooseInterface) {};
     virtual void Place(CGooseInterface* pxGooseInterface) {};
@@ -31,6 +39,10 @@ public:
     static void Process(CMainProductionCycleInterface* pxMainProductionCycleInterface) {};
 
     virtual void Place(CRte* pxRte) {};
+
+    virtual void Sleep(void) {};
+    virtual void Wakeup(void) {};
+
     static void Process(CRte* pxRte) {};
 };
 
@@ -54,12 +66,33 @@ public:
 //    void Place(void);
 //    void Start(void);
 //    void Stop(void);
+    void Sleep(void);
+    void Wakeup(void);
 //    static void Process(void);
+
+    void SetThread(std::thread* pxThread)
+    {
+        m_pxThread = pxThread;
+    };
+    std::thread* GetThread(void)
+    {
+        return m_pxThread;
+    };
+
+//    void SetThisThread(std::this_thread* pxThisThread)
+//    {
+//        m_pxThisThread = pxThisThread;
+//    };
+//    std::this_thread* GetThisThread(void)
+//    {
+//        return m_pxThisThread;
+//    };
 
 protected:
 
 private:
-//    std::thread x
+    std::thread* m_pxThread;
+//    std::this_thread* pxThisThread;
 };
 
 //-----------------------------------------------------------------------------------------
@@ -80,6 +113,11 @@ public:
 
     void Place(CMainProductionCycleInterface* pxMainProductionCycleInterface);
     static void Process(CMainProductionCycleInterface* pxMainProductionCycleInterface);
+
+//    std::thread* GetThread(void)
+//    {
+//        return m_pxThread;
+//    };
 
 protected:
 
@@ -106,12 +144,18 @@ public:
     void Place(CGooseInterface* pxGooseInterface);
 //    void Start(void);
 //    void Stop(void);
+
     static void Process(CGooseInterface* pxGooseInterface);
+
+//    std::thread* GetThread(void)
+//    {
+//        return m_pxThread;
+//    };
 
 protected:
 
 private:
-    std::thread m_xThread;
+//    std::thread* m_pxThread;
 };
 
 //-----------------------------------------------------------------------------------------
@@ -134,12 +178,18 @@ public:
     void Place(CRte* pxRte);
 //    void Start(void);
 //    void Stop(void);
+
     static void Process(CRte* pxRte);
+
+//    std::thread* GetThread(void)
+//    {
+//        return m_pxThread;
+//    };
 
 protected:
 
 private:
-    std::thread m_xThread;
+//    std::thread* m_pxThread;
 };
 
 //-----------------------------------------------------------------------------------------

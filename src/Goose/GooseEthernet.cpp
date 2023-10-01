@@ -67,15 +67,31 @@ CGooseEthernet::CGooseEthernet()
     m_puiRxBuffer = new uint8_t[GOOSE_ETHERNET_MAX_FRAME_LENGTH];
     m_puiTxBuffer = new uint8_t[GOOSE_ETHERNET_MAX_FRAME_LENGTH];
     SetFsmState(IDDLE);
+    // создадим объект "производственная площадка задачи"
+    SetProductionSite(new CGooseThreadProduction());
 }
 
 //-----------------------------------------------------------------------------------------
 CGooseEthernet::~CGooseEthernet()
 {
 //    std::cout << "CGooseEthernet desstructor"  << std::endl;
+    // удалим объект "производственная площадка задачи"
+    delete m_pxProductionSite;
     delete[] m_puiTxBuffer;
     delete[] m_puiRxBuffer;
     delete m_pxCommunicationDevice;
+}
+
+//-----------------------------------------------------------------------------------------
+void CGooseEthernet::Sleep(void)
+{
+    GetProductionSite() -> Sleep();
+}
+
+//-----------------------------------------------------------------------------------------
+void CGooseEthernet::Wakeup(void)
+{
+    GetProductionSite() -> Wakeup();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -724,6 +740,7 @@ void CGooseEthernet::Fsm(void)
 
     case CLIENT_IDDLE:
 //        std::cout << "CGooseEthernet::Fsm CLIENT_IDDLE"  << std::endl;
+        Sleep();
         break;
 
     case CLIENT_STOP_STATE_PREPARE:

@@ -8,6 +8,8 @@
 
 #include "Production.h"
 
+class CMainProductionCycleInterface;
+
 //-----------------------------------------------------------------------------------------
 CProduction::CProduction()
 {
@@ -43,6 +45,18 @@ CProduction::~CProduction()
 //{
 //
 //}
+
+//-----------------------------------------------------------------------------------------
+void CProduction::Sleep(void)
+{
+//    GetThread() -> sleep_for(std::chrono::milliseconds(1000));
+}
+
+//-----------------------------------------------------------------------------------------
+void CProduction::Wakeup(void)
+{
+    GetThread() -> detach();
+}
 //
 ////-----------------------------------------------------------------------------------------
 //void CProduction::Process(void)
@@ -87,7 +101,7 @@ void CMainThreadProduction::Process(CMainProductionCycleInterface* pxMainProduct
 {
     while (1)
     {
-        pxMainProductionCycleInterface -> Fsm();
+//        pxMainProductionCycleInterface -> Fsm();
 //        std::cout << "CMainThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
         usleep(1000000);
     }
@@ -112,7 +126,7 @@ CGooseThreadProduction::CGooseThreadProduction()
 CGooseThreadProduction::~CGooseThreadProduction()
 {
 
-    m_xThread.join();
+    GetThread() -> join();
 }
 
 ////-----------------------------------------------------------------------------------------
@@ -138,11 +152,13 @@ CGooseThreadProduction::~CGooseThreadProduction()
 //-----------------------------------------------------------------------------------------
 void CGooseThreadProduction::Place(CGooseInterface* pxGooseInterface)
 {
-    std::thread m_xThread(CGooseThreadProduction::Process, pxGooseInterface);
-    std::thread::id th_id = m_xThread.get_id();
+//    std::thread m_xThread(CGooseThreadProduction::Process, pxGooseInterface);
+//    SetThread(&m_xThread);
+    SetThread(new std::thread(CGooseThreadProduction::Process, pxGooseInterface));
+    std::thread::id th_id = GetThread() -> get_id();
 //    std::cout << "CGooseThreadProduction th_id" << " " << th_id << std::endl;
     // не ждем завершения работы функции
-    m_xThread.detach();
+    GetThread() -> detach();
 }
 
 ////-----------------------------------------------------------------------------------------
@@ -188,7 +204,7 @@ CRteThreadProduction::CRteThreadProduction()
 CRteThreadProduction::~CRteThreadProduction()
 {
 
-    m_xThread.join();
+    GetThread() -> join();
 }
 
 ////-----------------------------------------------------------------------------------------
@@ -242,6 +258,11 @@ void CRteThreadProduction::Process(CRte* pxRte)
 //        std::cout << "CRteThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
 //        usleep(1000000);
 //        usleep(1000);
+
+        // Print Thread ID and Counter i
+        std::cout<<std::this_thread::get_id()<<" :: "<<std::endl;
+        // Sleep this thread for 200 MilliSeconds
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 }
 

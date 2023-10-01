@@ -42,6 +42,8 @@
 		<Unit filename="src/Configuration.h" />
 		<Unit filename="src/Crc.cpp" />
 		<Unit filename="src/Crc.h" />
+		<Unit filename="src/Customer.cpp" />
+		<Unit filename="src/Customer.h" />
 		<Unit filename="src/DataTypes.h" />
 		<Unit filename="src/Dfa.cpp" />
 		<Unit filename="src/Dfa.h" />
@@ -64,6 +66,8 @@
 		<Unit filename="src/Platform.h" />
 		<Unit filename="src/Production.cpp" />
 		<Unit filename="src/Production.h" />
+		<Unit filename="src/ProjectManager.cpp" />
+		<Unit filename="src/ProjectManager.h" />
 		<Unit filename="src/RadiusTestServer.cpp" />
 		<Unit filename="src/Rte.cpp" />
 		<Unit filename="src/Rte.h" />

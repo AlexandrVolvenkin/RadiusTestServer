@@ -21,6 +21,8 @@
 #include "Goose.h"
 #include "GooseEthernet.h"
 #include "Production.h"
+#include "MainProductionCycle.h"
+#include "ProjectManager.h"
 
 // Namespaces:
 using namespace std;
@@ -228,6 +230,7 @@ int main(int argc, char** argv)
                                          INPUT_REGISTERS_ARRAY_LENGTH
                                         );
 
+
     // создадим указатель на объект "производственная площадка Rte задачи"
     CProductionInterface* pxRteThreadProduction;
 
@@ -239,9 +242,11 @@ int main(int argc, char** argv)
         pxGooseEthernet -> SetOwnAddress(7);
         // установим начальное состояние автомата задачи, режим работы - сервер
         pxGooseEthernet -> SetFsmState(CGooseEthernet::REQUEST_ENABLE);
+        // разместим задачу на производственной площадке
+        pxGooseThreadProduction -> Place(pxGooseEthernet);
+
         // создадим объект "производственная площадка Rte задачи"
         pxRteThreadProduction = new CRteThreadProduction();
-
         // создадим указатель на объект "Rte задачи"
         CRte* pxRte;
         // создадим объект "Rte задачи"
@@ -269,6 +274,8 @@ int main(int argc, char** argv)
         pxGooseEthernet -> SetAttemptNumber(CGooseEthernet::PING_ATTEMPTS_NUMBER);
         pxGooseEthernet -> ReportSlaveIDRequest(7);
         pxGooseEthernet -> SetFsmState(CGooseEthernet::CONFIRMATION_ENABLE);
+        // создадим объект "производственная площадка Rte задачи"
+        pxRteThreadProduction = new CRteThreadProduction();
     }
     else
     {
@@ -287,8 +294,6 @@ int main(int argc, char** argv)
 //        pxGooseEthernet -> ReportSlaveIDRequest(1);
 //        pxGooseEthernet -> SetFsmState(CGooseEthernet::CONFIRMATION_ENABLE);
 
-    // разместим задачу на производственной площадке
-    pxGooseThreadProduction -> Place(pxGooseEthernet);
 
 
 //    pxMainProductionCycle -> SetFsmState(0);
@@ -310,6 +315,18 @@ int main(int argc, char** argv)
 //    }
 
 
+
+//    CProjectManager xProjectManager;
+    CProjectManager* pxProjectManager;
+    pxProjectManager = new CProjectManager();
+    pxProjectManager ->
+    SetCommantLineArgumentCustomer(new CCommantLineArgumentCustomer());
+    // получим параметры командной строки
+    pxProjectManager ->
+    GetCommantLineArgumentCustomer() -> GetOrder(argc, argv);
+
+    pxMainProductionCycle ->
+    SetProjectManager(pxProjectManager);
     CMainThreadProduction::Process(pxMainProductionCycle);
 
     delete pxMainProductionCycle;

@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #include "Platform.h"
+#include "Production.h"
 #include "Timer.h"
 #include "Goose.h"
 
@@ -133,7 +134,21 @@ private:
 //    };
 
 
+    void SetProductionSite(CProductionInterface* pxProductionSite)
+    {
+        m_pxProductionSite = pxProductionSite;
+    };
+    CProductionInterface* GetProductionSite(void)
+    {
+        return m_pxProductionSite;
+    };
+
+    void Sleep(void);
+    void Wakeup(void);
+
 private:
+    // указатель на объект "производственная площадка задачи"
+    CProductionInterface* m_pxProductionSite;
     uint8_t* m_puiRxBuffer;
     uint8_t* m_puiTxBuffer;
 
