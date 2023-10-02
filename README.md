@@ -1,5 +1,3 @@
-# RadiusTestServer
-
 RadiusTestServer - программа для замера времени ответа сервера
 на канальном уровне.
 
