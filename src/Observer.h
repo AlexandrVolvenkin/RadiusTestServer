@@ -61,93 +61,93 @@ public:
     void SetTransmitPacketNumber(uint32_t uiData)
     {
         m_uiTransmitPacketNumber = uiData;
-    }
+    };
     uint32_t GetTransmitPacketNumber(void)
     {
         return m_uiTransmitPacketNumber;
-    }
+    };
 
     void SetReceivePacketNumber(uint32_t uiData)
     {
         m_uiReceivePacketNumber = uiData;
-    }
+    };
     uint32_t GetReceivePacketNumber(void)
     {
         return m_uiReceivePacketNumber;
-    }
+    };
 
     void SetLostPacketNumber(uint32_t uiData)
     {
         m_uiLostPacketNumber = uiData;
-    }
+    };
     uint32_t GetLostPacketNumber(void)
     {
         return m_uiLostPacketNumber;
-    }
+    };
 
 
     void SetMinReceivePacketTimeout(uint32_t uiData)
     {
         m_uiMinReceivePacketTimeout = uiData;
-    }
+    };
     uint32_t GetMinReceivePacketTimeout(void)
     {
         return m_uiMinReceivePacketTimeout;
-    }
+    };
 
     void SetMaxReceivePacketTimeout(uint32_t uiData)
     {
         m_uiMaxReceivePacketTimeout = uiData;
-    }
+    };
     uint32_t GetMaxReceivePacketTimeout(void)
     {
         return m_uiMaxReceivePacketTimeout;
-    }
+    };
 
     void SetAverageReceivePacketTimeout(uint32_t uiData)
     {
         m_uiAverageReceivePacketTimeout = uiData;
-    }
+    };
     uint32_t GetAverageReceivePacketTimeout(void)
     {
         return m_uiAverageReceivePacketTimeout;
-    }
+    };
 
     void SetCommonReceivePacketTimeout(uint32_t uiData)
     {
         m_uiCommonReceivePacketTimeout = uiData;
-    }
+    };
     uint32_t GetCommonReceivePacketTimeout(void)
     {
         return m_uiCommonReceivePacketTimeout;
-    }
+    };
 
     void SetCommonReceivePacketNumber(uint32_t uiData)
     {
         m_uiCommonReceivePacketNumber = uiData;
-    }
+    };
     uint32_t GetCommonReceivePacketNumber(void)
     {
         return m_uiCommonReceivePacketNumber;
-    }
+    };
 
     void SetLastReceivedPacketIndex(uint16_t uiData)
     {
         m_uiLastReceivedPacketIndex = uiData;
-    }
+    };
     uint16_t GetLastReceivedPacketIndex(void)
     {
         return m_uiLastReceivedPacketIndex;
-    }
+    };
 
     void SetCommonStatisticsOutCounter(uint32_t uiData)
     {
         m_uiCommonStatisticsOutCounter = uiData;
-    }
+    };
     uint32_t GetCommonStatisticsOutCounter(void)
     {
         return m_uiCommonStatisticsOutCounter;
-    }
+    };
 
 private:
     uint32_t m_uiTransmitPacketNumber;
@@ -182,29 +182,29 @@ private:
 //    void SetMinReceivePacketTimeout(uint32_t uiData)
 //    {
 //        m_uiMinReceivePacketTimeout = uiData;
-//    }
+//    };
 //    uint32_t GetMinReceivePacketTimeout(void)
 //    {
 //        return m_uiMinReceivePacketTimeout;
-//    }
+//    };
 //
 //    void SetMaxReceivePacketTimeout(uint32_t uiData)
 //    {
 //        m_uiMaxReceivePacketTimeout = uiData;
-//    }
+//    };
 //    uint32_t GetMaxReceivePacketTimeout(void)
 //    {
 //        return m_uiMaxReceivePacketTimeout;
-//    }
+//    };
 //
 //    void SetAverageReceivePacketTimeout(uint32_t uiData)
 //    {
 //        m_uiAverageReceivePacketTimeout = uiData;
-//    }
+//    };
 //    uint32_t GetAverageReceivePacketTimeout(void)
 //    {
 //        return m_uiAverageReceivePacketTimeout;
-//    }
+//    };
 //
 //private:
 //    uint32_t m_uiMinReceivePacketTimeout;

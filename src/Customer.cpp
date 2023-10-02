@@ -5,6 +5,7 @@
 //  email       : aav-36@mail.ru
 //  GitHub      : https://github.com/AlexandrVolvenkin
 //-----------------------------------------------------------------------------------------
+
 #include <string>
 #include <iostream>
 #include <unistd.h>
@@ -14,16 +15,35 @@
 #include "Platform.h"
 #include "Configuration.h"
 
+using namespace std;
+
+//-----------------------------------------------------------------------------------------
+static void help(char *progname)
+{
+    fprintf(stderr, "-----------------------------------------------------------------------\n");
+    fprintf(stderr, "Usage: %s\n" \
+            "  -m | --mode <mode> - set mode to <mode> (default is server)\n" \
+            "  -e | --ethernet <name> - set ethernet to <name> (default is eth0)\n" \
+            "  -a | --mac <mac> - set mac address to <mac> (default is 00:00:00:00:00:00)\n" \
+            "  -c | --comport <name> - set comport to <name> (default is com0)\n" \
+            "  -p | --period <time> - set task period  to <time> (default is 10mc)\n" \
+            "  -l | --load <percent> - set load percent  to <percent> (default is 50)\n" \
+            " [-h | --help ]........: display this help\n" \
+            " [-v | --version ].....: display version information\n" \
+            " [-b | --background]...: fork to the background, daemon mode\n", progname);
+    fprintf(stderr, "-----------------------------------------------------------------------\n");
+}
+
 //-----------------------------------------------------------------------------------------
 CCustomer::CCustomer()
 {
-
+//    std::cout << "CCustomer constructor"  << std::endl;
 }
 
 //-----------------------------------------------------------------------------------------
 CCustomer::~CCustomer()
 {
-    //dtor
+//    std::cout << "CCustomer desstructor"  << std::endl;
 }
 //-----------------------------------------------------------------------------------------
 
@@ -37,18 +57,20 @@ CCustomer::~CCustomer()
 //-----------------------------------------------------------------------------------------
 CCommantLineArgumentCustomer::CCommantLineArgumentCustomer()
 {
+//    std::cout << "CCommantLineArgumentCustomer constructor"  << std::endl;
     m_pccMode = "server";//"client";//
     m_pccGooseInterfaceName = "eth0";
     m_pccEthernetAddress = "00:00:00:00:00:00";
     m_pccCommInterfaceName = "ttyO1";
     m_uiCalculationPeriodTime = 5000;//1000000;//
     m_uiLoadPercent = 50;
+    m_uiOwnAddress = 7;
 }
 
 //-----------------------------------------------------------------------------------------
 CCommantLineArgumentCustomer::~CCommantLineArgumentCustomer()
 {
-    //dtor
+//    std::cout << "CCommantLineArgumentCustomer desstructor"  << std::endl;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -66,6 +88,9 @@ void CCommantLineArgumentCustomer::Init(void)
 //-----------------------------------------------------------------------------------------
 uint8_t CCommantLineArgumentCustomer::GetOrder(int argc, char** argv)
 {
+//    std::cout << "CCommantLineArgumentCustomer GetOrder"  << std::endl;
+//        cout << "CCommantLineArgumentCustomer GetOrder argc = " << (int)argc << endl;
+//        cout << "CCommantLineArgumentCustomer GetOrder argv = " << argv[0] << endl;
     /* parameter parsing */
     while(1)
     {
@@ -90,7 +115,8 @@ uint8_t CCommantLineArgumentCustomer::GetOrder(int argc, char** argv)
         /* no more options to parse */
         if(iOption == -1)
         {
-            return 0;
+//    std::cout << "CCommantLineArgumentCustomer GetOrder if (iOption == -1)"  << std::endl;
+//            return 0;
             break;
         }
 
@@ -150,7 +176,7 @@ uint8_t CCommantLineArgumentCustomer::GetOrder(int argc, char** argv)
 
         case 'h': /* fall through */
         default:
-//            help(argv[0]);
+            help(argv[0]);
 //            exit(EXIT_FAILURE);
             return 0;
         }

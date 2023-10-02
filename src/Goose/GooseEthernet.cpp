@@ -66,7 +66,7 @@ CGooseEthernet::CGooseEthernet()
     m_pxCommunicationDevice = new CEthernetCommunicationDevice();
     m_puiRxBuffer = new uint8_t[GOOSE_ETHERNET_MAX_FRAME_LENGTH];
     m_puiTxBuffer = new uint8_t[GOOSE_ETHERNET_MAX_FRAME_LENGTH];
-    SetFsmState(IDDLE);
+    SetFsmState(SERVER_STOPED);
     // создадим объект "производственная площадка задачи"
     SetProductionSite(new CGooseThreadProduction());
 }
@@ -267,7 +267,6 @@ uint16_t CGooseEthernet::RequestBasis(uint8_t uiSlave,
                                       uint8_t uiFunctionCode,
                                       uint8_t *puiRequest)
 {
-//    std::cout << "CGooseEthernet::RequestBasis"  << std::endl;
     uint16_t uiLength = 0;
 
     struct ether_header* pxEthernetHeader;
@@ -349,22 +348,23 @@ uint16_t CGooseEthernet::RequestBasis(uint8_t uiSlave,
     return uiLength;
 }
 
-//-----------------------------------------------------------------------------------------
-uint16_t CGooseEthernet::RequestBasis(uint8_t uiSlave,
-                                      uint8_t uiFunctionCode,
-                                      uint16_t uiAddress,
-                                      uint16_t uiBitNumber,
-                                      uint8_t *puiRequest)
-{
-    puiRequest[0] = uiSlave;
-    puiRequest[1] = uiFunctionCode;
-    puiRequest[2] = (static_cast<uint8_t>(uiAddress >> 8));
-    puiRequest[3] = (static_cast<uint8_t>(uiAddress & 0x00ff));
-    puiRequest[4] = (static_cast<uint8_t>(uiBitNumber >> 8));
-    puiRequest[5] = (static_cast<uint8_t>(uiBitNumber & 0x00ff));
-
-    return 0;//_MODBUS_RTU_PRESET_REQ_LENGTH;
-}
+////-----------------------------------------------------------------------------------------
+//uint16_t CGooseEthernet::RequestBasis(uint8_t uiSlave,
+//                                      uint8_t uiFunctionCode,
+//                                      uint16_t uiAddress,
+//                                      uint16_t uiBitNumber,
+//                                      uint8_t *puiRequest)
+//{
+//    std::cout << "CGooseEthernet::RequestBasis 5 arg"  << std::endl;
+//    puiRequest[0] = uiSlave;
+//    puiRequest[1] = uiFunctionCode;
+//    puiRequest[2] = (static_cast<uint8_t>(uiAddress >> 8));
+//    puiRequest[3] = (static_cast<uint8_t>(uiAddress & 0x00ff));
+//    puiRequest[4] = (static_cast<uint8_t>(uiBitNumber >> 8));
+//    puiRequest[5] = (static_cast<uint8_t>(uiBitNumber & 0x00ff));
+//
+//    return 0;//_MODBUS_RTU_PRESET_REQ_LENGTH;
+//}
 
 //-----------------------------------------------------------------------------------------
 uint16_t CGooseEthernet::ResponseBasis(uint8_t uiSlave,
@@ -480,7 +480,7 @@ int8_t CGooseEthernet::FrameCheck(uint8_t *puiSourse, uint16_t uiLength)
 //-----------------------------------------------------------------------------------------
 int8_t CGooseEthernet::MessengerIsReady(void)
 {
-    if (GetFsmState() == IDDLE)
+    if (GetFsmState() == CLIENT_IDDLE)
     {
         return 1;
     }
@@ -501,124 +501,149 @@ void CGooseEthernet::Fsm(void)
     {
         int16_t iBytesNumber;
 
-    case IDDLE:
-        break;
+//    case IDDLE:
+//        break;
 //-----------------------------------------------------------------------------------------
 // GooseServer
-    case REQUEST_ENABLE:
-//        std::cout << "CGooseEthernet::Fsm REQUEST_ENABLE"  << std::endl;
+//    case REQUEST_ENABLE:
+////        std::cout << "CGooseEthernet::Fsm REQUEST_ENABLE"  << std::endl;
+//        ReceiveDisable();
+//        SetMessageLength(0);
+//        ReceiveEnable();
+//        SetFsmState(START_REQUEST);
+//        break;
+//
+//    case START_REQUEST:
+////        std::cout << "CGooseEthernet::Fsm START_REQUEST"  << std::endl;
+//        SetMessageLength(0);
+//        SetFsmState(RECEIVE_MESSAGE_REQUEST);
+//        break;
+//
+//    case RECEIVE_MESSAGE_REQUEST:
+////        std::cout << "CGooseEthernet::Fsm RECEIVE_MESSAGE_REQUEST"  << std::endl;
+//        iBytesNumber = Receive((GetRxBuffer() + GetMessageLength()), (GOOSE_ETHERNET_MAX_FRAME_LENGTH - GetMessageLength()));
+//
+//        if (iBytesNumber > 0)
+//        {
+//            SetMessageLength(GetMessageLength() + iBytesNumber);
+//            SetFsmState(REQUEST_PROCESSING_REQUEST);
+//        }
+//        else
+//        {
+//            SetFsmState(STOP_REQUEST);
+//        }
+//
+//        break;
+//
+//    case REQUEST_PROCESSING_REQUEST:
+////        std::cout << "CGooseEthernet::Fsm REQUEST_PROCESSING_REQUEST"  << std::endl;
+////        m_uiResponseTransactionId++;
+//
+//        if (RequestProcessing(GetRxBuffer(), GetTxBuffer(), GetMessageLength()))
+//        {
+//            SetFsmState(FRAME_TRANSMIT_CONFIRMATION);
+//        }
+//        else
+//        {
+//            SetFsmState(STOP_REQUEST);
+//        }
+//        break;
+//
+//    case FRAME_TRANSMIT_CONFIRMATION:
+////        std::cout << "CGooseEthernet::Fsm FRAME_TRANSMIT_CONFIRMATION"  << std::endl;
+//        // увеличим количество отправленных пакетов
+//        GetGooseServerObserver() ->
+//        SetTransmitPacketNumber(GetGooseServerObserver() ->
+//                                GetTransmitPacketNumber() + 1);
+//        Send(GetTxBuffer(), GetMessageLength());
+//        SetFsmState(STOP_REQUEST);
+//        break;
+//
+//    case STOP_REQUEST:
+////        ReceiveDisable();
+//        SetFsmState(START_REQUEST);
+//        break;
+//
+//    case REQUEST_ERROR:
+////        ReceiveDisable();
+//        SetFsmState(REQUEST_ENABLE);
+//        break;
+
+
+
+
+//        SERVER_STOPED,
+//        SERVER_START,
+//        SERVER_IDDLE,
+//        SERVER_DATA_RECEIVE_PREPARE,
+//        SERVER_DATA_RECEIVE_WAITING,
+//        SERVER_RECEIVED_DATA_PROCESSING,
+//        SERVER_RECEIVED_DATA_ERROR_PROCESSING,
+//        SERVER_DATA_TRANSMIT_PREPARE,
+//        SERVER_DATA_TRANSMIT,
+//        SERVER_IDDLE_STATE_PREPARE,
+//        SERVER_STOP_STATE_PREPARE,
+
+
+    case SERVER_START:
+//        std::cout << "CGooseEthernet::Fsm SERVER_START"  << std::endl;
         ReceiveDisable();
-        SetMessageLength(0);
         ReceiveEnable();
-        SetFsmState(START_REQUEST);
+        SetFsmState(SERVER_IDDLE_STATE_PREPARE);
         break;
 
-    case START_REQUEST:
-//        std::cout << "CGooseEthernet::Fsm START_REQUEST"  << std::endl;
+    case SERVER_DATA_RECEIVE_PREPARE:
+//        std::cout << "CGooseEthernet::Fsm SERVER_DATA_RECEIVE_PREPARE"  << std::endl;
         SetMessageLength(0);
-        SetFsmState(RECEIVE_MESSAGE_REQUEST);
+        SetFsmState(SERVER_DATA_RECEIVE_WAITING);
         break;
 
-    case RECEIVE_MESSAGE_REQUEST:
-//        std::cout << "CGooseEthernet::Fsm RECEIVE_MESSAGE_REQUEST"  << std::endl;
+    case SERVER_DATA_RECEIVE_WAITING:
+//        std::cout << "CGooseEthernet::Fsm SERVER_DATA_RECEIVE_WAITING"  << std::endl;
         iBytesNumber = Receive((GetRxBuffer() + GetMessageLength()), (GOOSE_ETHERNET_MAX_FRAME_LENGTH - GetMessageLength()));
 
         if (iBytesNumber > 0)
         {
             SetMessageLength(GetMessageLength() + iBytesNumber);
-            SetFsmState(REQUEST_PROCESSING_REQUEST);
+            SetFsmState(SERVER_RECEIVED_DATA_PROCESSING);
         }
         else
         {
-            SetFsmState(STOP_REQUEST);
+            SetFsmState(SERVER_RECEIVED_DATA_ERROR_PROCESSING);
         }
-
         break;
 
-    case REQUEST_PROCESSING_REQUEST:
-//        std::cout << "CGooseEthernet::Fsm REQUEST_PROCESSING_REQUEST"  << std::endl;
-//        m_uiResponseTransactionId++;
-
+    case SERVER_RECEIVED_DATA_PROCESSING:
+//        std::cout << "CGooseEthernet::Fsm SERVER_RECEIVED_DATA_PROCESSING"  << std::endl;
         if (RequestProcessing(GetRxBuffer(), GetTxBuffer(), GetMessageLength()))
         {
-            SetFsmState(FRAME_TRANSMIT_CONFIRMATION);
+            SetFsmState(SERVER_DATA_TRANSMIT);
         }
         else
         {
-            SetFsmState(STOP_REQUEST);
+            SetFsmState(SERVER_RECEIVED_DATA_ERROR_PROCESSING);
         }
         break;
 
-    case FRAME_TRANSMIT_CONFIRMATION:
-//        std::cout << "CGooseEthernet::Fsm FRAME_TRANSMIT_CONFIRMATION"  << std::endl;
-        // увеличим количество отправленных пакетов
-        GetGooseServerObserver() ->
-        SetTransmitPacketNumber(GetGooseServerObserver() ->
-                                GetTransmitPacketNumber() + 1);
-        Send(GetTxBuffer(), GetMessageLength());
-        SetFsmState(STOP_REQUEST);
+    case SERVER_RECEIVED_DATA_ERROR_PROCESSING:
+//        std::cout << "CGooseEthernet::Fsm SERVER_RECEIVED_DATA_ERROR_PROCESSING"  << std::endl;
+        SetFsmState(SERVER_DATA_RECEIVE_PREPARE);
         break;
 
-    case STOP_REQUEST:
-//        ReceiveDisable();
-        SetFsmState(START_REQUEST);
+    case SERVER_DATA_TRANSMIT_PREPARE:
+//        std::cout << "CGooseEthernet::Fsm SERVER_DATA_TRANSMIT_PREPARE"  << std::endl;
+//        Send(GetTxBuffer(), GetMessageLength());
+//
+//        // увеличим количество отправленных пакетов
+//        GetGooseServerObserver() ->
+//        SetTransmitPacketNumber(GetGooseServerObserver() ->
+//                                GetTransmitPacketNumber() + 1);
+
+        SetFsmState(SERVER_DATA_TRANSMIT);
         break;
 
-    case REQUEST_ERROR:
-//        ReceiveDisable();
-        SetFsmState(REQUEST_ENABLE);
-        break;
-
-//-----------------------------------------------------------------------------------------
-// GooseClient
-    case CONFIRMATION_ENABLE:
-//        std::cout << "CGooseEthernet::Fsm REQUEST_ENABLE"  << std::endl;
-        ReceiveDisable();
-        SetMessageLength(0);
-        ReceiveEnable();
-        SetFsmState(FRAME_TRANSMIT_REQUEST);
-        break;
-
-    case START_CONFIRMATION:
-        ReceiveDisable();
-        SetMessageLength(0);
-        ReceiveEnable();
-        SetFsmState(RECEIVE_MESSAGE_CONFIRMATION);
-        break;
-
-    case RECEIVE_MESSAGE_CONFIRMATION:
-//        std::cout << "CGooseEthernet::Fsm RECEIVE_MESSAGE_CONFIRMATION"  << std::endl;
-        iBytesNumber = Receive((GetRxBuffer() + GetMessageLength()), (GOOSE_ETHERNET_MAX_FRAME_LENGTH - GetMessageLength()));
-
-        if (iBytesNumber > 0)
-        {
-            SetMessageLength(GetMessageLength() + iBytesNumber);
-            SetFsmState(ANSWER_PROCESSING_CONFIRMATION);
-        }
-        else
-        {
-            SetFsmState(FRAME_TRANSMIT_REQUEST);
-        }
-
-        break;
-
-    case ANSWER_PROCESSING_CONFIRMATION:
-//        std::cout << "CGooseEthernet::Fsm ANSWER_PROCESSING_CONFIRMATION"  << std::endl;
-        if (AnswerProcessing(GetRxBuffer(), GetMessageLength()))
-        {
-            SetFsmState(FRAME_TRANSMIT_REQUEST);
-        }
-        else
-        {
-            SetFsmState(FRAME_TRANSMIT_REQUEST);
-        }
-        break;
-
-    case FRAME_TRANSMIT_REQUEST:
-//        std::cout << "CGooseEthernet::Fsm FRAME_TRANSMIT_REQUEST"  << std::endl;
-        ReportSlaveIDRequest(7);
-
-        usleep(GetPeriodTime());
+    case SERVER_DATA_TRANSMIT:
+//        std::cout << "CGooseEthernet::Fsm SERVER_DATA_TRANSMIT"  << std::endl;
         // получим время начала замера
         xTimeMeasure.Begin();
 
@@ -629,31 +654,117 @@ void CGooseEthernet::Fsm(void)
         SetTransmitPacketNumber(GetGooseServerObserver() ->
                                 GetTransmitPacketNumber() + 1);
 
-        SetMessageLength(0);
-        SetFsmState(END_WAITING_FRAME_TRANSMIT_REQUEST);
+        SetFsmState(SERVER_DATA_RECEIVE_PREPARE);
         break;
 
-    case END_WAITING_FRAME_TRANSMIT_REQUEST:
-//        std::cout << "CGooseEthernet::Fsm END_WAITING_FRAME_TRANSMIT_REQUEST"  << std::endl;
-        if (GetAttemptNumber() > 0)
-        {
-            SetAttemptNumber(GetAttemptNumber() - 1);
-            SetFsmState(RECEIVE_MESSAGE_CONFIRMATION);
-        }
-        else
-        {
-            SetFsmState(STOP_CONFIRMATION);
-        }
+    case SERVER_IDDLE_STATE_PREPARE:
+//        std::cout << "CGooseEthernet::Fsm SERVER_IDDLE_STATE_PREPARE"  << std::endl;
+        SetFsmState(SERVER_IDDLE);
         break;
 
-    case STOP_CONFIRMATION:
-//        std::cout << "CGooseEthernet::Fsm STOP_CONFIRMATION"  << std::endl;
+    case SERVER_IDDLE:
+//        std::cout << "CGooseEthernet::Fsm SERVER_IDDLE"  << std::endl;
+//        Sleep();
+        break;
+
+    case SERVER_STOP_STATE_PREPARE:
+//        std::cout << "CGooseEthernet::Fsm SERVER_STOP_STATE_PREPARE"  << std::endl;
         ReceiveDisable();
-        SetFsmState(IDDLE);
+        SetFsmState(SERVER_STOPED);
+        break;
+
+    case SERVER_STOPED:
+//        std::cout << "CGooseEthernet::Fsm SERVER_STOPED"  << std::endl;
         break;
 
 
 
+////-----------------------------------------------------------------------------------------
+//// GooseClient
+//    case CONFIRMATION_ENABLE:
+////        std::cout << "CGooseEthernet::Fsm REQUEST_ENABLE"  << std::endl;
+//        ReceiveDisable();
+//        SetMessageLength(0);
+//        ReceiveEnable();
+//        SetFsmState(FRAME_TRANSMIT_REQUEST);
+//        break;
+//
+//    case START_CONFIRMATION:
+//        ReceiveDisable();
+//        SetMessageLength(0);
+//        ReceiveEnable();
+//        SetFsmState(RECEIVE_MESSAGE_CONFIRMATION);
+//        break;
+//
+//    case RECEIVE_MESSAGE_CONFIRMATION:
+////        std::cout << "CGooseEthernet::Fsm RECEIVE_MESSAGE_CONFIRMATION"  << std::endl;
+//        iBytesNumber = Receive((GetRxBuffer() + GetMessageLength()), (GOOSE_ETHERNET_MAX_FRAME_LENGTH - GetMessageLength()));
+//
+//        if (iBytesNumber > 0)
+//        {
+//            SetMessageLength(GetMessageLength() + iBytesNumber);
+//            SetFsmState(ANSWER_PROCESSING_CONFIRMATION);
+//        }
+//        else
+//        {
+//            SetFsmState(FRAME_TRANSMIT_REQUEST);
+//        }
+//
+//        break;
+//
+//    case ANSWER_PROCESSING_CONFIRMATION:
+////        std::cout << "CGooseEthernet::Fsm ANSWER_PROCESSING_CONFIRMATION"  << std::endl;
+//        if (AnswerProcessing(GetRxBuffer(), GetMessageLength()))
+//        {
+//            SetFsmState(FRAME_TRANSMIT_REQUEST);
+//        }
+//        else
+//        {
+//            SetFsmState(FRAME_TRANSMIT_REQUEST);
+//        }
+//        break;
+//
+//    case FRAME_TRANSMIT_REQUEST:
+////        std::cout << "CGooseEthernet::Fsm FRAME_TRANSMIT_REQUEST"  << std::endl;
+//        ReportSlaveIDRequest(7);
+//
+//        usleep(GetPeriodTime());
+//        // получим время начала замера
+//        xTimeMeasure.Begin();
+//
+//        Send(GetTxBuffer(), GetMessageLength());
+//
+//        // увеличим количество отправленных пакетов
+//        GetGooseServerObserver() ->
+//        SetTransmitPacketNumber(GetGooseServerObserver() ->
+//                                GetTransmitPacketNumber() + 1);
+//
+//        SetMessageLength(0);
+//        SetFsmState(END_WAITING_FRAME_TRANSMIT_REQUEST);
+//        break;
+//
+//    case END_WAITING_FRAME_TRANSMIT_REQUEST:
+////        std::cout << "CGooseEthernet::Fsm END_WAITING_FRAME_TRANSMIT_REQUEST"  << std::endl;
+//        if (GetAttemptNumber() > 0)
+//        {
+//            SetAttemptNumber(GetAttemptNumber() - 1);
+//            SetFsmState(RECEIVE_MESSAGE_CONFIRMATION);
+//        }
+//        else
+//        {
+//            SetFsmState(STOP_CONFIRMATION);
+//        }
+//        break;
+//
+//    case STOP_CONFIRMATION:
+////        std::cout << "CGooseEthernet::Fsm STOP_CONFIRMATION"  << std::endl;
+//        ReceiveDisable();
+//        SetFsmState(IDDLE);
+//        break;
+
+
+//-----------------------------------------------------------------------------------------
+// GooseClient
     case CLIENT_START:
 //        std::cout << "CGooseEthernet::Fsm CLIENT_START"  << std::endl;
         ReceiveDisable();
@@ -740,7 +851,7 @@ void CGooseEthernet::Fsm(void)
 
     case CLIENT_IDDLE:
 //        std::cout << "CGooseEthernet::Fsm CLIENT_IDDLE"  << std::endl;
-        Sleep();
+//        Sleep();
         break;
 
     case CLIENT_STOP_STATE_PREPARE:

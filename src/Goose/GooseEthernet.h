@@ -94,11 +94,11 @@ private:
     uint16_t RequestBasis(uint8_t uiSlave,
                           uint8_t uiFunctionCode,
                           uint8_t *puiRequest);
-    uint16_t RequestBasis(uint8_t uiSlave,
-                          uint8_t uiFunctionCode,
-                          uint16_t uiAddress,
-                          uint16_t uiBitNumber,
-                          uint8_t *puiRequest);
+//    uint16_t RequestBasis(uint8_t uiSlave,
+//                          uint8_t uiFunctionCode,
+//                          uint16_t uiAddress,
+//                          uint16_t uiBitNumber,
+//                          uint8_t *puiRequest);
     uint16_t ResponseBasis(uint8_t uiSlave,
                            uint8_t uiFunctionCode,
                            uint8_t *puiResponse);
@@ -123,15 +123,15 @@ private:
         return m_pxCommunicationDevice;
     };
 
-//    uint8_t* GetRxBuffer(void)
-//    {
-//        return m_puiRxBuffer;
-//    };
-//
-//    uint8_t* GetTxBuffer(void)
-//    {
-//        return m_puiTxBuffer;
-//    };
+    uint8_t* GetRxBuffer(void)
+    {
+        return m_puiRxBuffer;
+    };
+
+    uint8_t* GetTxBuffer(void)
+    {
+        return m_puiTxBuffer;
+    };
 
 
     void SetProductionSite(CProductionInterface* pxProductionSite)

@@ -6,18 +6,21 @@
 //  GitHub      : https://github.com/AlexandrVolvenkin
 //-----------------------------------------------------------------------------------------
 
+#include "Platform.h"
 #include "ProjectManager.h"
+
+using namespace std;
 
 //-----------------------------------------------------------------------------------------
 CProjectManager::CProjectManager()
 {
-    //ctor
+//    std::cout << "CProjectManager constructor"  << std::endl;
 }
 
 //-----------------------------------------------------------------------------------------
 CProjectManager::~CProjectManager()
 {
-    //dtor
+//    std::cout << "CProjectManager desstructor"  << std::endl;
 }
 
 ////-----------------------------------------------------------------------------------------
@@ -40,4 +43,5 @@ uint8_t CProjectManager::GetOrder(CCommantLineArgumentCustomer* pxCommantLineArg
     m_pccCommInterfaceName = pxCommantLineArgumentCustomer -> GetCommInterfaceName();
     m_uiCalculationPeriodTime = pxCommantLineArgumentCustomer -> GetCalculationPeriodTime();
     m_uiLoadPercent = pxCommantLineArgumentCustomer -> GetLoadPercent();
+    m_uiOwnAddress = pxCommantLineArgumentCustomer -> GetOwnAddress();
 }

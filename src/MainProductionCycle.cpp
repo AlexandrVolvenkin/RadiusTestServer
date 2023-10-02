@@ -25,6 +25,7 @@ CMainProductionCycle::~CMainProductionCycle()
 //    std::cout << "CMainProductionCycle destructor"  << std::endl;
     delete m_pxGooseEthernet;
     delete m_pxGooseThreadProduction;
+    delete m_pxGooseServerObserver;
 
     delete m_pxRte;
     delete m_pxRteThreadProduction;
@@ -34,69 +35,6 @@ CMainProductionCycle::~CMainProductionCycle()
 void CMainProductionCycle::Init(void)
 {
 
-    // создадим объект "Goose задачи"
-    m_pxGooseEthernet = new CGooseEthernet();
-//    // создадим и добавим объект "наблюдатель"
-//    m_pxGooseEthernet -> SetGooseServerObserver(new CGooseServerObserver());
-    // установим имя интерфейса
-    m_pxGooseEthernet ->
-    GetCommunicationDevice() ->
-    SetPortName(GetProjectManager() -> GetGooseInterfaceName());
-    // установим mac адрес назначения
-    m_pxGooseEthernet ->
-    GetCommunicationDevice() ->
-    SetDestinationMacAddress(
-        ether_aton(GetProjectManager() -> GetEthernetAddress()) ->
-        ether_addr_octet);
-    // установим период
-    m_pxGooseEthernet ->
-    SetPeriodTime(GetProjectManager() -> GetCalculationPeriodTime());
-    // установим период вывода статистики
-    m_pxGooseEthernet ->
-    GetTimerPointer() -> Set(1000);
-
-    m_pxGooseEthernet -> WorkingArraysInit(m_aucRtuCoilsArray,
-                                           m_aucRtuDiscreteInputsArray,
-                                           m_aucRtuHoldingRegistersArray,
-                                           m_aucRtuInputRegistersArray,
-                                           COILS_WORK_ARRAY_LENGTH,
-                                           DISCRETE_INPUTS_ARRAY_LENGTH,
-                                           HOLDING_REGISTERS_ARRAY_LENGTH,
-                                           INPUT_REGISTERS_ARRAY_LENGTH
-                                          );
-    // создадим объект "производственная площадка Goose задачи"
-    m_pxGooseThreadProduction = new CGooseThreadProduction();
-
-
-
-
-    // установим имя интерфейса
-    m_pxRte ->
-    GetCommunicationDevice() ->
-    SetPortName(GetProjectManager() -> GetGooseInterfaceName());
-    m_pxRte ->
-    GetCommunicationDevice() -> SetBaudRate(115200);
-    m_pxRte ->
-    GetCommunicationDevice() -> SetDataBits(8);
-    m_pxRte ->
-    GetCommunicationDevice() -> SetParity('N');
-    m_pxRte ->
-    GetCommunicationDevice() -> SetStopBit(1);
-    // установим период вычислений
-    m_pxRte ->
-    SetPeriodTime(GetProjectManager() ->
-                  GetCalculationPeriodTime());
-    // установим процент нагрузки
-    m_pxRte ->
-    SetLoadPercent(GetProjectManager() ->
-                   GetLoadPercent());
-    // установим начальное состояние автомата задачи, режим работы
-    m_pxRte -> SetFsmState(CRte::START);
-
-//    // создадим объект "производственная площадка Rte задачи"
-//    pxRteThreadProduction = new CRteThreadProduction();
-//    // разместим задачу на производственной площадке
-//    pxRteThreadProduction -> Place(m_pxRte);
 
 }
 
@@ -105,8 +43,10 @@ void CMainProductionCycle::ServerInit(void)
 {
     // создадим объект "Goose задачи"
     m_pxGooseEthernet = new CGooseEthernet();
-//    // создадим и добавим объект "наблюдатель"
-//    m_pxGooseEthernet -> SetGooseServerObserver(new CGooseServerObserver());
+    // создадим и добавим объект "наблюдатель"
+    SetGooseServerObserver(new CGooseServerObserver());
+    m_pxGooseEthernet ->
+    SetGooseServerObserver(GetGooseServerObserver());
     // установим имя интерфейса
     m_pxGooseEthernet ->
     GetCommunicationDevice() ->
@@ -140,7 +80,7 @@ void CMainProductionCycle::ServerInit(void)
     SetOwnAddress(GetProjectManager() -> GetOwnAddress());
     // установим начальное состояние автомата задачи, режим работы - сервер
     m_pxGooseEthernet ->
-    SetFsmState(CGooseEthernet::REQUEST_ENABLE);
+    SetFsmState(CGooseEthernet::SERVER_START);
     // разместим задачу на производственной площадке
     m_pxGooseThreadProduction -> Place(m_pxGooseEthernet);
 
@@ -184,8 +124,10 @@ void CMainProductionCycle::ClientInit(void)
 {
     // создадим объект "Goose задачи"
     m_pxGooseEthernet = new CGooseEthernet();
-//    // создадим и добавим объект "наблюдатель"
-//    m_pxGooseEthernet -> SetGooseServerObserver(new CGooseServerObserver());
+    // создадим и добавим объект "наблюдатель"
+    SetGooseServerObserver(new CGooseServerObserver());
+    m_pxGooseEthernet ->
+    SetGooseServerObserver(GetGooseServerObserver());
     // установим имя интерфейса
     m_pxGooseEthernet ->
     GetCommunicationDevice() ->
@@ -214,11 +156,20 @@ void CMainProductionCycle::ClientInit(void)
                                           );
     // создадим объект "производственная площадка Goose задачи"
     m_pxGooseThreadProduction = new CGooseThreadProduction();
+    m_pxGooseEthernet ->
+    SetOwnAddress(GetProjectManager() -> GetOwnAddress());
+    // установим начальное состояние автомата задачи, режим работы - клиент
+    m_pxGooseEthernet ->
+    SetFsmState(CGooseEthernet::CLIENT_START);
+    // разместим задачу на производственной площадке
+    m_pxGooseThreadProduction -> Place(m_pxGooseEthernet);
 }
 
 //-----------------------------------------------------------------------------------------
 void CMainProductionCycle::Fsm(void)
 {
+//    return;
+
     switch (GetFsmState())
     {
     case MAIN_CYCLE_START:
@@ -237,21 +188,46 @@ void CMainProductionCycle::Fsm(void)
         }
         else
         {
-            SetFsmState(MAIN_CYCLE_STOP_STATE_PREPARE);
+            std::cout << "main default mode server"  << std::endl;
+            SetFsmState(MAIN_CYCLE_SERVER_INIT);
         }
         break;
 
     case MAIN_CYCLE_SERVER_INIT:
-//        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_IDDLE_STATE_PREPARE"  << std::endl;
+//        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_SERVER_INIT"  << std::endl;
         ServerInit();
         SetFsmState(MAIN_CYCLE_IDDLE);
         break;
 
     case MAIN_CYCLE_CLIENT_INIT:
-//        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_IDDLE_STATE_PREPARE"  << std::endl;
+//        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_CLIENT_INIT"  << std::endl;
         ClientInit();
-        SetFsmState(MAIN_CYCLE_IDDLE);
+        SetFsmState(MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME);
+//        SetFsmState(MAIN_CYCLE_IDDLE_STATE_PREPARE);
+
         break;
+
+    case MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME:
+//        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME"  << std::endl;
+        if (GetGooseEthernet() ->
+                ReportSlaveIDRequest(GetProjectManager() -> GetOwnAddress()))
+        {
+            SetFsmState(MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME_PERIOD_END_WAITING);
+        }
+        else
+        {
+
+        }
+        break;
+
+    case MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME_PERIOD_END_WAITING:
+//        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME_PERIOD_END_WAITING"  << std::endl;
+        usleep(GetGooseEthernet() -> GetPeriodTime());
+        SetFsmState(MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME);
+        break;
+
+
+
 
     case MAIN_CYCLE_IDDLE_STATE_PREPARE:
 //        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_IDDLE_STATE_PREPARE"  << std::endl;

@@ -23,7 +23,6 @@ CGoose::CGoose()
 CGoose::~CGoose()
 {
 //    std::cout << "CGoose desstructor"  << std::endl;
-
 }
 
 //-----------------------------------------------------------------------------------------
@@ -248,21 +247,24 @@ uint16_t CGoose::RequestProcessing(uint8_t *puiRequest,
 // Client
 int8_t CGoose::ReportSlaveIDRequest(uint8_t uiSlaveAddress)
 {
-//    usleep(GetPeriodTime());
-//    if (MessengerIsReady())
-//    {
-    m_uiSlaveAddress = uiSlaveAddress;
-    m_uiFunctionCode = _FC_REPORT_SLAVE_ID;
-    m_uiMessageLength = RequestBasis(uiSlaveAddress,
-                                     m_uiFunctionCode,
-                                     GetTxBuffer());
-    SetFsmState(FRAME_TRANSMIT_REQUEST);
-    return 1;
-//    }
-//    else
-//    {
-//        return 0;
-//    }
+    usleep(GetPeriodTime());
+    if (MessengerIsReady())
+    {
+        m_uiSlaveAddress = uiSlaveAddress;
+        m_uiFunctionCode = _FC_REPORT_SLAVE_ID;
+        uint8_t *puiRequest = GetTxBuffer();
+
+        m_uiMessageLength = RequestBasis(uiSlaveAddress,
+                                         m_uiFunctionCode,
+                                         puiRequest);
+
+        SetFsmState(CLIENT_DATA_TRANSMIT_PREPARE);
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 //-----------------------------------------------------------------------------------------
@@ -411,12 +413,18 @@ int8_t CGoose::ReadHoldingRegistersRequest(uint8_t uiSlaveAddress,
         m_uiSlaveAddress = uiSlaveAddress;
         m_uiFunctionCode = _FC_READ_HOLDING_REGISTERS;
         m_pui16Destination = puiDestination;
+        uint8_t *puiRequest = GetTxBuffer();
+
         m_uiMessageLength = RequestBasis(uiSlaveAddress,
                                          m_uiFunctionCode,
-                                         uiAddress,
-                                         uiNumber,
-                                         m_puiTxBuffer);
-        SetFsmState(FRAME_TRANSMIT_REQUEST);
+                                         puiRequest);
+
+        puiRequest[m_uiMessageLength++] = (static_cast<uint8_t>(uiAddress >> 8));
+        puiRequest[m_uiMessageLength++] = (static_cast<uint8_t>(uiAddress & 0x00ff));
+        puiRequest[m_uiMessageLength++] = (static_cast<uint8_t>(uiNumber >> 8));
+        puiRequest[m_uiMessageLength++] = (static_cast<uint8_t>(uiNumber & 0x00ff));
+
+        SetFsmState(CLIENT_DATA_TRANSMIT_PREPARE);
         return 1;
     }
     else

@@ -952,7 +952,7 @@ int8_t CEthernetCommunicationDevice::Open(void)
         return -1;
     }
 
-    cout << "socket open ok." << endl;
+//    cout << "socket open ok." << endl;
 //    cout << "CEthernetCommunicationDevice m_pccDeviceName " << m_pccDeviceName << endl;
 
     struct ifreq ifopts;	/* set promiscuous mode */
@@ -1062,7 +1062,7 @@ int16_t CEthernetCommunicationDevice::Read(uint8_t *puiDestination, uint16_t uiL
 
 
     tv.tv_sec = 0;
-    tv.tv_usec = 1000000;
+    tv.tv_usec = 100000;
     p_tv = &tv;
 
     /* Add a file descriptor to the set */
@@ -1143,11 +1143,11 @@ int16_t CEthernetCommunicationDevice::Write(uint8_t *puiSource, uint16_t uiLengt
 
     /* Send packet */
     if (sendto( m_iDeviceDescriptor,
-               puiSource,
-               uiLength,
-               0,
-               (struct sockaddr*)GetSocketLowAddress(),
-               sizeof(struct sockaddr_ll)) < 0)
+                puiSource,
+                uiLength,
+                0,
+                (struct sockaddr*)GetSocketLowAddress(),
+                sizeof(struct sockaddr_ll)) < 0)
 //    if (write(sockfd, buf, tx_len) < 0)
     {
 //        printf("Send failed\n");

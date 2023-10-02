@@ -7,8 +7,9 @@
 //-----------------------------------------------------------------------------------------
 
 #include "Production.h"
+#include "MainProductionCycle.h"
 
-class CMainProductionCycleInterface;
+using namespace std;
 
 //-----------------------------------------------------------------------------------------
 CProduction::CProduction()
@@ -76,13 +77,13 @@ void CProduction::Wakeup(void)
 //-----------------------------------------------------------------------------------------
 CMainThreadProduction::CMainThreadProduction()
 {
-
+//    std::cout << "CMainThreadProduction constructor"  << std::endl;
 }
 
 //-----------------------------------------------------------------------------------------
 CMainThreadProduction::~CMainThreadProduction()
 {
-
+//    std::cout << "CMainThreadProduction desstructor"  << std::endl;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -99,11 +100,13 @@ void CMainThreadProduction::Place(CMainProductionCycleInterface* pxMainProductio
 //-----------------------------------------------------------------------------------------
 void CMainThreadProduction::Process(CMainProductionCycleInterface* pxMainProductionCycleInterface)
 {
+//    std::cout << "CMainThreadProduction Process"  << std::endl;
     while (1)
     {
-//        pxMainProductionCycleInterface -> Fsm();
+//    std::cout << "CMainThreadProduction Process 2"  << std::endl;
+        pxMainProductionCycleInterface -> Fsm();
 //        std::cout << "CMainThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
-        usleep(1000000);
+//        usleep(1000000);
     }
 }
 
@@ -259,10 +262,10 @@ void CRteThreadProduction::Process(CRte* pxRte)
 //        usleep(1000000);
 //        usleep(1000);
 
-        // Print Thread ID and Counter i
-        std::cout<<std::this_thread::get_id()<<" :: "<<std::endl;
-        // Sleep this thread for 200 MilliSeconds
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+//        // Print Thread ID and Counter i
+//        std::cout<<std::this_thread::get_id()<<" :: "<<std::endl;
+//        // Sleep this thread for 200 MilliSeconds
+//        std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 }
 

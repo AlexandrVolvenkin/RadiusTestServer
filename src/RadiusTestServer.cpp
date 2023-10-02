@@ -27,22 +27,22 @@
 // Namespaces:
 using namespace std;
 
-//-----------------------------------------------------------------------------------------
-static void help(char *progname)
-{
-    fprintf(stderr, "-----------------------------------------------------------------------\n");
-    fprintf(stderr, "Usage: %s\n" \
-            "  -m | --mode <mode> - set mode to <mode> (default is server)\n" \
-            "  -e | --ethernet <name> - set ethernet to <name> (default is eth0)\n" \
-            "  -a | --mac <mac> - set mac address to <mac> (default is 00:00:00:00:00:00)\n" \
-            "  -c | --comport <name> - set comport to <name> (default is com0)\n" \
-            "  -p | --period <time> - set task period  to <time> (default is 10mc)\n" \
-            "  -l | --load <percent> - set load percent  to <percent> (default is 50)\n" \
-            " [-h | --help ]........: display this help\n" \
-            " [-v | --version ].....: display version information\n" \
-            " [-b | --background]...: fork to the background, daemon mode\n", progname);
-    fprintf(stderr, "-----------------------------------------------------------------------\n");
-}
+////-----------------------------------------------------------------------------------------
+//static void help(char *progname)
+//{
+//    fprintf(stderr, "-----------------------------------------------------------------------\n");
+//    fprintf(stderr, "Usage: %s\n" \
+//            "  -m | --mode <mode> - set mode to <mode> (default is server)\n" \
+//            "  -e | --ethernet <name> - set ethernet to <name> (default is eth0)\n" \
+//            "  -a | --mac <mac> - set mac address to <mac> (default is 00:00:00:00:00:00)\n" \
+//            "  -c | --comport <name> - set comport to <name> (default is com0)\n" \
+//            "  -p | --period <time> - set task period  to <time> (default is 10mc)\n" \
+//            "  -l | --load <percent> - set load percent  to <percent> (default is 50)\n" \
+//            " [-h | --help ]........: display this help\n" \
+//            " [-v | --version ].....: display version information\n" \
+//            " [-b | --background]...: fork to the background, daemon mode\n", progname);
+//    fprintf(stderr, "-----------------------------------------------------------------------\n");
+//}
 
 //-----------------------------------------------------------------------------------------
 // test
@@ -56,7 +56,18 @@ int main(int argc, char** argv)
 //-----------------------------------------------------------------------------------------
 // test
 
-    uint8_t uiData = 56;
+//        cout << "argc = " << (int)argc << endl;
+//        cout << "argv = " << argv[0] << endl;
+//if ()
+//{
+//
+//}
+//else
+//{
+//
+//}
+
+//    uint8_t uiData = 56;
 //    return 0;
 
 ////uint8_t ether_dhost[6];
@@ -90,12 +101,12 @@ int main(int argc, char** argv)
 //    const char *pccCommInterfaceName = "ttyO1";
 //    uint32_t uiCalculationPeriodTime = 5000;//1000000;//
 //    uint8_t uiLoadPercent = 50;
-//
+
 //    static uint8_t m_aucRtuCoilsArray[COILS_WORK_ARRAY_LENGTH];
 //    static uint8_t m_aucRtuDiscreteInputsArray[DISCRETE_INPUTS_ARRAY_LENGTH];
 //    static uint16_t m_aucRtuHoldingRegistersArray[HOLDING_REGISTERS_ARRAY_LENGTH] = {1, 2, 3, 4, 5, 6, 7};
 //    static uint16_t m_aucRtuInputRegistersArray[INPUT_REGISTERS_ARRAY_LENGTH];
-//
+
 //    /* parameter parsing */
 //    while(1)
 //    {
@@ -126,34 +137,34 @@ int main(int argc, char** argv)
 //        switch(iOption)
 //        {
 //        case 'm':
-////            cout << "case 'm' " << optarg << endl;
+//            cout << "case 'm' " << optarg << endl;
 //            // получим имя интекфейса ethernet
 //            pccMode = optarg;
 //            break;
 //        case 'e':
-////            cout << "case 'e' " << optarg << endl;
+//            cout << "case 'e' " << optarg << endl;
 //            // получим имя интекфейса ethernet
 //            pccGooseInterfaceName = optarg;
 //            break;
 //        case 'a':
-////            cout << "case 'a' " << optarg << endl;
+//            cout << "case 'a' " << optarg << endl;
 //            // получим mac адрес
 //            pccEthernetAddress = optarg;
 //            break;
 //
 //        case 'c':
-////            cout << "case 'c' " << optarg << endl;
+//            cout << "case 'c' " << optarg << endl;
 //            pccCommInterfaceName = optarg;
 //            break;
 //
 //        case 'p':
-////            cout << "case 'p' " << optarg << endl;
+//            cout << "case 'p' " << optarg << endl;
 //            // получим длину периода задачи
 //            uiCalculationPeriodTime = atol(optarg);
 //            break;
 //
 //        case 'l':
-////            cout << "case 'l' " << optarg << endl;
+//            cout << "case 'l' " << optarg << endl;
 ////            // получим длину периода задачи
 //            uiLoadPercent = atoi(optarg);
 //            break;
@@ -192,7 +203,9 @@ int main(int argc, char** argv)
     pxMainProductionCycle = new CMainProductionCycle();
     // установим начальное состояние автомата задачи
     pxMainProductionCycle ->
-    SetFsmState(CMainProductionCycle::IDDLE);
+    SetFsmState(CMainProductionCycle::MAIN_CYCLE_START);
+//    pxMainProductionCycle ->
+//    SetFsmState(CMainProductionCycle::MAIN_CYCLE_CLIENT_INIT);
     // создадим указатель на объект "производственная площадка главной задачи"
     CProductionInterface* pxMainThreadProduction;
     // создадим объект "производственная площадка главной задачи"
@@ -325,9 +338,13 @@ int main(int argc, char** argv)
     // получим параметры командной строки
     pxProjectManager ->
     GetCommantLineArgumentCustomer() -> GetOrder(argc, argv);
+    // получим параметры командной строки от заказчика
+    pxProjectManager ->
+    GetOrder(pxProjectManager -> GetCommantLineArgumentCustomer());
 
     pxMainProductionCycle ->
     SetProjectManager(pxProjectManager);
+
     CMainThreadProduction::Process(pxMainProductionCycle);
 
     delete pxMainProductionCycle;

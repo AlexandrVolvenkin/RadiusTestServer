@@ -24,10 +24,21 @@ class CMainProductionCycleInterface : public CTask
 {
 public:
     virtual void Init(void) {};
+    virtual void ServerInit(void) {};
+    virtual void ClientInit(void) {};
+    virtual void Fsm(void) {};
 
     virtual void SetProjectManager(CProjectManager* pxProjectManager) {};
     virtual CProjectManager* GetProjectManager(void) {};
 
+    virtual void SetGooseEthernet(CGooseInterface* pxGooseEthernet) {};
+    virtual CGooseInterface* GetGooseEthernet(void) {};
+
+    virtual void SetGooseServerObserver(CGooseServerObserver* pxPointer) {};
+    virtual CGooseServerObserver* GetGooseServerObserver(void) {};
+
+    void SetRte(CRte* pxRte) {};
+    virtual CRte* GetRte(void) {};
 };
 //-----------------------------------------------------------------------------------------
 
@@ -53,6 +64,10 @@ public:
         MAIN_CYCLE_IDDLE,
         MAIN_CYCLE_SERVER_INIT,
         MAIN_CYCLE_CLIENT_INIT,
+        MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME,
+        MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME_PERIOD_END_WAITING,
+
+
 
         MAIN_CYCLE_DATA_RECEIVE_PREPARE,
         MAIN_CYCLE_DATA_RECEIVE_WAITING,
@@ -74,11 +89,11 @@ public:
     void SetProjectManager(CProjectManager* pxProjectManager)
     {
         m_pxProjectManager = pxProjectManager;
-    }
+    };
     CProjectManager* GetProjectManager(void)
     {
         return m_pxProjectManager;
-    }
+    };
 
     void SetGooseEthernet(CGooseInterface* pxGooseEthernet)
     {
@@ -87,6 +102,15 @@ public:
     CGooseInterface* GetGooseEthernet(void)
     {
         return m_pxGooseEthernet;
+    };
+
+    void SetGooseServerObserver(CGooseServerObserver* pxPointer)
+    {
+        m_pxGooseServerObserver = pxPointer;
+    };
+    CGooseServerObserver* GetGooseServerObserver(void)
+    {
+        return m_pxGooseServerObserver;
     };
 
     void SetRte(CRte* pxRte)
@@ -105,6 +129,8 @@ private:
     CGooseInterface* m_pxGooseEthernet;
     // указатель на объект "производственная площадка Goose задачи"
     CProductionInterface* m_pxGooseThreadProduction;
+
+    CGooseServerObserver* m_pxGooseServerObserver;
     // указатель на объект "Rte задачи"
     CRte* pxRte;
     // указатель на объект "производственная площадка Rte задачи"

@@ -78,11 +78,11 @@ public:
     virtual uint16_t RequestBasis(uint8_t uiSlave,
                                   uint8_t uiFunctionCode,
                                   uint8_t *puiRequest) {};
-    virtual uint16_t RequestBasis(uint8_t uiSlave,
-                                  uint8_t uiFunctionCode,
-                                  uint16_t uiAddress,
-                                  uint16_t uiBitNumber,
-                                  uint8_t *puiRequest) {};
+//    virtual uint16_t RequestBasis(uint8_t uiSlave,
+//                                  uint8_t uiFunctionCode,
+//                                  uint16_t uiAddress,
+//                                  uint16_t uiBitNumber,
+//                                  uint8_t *puiRequest) {};
     virtual uint16_t ResponseBasis(uint8_t uiSlave,
                                    uint8_t uiFunctionCode,
                                    uint8_t *puiResponse) {};
@@ -177,37 +177,48 @@ public:
         START,
 //-----------------------------------------------------------------------------------------
 // GooseServer
-        REQUEST_ENABLE,
-        WAITING_ACCEPT,
-        START_REQUEST,
-        WAITING_MESSAGE_REQUEST,
-        RECEIVE_MESSAGE_REQUEST,
-        REQUEST_PROCESSING_REQUEST,
-        FRAME_TRANSMIT_CONFIRMATION,
-        WAITING_FRAME_TRANSMIT_CONFIRMATION,
-        END_WAITING_FRAME_TRANSMIT_CONFIRMATION,
-        STOP_REQUEST,
-        REQUEST_ERROR,
+//        REQUEST_ENABLE,
+//        WAITING_ACCEPT,
+//        START_REQUEST,
+//        WAITING_MESSAGE_REQUEST,
+//        RECEIVE_MESSAGE_REQUEST,
+//        REQUEST_PROCESSING_REQUEST,
+//        FRAME_TRANSMIT_CONFIRMATION,
+//        WAITING_FRAME_TRANSMIT_CONFIRMATION,
+//        END_WAITING_FRAME_TRANSMIT_CONFIRMATION,
+//        STOP_REQUEST,
+//        REQUEST_ERROR,
+
+
+        SERVER_START,
+        SERVER_DATA_RECEIVE_PREPARE,
+        SERVER_DATA_RECEIVE_WAITING,
+        SERVER_RECEIVED_DATA_PROCESSING,
+        SERVER_RECEIVED_DATA_ERROR_PROCESSING,
+        SERVER_DATA_TRANSMIT_PREPARE,
+        SERVER_DATA_TRANSMIT,
+        SERVER_IDDLE_STATE_PREPARE,
+        SERVER_IDDLE,
+        SERVER_STOP_STATE_PREPARE,
+        SERVER_STOPED,
 
 //-----------------------------------------------------------------------------------------
 // GooseClient
-        CONFIRMATION_ENABLE,
-        WAITING_CONNECT,
-        START_CONFIRMATION,
-        WAITING_MESSAGE_CONFIRMATION,
-        RECEIVE_MESSAGE_CONFIRMATION,
-        ANSWER_PROCESSING_CONFIRMATION,
-        FRAME_TRANSMIT_REQUEST,
-        WAITING_FRAME_TRANSMIT_REQUEST,
-        END_WAITING_FRAME_TRANSMIT_REQUEST,
-        STOP_CONFIRMATION,
-        CONFIRMATION_ERROR,
+//        CONFIRMATION_ENABLE,
+//        WAITING_CONNECT,
+//        START_CONFIRMATION,
+//        WAITING_MESSAGE_CONFIRMATION,
+//        RECEIVE_MESSAGE_CONFIRMATION,
+//        ANSWER_PROCESSING_CONFIRMATION,
+//        FRAME_TRANSMIT_REQUEST,
+//        WAITING_FRAME_TRANSMIT_REQUEST,
+//        END_WAITING_FRAME_TRANSMIT_REQUEST,
+//        STOP_CONFIRMATION,
+//        CONFIRMATION_ERROR,
 
-        RESTART,
+//        RESTART,
 
-        CLIENT_STOPED,
         CLIENT_START,
-        CLIENT_IDDLE,
         CLIENT_DATA_RECEIVE_PREPARE,
         CLIENT_DATA_RECEIVE_WAITING,
         CLIENT_RECEIVED_DATA_PROCESSING,
@@ -215,7 +226,9 @@ public:
         CLIENT_DATA_TRANSMIT_PREPARE,
         CLIENT_DATA_TRANSMIT,
         CLIENT_IDDLE_STATE_PREPARE,
+        CLIENT_IDDLE,
         CLIENT_STOP_STATE_PREPARE,
+        CLIENT_STOPED,
 
     };
 
@@ -261,15 +274,15 @@ public:
                                          uint16_t uiLength);
 
 public:
-    uint8_t* GetRxBuffer(void)
-    {
-        return m_puiRxBuffer;
-    };
-
-    uint8_t* GetTxBuffer(void)
-    {
-        return m_puiTxBuffer;
-    };
+//    uint8_t* GetRxBuffer(void)
+//    {
+//        return m_puiRxBuffer;
+//    };
+//
+//    uint8_t* GetTxBuffer(void)
+//    {
+//        return m_puiTxBuffer;
+//    };
 
     void SetOwnAddress(uint8_t uiAddress)
     {
@@ -344,8 +357,8 @@ public:
 
 //-----------------------------------------------------------------------------------------
 private:
-    uint8_t* m_puiRxBuffer;
-    uint8_t* m_puiTxBuffer;
+//    uint8_t* m_puiRxBuffer;
+//    uint8_t* m_puiTxBuffer;
 
     uint8_t m_uiOwnAddress;
     uint8_t m_uiSlaveAddress;
