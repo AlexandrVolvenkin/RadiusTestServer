@@ -40,14 +40,14 @@ void CRte::Fsm(void)
     case FULL_LOAD_MODE_START:
 //        std::cout << "CRte::Fsm FULL_LOAD_MODE_START"  << std::endl;
         // получим время начала замера
-        xTimeMeasure.Begin();
+        m_xTimeMeasure.Begin();
         SetFsmState(FULL_LOAD_MODE);
         break;
 
     case FULL_LOAD_MODE:
         // получим время прошедшее с начала замера
         uint32_t uiTime;
-        uiTime = xTimeMeasure.End();
+        uiTime = m_xTimeMeasure.End();
         // время работы закончилось?
         if (uiTime >
                 ((GetPeriodTime() * GetLoadPercent()) / 100))
@@ -77,7 +77,7 @@ void CRte::Fsm(void)
     case STANDBY_MODE_START:
 //        std::cout << "CRte::Fsm STANDBY_MODE_START"  << std::endl;
 //        // получим время начала замера
-//        xTimeMeasure.Begin();
+//        m_xTimeMeasure.Begin();
         SetFsmState(STANDBY_MODE);
         break;
 

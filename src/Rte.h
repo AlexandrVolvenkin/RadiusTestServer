@@ -78,7 +78,7 @@ private:
     CSerialPort* m_pxCommunicationDevice;
     uint32_t m_uiPeriodTime;
     uint8_t m_uiLoadPercent;
-    CTimeMeasure xTimeMeasure;
+    CTimeMeasure m_xTimeMeasure;
 };
 
 //-----------------------------------------------------------------------------------------

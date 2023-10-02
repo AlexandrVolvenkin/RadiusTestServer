@@ -298,6 +298,7 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
         {
             // получим время окончания замера
             uint32_t uiTime = xTimeMeasure.End();
+//    std::cout << "CGoose::ReportSlaveIDReceive xTimeMeasure.End()"  << (int)uiTime  << std::endl;
             // при получении времени не произошло ошибок?
             if (uiTime)
             {

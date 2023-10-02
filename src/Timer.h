@@ -72,6 +72,6 @@ private:
 
 
 };
-//    extern CTimeMeasure xTimeMeasure;
+
 //-----------------------------------------------------------------------------------------
 #endif // TIMERS_H_INCLUDED
