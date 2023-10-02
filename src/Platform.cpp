@@ -1062,7 +1062,7 @@ int16_t CEthernetCommunicationDevice::Read(uint8_t *puiDestination, uint16_t uiL
 
 
     tv.tv_sec = 0;
-    tv.tv_usec = 1000000;
+    tv.tv_usec = 100000;
     p_tv = &tv;
 
     /* Add a file descriptor to the set */

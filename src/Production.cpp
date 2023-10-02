@@ -106,7 +106,7 @@ void CMainThreadProduction::Process(CMainProductionCycleInterface* pxMainProduct
 //    std::cout << "CMainThreadProduction Process 2"  << std::endl;
         pxMainProductionCycleInterface -> Fsm();
 //        std::cout << "CMainThreadProduction id" << " " << std::this_thread::get_id() << std::endl;
-//        usleep(1000000);
+//        usleep(100000);
     }
 }
 

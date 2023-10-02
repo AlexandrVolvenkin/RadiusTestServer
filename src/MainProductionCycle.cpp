@@ -12,6 +12,8 @@
 
 #include "Platform.h"
 #include "MainProductionCycle.h"
+#include "Statistics.h"
+#include "Representation.h"
 
 //-----------------------------------------------------------------------------------------
 CMainProductionCycle::CMainProductionCycle()
@@ -26,6 +28,8 @@ CMainProductionCycle::~CMainProductionCycle()
     delete m_pxGooseEthernet;
     delete m_pxGooseThreadProduction;
     delete m_pxGooseServerObserver;
+    delete m_pxGooseServerStatistics;
+    delete m_pxGooseConsoleRepresentation;
 
     delete m_pxRte;
     delete m_pxRteThreadProduction;
@@ -34,8 +38,22 @@ CMainProductionCycle::~CMainProductionCycle()
 //-----------------------------------------------------------------------------------------
 void CMainProductionCycle::Init(void)
 {
+    // создадим и добавим объект "наблюдатель"
+    SetGooseServerObserver(new CGooseServerObserver());
+    // создадим и добавим объект "статистика"
+    SetGooseServerStatistics(new CGooseServerStatistics());
+    // создадим и добавим объект "представление"
+    SetGooseConsoleRepresentation(new CGooseConsoleRepresentation());
 
+    // передадим указатель на объект "наблюдатель" объект "статистика"
+    m_pxGooseServerStatistics ->
+    SetGooseServerObserver(GetGooseServerObserver());
+    // передадим указатель на объект "статистика" объект "представление"
+    m_pxGooseConsoleRepresentation ->
+    SetGooseServerStatistics(GetGooseServerStatistics());
 
+    GetGooseConsoleRepresentationTimer() ->
+    Set(MAIN_CYCLE_SHOW_STATISTICS_PERIOD_TIME);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -43,8 +61,7 @@ void CMainProductionCycle::ServerInit(void)
 {
     // создадим объект "Goose задачи"
     m_pxGooseEthernet = new CGooseEthernet();
-    // создадим и добавим объект "наблюдатель"
-    SetGooseServerObserver(new CGooseServerObserver());
+    // передадим указатель на объект "наблюдатель" объект "Goos задачи"
     m_pxGooseEthernet ->
     SetGooseServerObserver(GetGooseServerObserver());
     // установим имя интерфейса
@@ -113,9 +130,9 @@ void CMainProductionCycle::ServerInit(void)
     m_pxRte -> SetFsmState(CRte::START);
 
     // создадим объект "производственная площадка Rte задачи"
-    pxRteThreadProduction = new CRteThreadProduction();
+    m_pxRteThreadProduction = new CRteThreadProduction();
     // разместим задачу на производственной площадке
-    pxRteThreadProduction -> Place(m_pxRte);
+    m_pxRteThreadProduction -> Place(m_pxRte);
 
 }
 
@@ -124,8 +141,7 @@ void CMainProductionCycle::ClientInit(void)
 {
     // создадим объект "Goose задачи"
     m_pxGooseEthernet = new CGooseEthernet();
-    // создадим и добавим объект "наблюдатель"
-    SetGooseServerObserver(new CGooseServerObserver());
+    // передадим указатель на объект "наблюдатель" объект "Goos задачи"
     m_pxGooseEthernet ->
     SetGooseServerObserver(GetGooseServerObserver());
     // установим имя интерфейса
@@ -174,6 +190,8 @@ void CMainProductionCycle::Fsm(void)
     {
     case MAIN_CYCLE_START:
 //        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_START"  << std::endl;
+        Init();
+
         // режим работы - сервер?
         if (strcmp(GetProjectManager() -> GetMode(), "server") == 0)
         {
@@ -196,12 +214,14 @@ void CMainProductionCycle::Fsm(void)
     case MAIN_CYCLE_SERVER_INIT:
 //        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_SERVER_INIT"  << std::endl;
         ServerInit();
+        usleep(100000);
         SetFsmState(MAIN_CYCLE_IDDLE);
         break;
 
     case MAIN_CYCLE_CLIENT_INIT:
 //        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_CLIENT_INIT"  << std::endl;
         ClientInit();
+        usleep(100000);
         SetFsmState(MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME);
 //        SetFsmState(MAIN_CYCLE_IDDLE_STATE_PREPARE);
 
@@ -216,14 +236,35 @@ void CMainProductionCycle::Fsm(void)
         }
         else
         {
-
+            SetFsmState(MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME_PERIOD_END_WAITING);
         }
         break;
 
     case MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME_PERIOD_END_WAITING:
 //        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME_PERIOD_END_WAITING"  << std::endl;
         usleep(GetGooseEthernet() -> GetPeriodTime());
-        SetFsmState(MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME);
+        SetFsmState(MAIN_CYCLE_IS_TIME_TO_SHOW_STATISTICS);
+        break;
+
+    case MAIN_CYCLE_IS_TIME_TO_SHOW_STATISTICS:
+//        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_IS_TIME_TO_SHOW_STATISTICS"  << std::endl;
+        // настало время отобразить статистику?
+        if (GetGooseConsoleRepresentationTimer() -> IsOverflow())
+        {
+            GetGooseConsoleRepresentationTimer() ->
+            Set(MAIN_CYCLE_SHOW_STATISTICS_PERIOD_TIME);
+            SetFsmState(MAIN_CYCLE_SHOW_STATISTICS);
+        }
+        else
+        {
+            SetFsmState(MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME);
+        }
+        break;
+
+    case MAIN_CYCLE_SHOW_STATISTICS:
+//        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_SHOW_STATISTICS"  << std::endl;
+        GetGooseConsoleRepresentation() -> Show();
+        SetFsmState(MAIN_CYCLE_IS_TIME_TO_SHOW_STATISTICS);
         break;
 
 
@@ -236,6 +277,7 @@ void CMainProductionCycle::Fsm(void)
 
     case MAIN_CYCLE_IDDLE:
 //        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_IDDLE"  << std::endl;
+        usleep(100000);
         break;
 
     case MAIN_CYCLE_STOP_STATE_PREPARE:
@@ -245,6 +287,7 @@ void CMainProductionCycle::Fsm(void)
 
     case MAIN_CYCLE_STOPED:
 //        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_STOPED"  << std::endl;
+        usleep(100000);
         break;
 
     default:

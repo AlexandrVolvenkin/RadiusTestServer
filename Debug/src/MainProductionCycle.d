@@ -12,7 +12,8 @@ src/MainProductionCycle.o: ../src/MainProductionCycle.cpp \
  D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Production.h \
  D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src/Timer.h \
  D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\src\Goose/Goose.h \
- ../src/ProjectManager.h ../src/Customer.h
+ ../src/ProjectManager.h ../src/Customer.h ../src/Statistics.h \
+ ../src/Observer.h ../src/Representation.h
 
 ../src/Platform.h:
 
@@ -51,3 +52,9 @@ D:\Projects\CurrentProjects\RadiusAutomatic\RadiusTestServer\RadiusTestServer\sr
 ../src/ProjectManager.h:
 
 ../src/Customer.h:
+
+../src/Statistics.h:
+
+../src/Observer.h:
+
+../src/Representation.h:

@@ -74,7 +74,7 @@ void CGooseServerObserver::Reset(void)
 void CGooseServerObserver::CalculateLostPacketNumber(uint16_t uiIndex)
 {
     SetLostPacketNumber(GetLostPacketNumber() +
-                        ((uiIndex - 1) - GetLastReceivedPacketIndex()));
+                        ((uint16_t)(uiIndex - 1) - (uint16_t)GetLastReceivedPacketIndex()));
 }
 
 //-----------------------------------------------------------------------------------------

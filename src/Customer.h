@@ -26,7 +26,7 @@ public:
 
 
 //-----------------------------------------------------------------------------------------
-class CCustomer : CCustomerInterface
+class CCustomer : public CCustomerInterface
 {
 public:
     CCustomer();
@@ -47,7 +47,7 @@ private:
 
 
 //-----------------------------------------------------------------------------------------
-class CCommantLineArgumentCustomer// : CCustomer
+class CCommantLineArgumentCustomer// : public CCustomer
 {
 public:
     CCommantLineArgumentCustomer();

@@ -28,7 +28,7 @@ public:
 
 
 //-----------------------------------------------------------------------------------------
-class CProjectManager// : CProjectManagerInterface
+class CProjectManager// : public CProjectManagerInterface
 {
 public:
     CProjectManager();
@@ -130,7 +130,7 @@ private:
 
 
 ////-----------------------------------------------------------------------------------------
-//class CProjectManager : CProjectManagerInterface
+//class CProjectManager : public CProjectManagerInterface
 //{
 //    public:
 //        CProjectManager();

@@ -18,6 +18,8 @@
 #include "Goose.h"
 #include "GooseEthernet.h"
 #include "ProjectManager.h"
+#include "Statistics.h"
+#include "Representation.h"
 
 //-----------------------------------------------------------------------------------------
 class CMainProductionCycleInterface : public CTask
@@ -37,6 +39,12 @@ public:
     virtual void SetGooseServerObserver(CGooseServerObserver* pxPointer) {};
     virtual CGooseServerObserver* GetGooseServerObserver(void) {};
 
+    virtual void SetGooseServerStatistics(CStatisticsInterface* pxPointer) {};
+    virtual CStatisticsInterface* GetGooseServerStatistics(void) {};
+
+    virtual void SetGooseConsoleRepresentation(CRepresentationInterface* pxPointer) {};
+    virtual CRepresentationInterface* GetGooseConsoleRepresentation(void) {};
+
     void SetRte(CRte* pxRte) {};
     virtual CRte* GetRte(void) {};
 };
@@ -54,6 +62,12 @@ class CMainProductionCycle : public CMainProductionCycleInterface
 {
 public:
 
+
+    enum
+    {
+        MAIN_CYCLE_SHOW_STATISTICS_PERIOD_TIME = 1000,
+    };
+
     enum
     {
         IDDLE  = 0,
@@ -66,6 +80,8 @@ public:
         MAIN_CYCLE_CLIENT_INIT,
         MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME,
         MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME_PERIOD_END_WAITING,
+        MAIN_CYCLE_IS_TIME_TO_SHOW_STATISTICS,
+        MAIN_CYCLE_SHOW_STATISTICS,
 
 
 
@@ -113,6 +129,24 @@ public:
         return m_pxGooseServerObserver;
     };
 
+    void SetGooseServerStatistics(CStatisticsInterface* pxPointer)
+    {
+        m_pxGooseServerStatistics = pxPointer;
+    };
+    CStatisticsInterface* GetGooseServerStatistics(void)
+    {
+        return m_pxGooseServerStatistics;
+    };
+
+    void SetGooseConsoleRepresentation(CRepresentationInterface* pxPointer)
+    {
+        m_pxGooseConsoleRepresentation = pxPointer;
+    };
+    CRepresentationInterface* GetGooseConsoleRepresentation(void)
+    {
+        return m_pxGooseConsoleRepresentation;
+    };
+
     void SetRte(CRte* pxRte)
     {
         m_pxRte = pxRte;
@@ -122,19 +156,22 @@ public:
         return m_pxRte;
     };
 
+    CTimer* GetGooseConsoleRepresentationTimer(void)
+    {
+        return &m_xGooseConsoleRepresentationTimer;
+    };
+
 private:
+    CGooseServerObserver* m_pxGooseServerObserver;
+    CStatisticsInterface* m_pxGooseServerStatistics;
+    CRepresentationInterface* m_pxGooseConsoleRepresentation;
     // указатель на объект "управляющий проектом"
     CProjectManager* m_pxProjectManager;
+
     // указатель на объект "Goose задачи"
     CGooseInterface* m_pxGooseEthernet;
     // указатель на объект "производственная площадка Goose задачи"
     CProductionInterface* m_pxGooseThreadProduction;
-
-    CGooseServerObserver* m_pxGooseServerObserver;
-    // указатель на объект "Rte задачи"
-    CRte* pxRte;
-    // указатель на объект "производственная площадка Rte задачи"
-    CProductionInterface* pxRteThreadProduction;
 
     // указатель на объект "Rte задачи"
     CRte* m_pxRte;
@@ -145,6 +182,8 @@ private:
     uint8_t m_aucRtuDiscreteInputsArray[DISCRETE_INPUTS_ARRAY_LENGTH];
     uint16_t m_aucRtuHoldingRegistersArray[HOLDING_REGISTERS_ARRAY_LENGTH] = {1, 2, 3, 4, 5, 6, 7};
     uint16_t m_aucRtuInputRegistersArray[INPUT_REGISTERS_ARRAY_LENGTH];
+
+    CTimer m_xGooseConsoleRepresentationTimer;
 };
 
 //-----------------------------------------------------------------------------------------
