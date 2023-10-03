@@ -73,8 +73,11 @@ public:
 
     virtual CEthernetCommunicationDevice* GetCommunicationDevice(void) {};
 
-    virtual CGooseServerObserver* GetGooseServerObserver(void) {};
     virtual void SetGooseServerObserver(CGooseServerObserver* pxPointer) {};
+    virtual CGooseServerObserver* GetGooseServerObserver(void) {};
+
+    virtual void SetGooseClientObserver(CGooseClientObserver* pxPointer) {};
+    virtual CGooseClientObserver* GetGooseClientObserver(void) {};
 
     virtual void SetPeriodTime(uint32_t uiValue) {};
     virtual uint32_t GetPeriodTime(void) {};
@@ -274,6 +277,15 @@ public:
         m_pxGooseServerObserver = pxPointer;
     };
 
+    void SetGooseClientObserver(CGooseClientObserver* pxPointer)
+    {
+        m_pxGooseClientObserver = pxPointer;
+    };
+    CGooseClientObserver* GetGooseClientObserver(void)
+    {
+        return m_pxGooseClientObserver;
+    };
+
     void SetPeriodTime(uint32_t uiValue)
     {
         m_uiPeriodTime = uiValue;
@@ -302,6 +314,7 @@ private:
     uint16_t m_uiMessageLength;
 
     CGooseServerObserver* m_pxGooseServerObserver;
+    CGooseClientObserver* m_pxGooseClientObserver;
 
 public:
     uint8_t *m_puiCoils;

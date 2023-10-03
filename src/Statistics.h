@@ -21,6 +21,9 @@ public:
 
     virtual void SetGooseServerObserver(CGooseServerObserver* pxPointer) {};
     virtual CGooseServerObserver* GetGooseServerObserver(void) {};
+
+    virtual void SetGooseClientObserver(CGooseClientObserver* pxPointer) {};
+    virtual CGooseClientObserver* GetGooseClientObserver(void) {};
 };
 
 //-----------------------------------------------------------------------------------------
@@ -67,8 +70,18 @@ public:
         return m_pxGooseServerObserver;
     };
 
+    void SetGooseClientObserver(CGooseClientObserver* pxPointer)
+    {
+        m_pxGooseClientObserver = pxPointer;
+    };
+    CGooseClientObserver* GetGooseClientObserver(void)
+    {
+        return m_pxGooseClientObserver;
+    };
+
 private:
     CGooseServerObserver* m_pxGooseServerObserver;
+    CGooseClientObserver* m_pxGooseClientObserver;
 };
 
 //-----------------------------------------------------------------------------------------

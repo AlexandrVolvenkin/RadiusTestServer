@@ -49,6 +49,25 @@ private:
 
 
 //-----------------------------------------------------------------------------------------
+
+// для сериализации, разбора данных полученных по интерфейсам передачи данных.
+#pragma pack(push)
+#pragma pack(1)
+struct TGooseServerObserverData
+{
+    uint32_t uiTransmitPacketNumber;
+    uint32_t uiReceivePacketNumber;
+    uint32_t uiLostPacketNumber;
+
+    uint32_t uiMinReceivePacketTimeout;
+    uint32_t uiMaxReceivePacketTimeout;
+    uint32_t uiAverageReceivePacketTimeout;
+    uint32_t uiCommonReceivePacketTimeout;
+    uint32_t uiCommonReceivePacketNumber;
+};
+#pragma pack(pop)
+
+//-----------------------------------------------------------------------------------------
 class CGooseServerObserver// : public CObserver
 {
 public:
@@ -162,6 +181,22 @@ private:
 
     uint16_t m_uiLastReceivedPacketIndex;
     uint32_t m_uiCommonStatisticsOutCounter;
+};
+//-----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------------
+class CGooseClientObserver : public CGooseServerObserver
+{
+public:
+    CGooseClientObserver();
+    virtual ~CGooseClientObserver();
 };
 //-----------------------------------------------------------------------------------------
 

@@ -28,6 +28,7 @@ CMainProductionCycle::~CMainProductionCycle()
     delete m_pxGooseEthernet;
     delete m_pxGooseThreadProduction;
     delete m_pxGooseServerObserver;
+    delete m_pxGooseClientObserver;
     delete m_pxGooseServerStatistics;
     delete m_pxGooseConsoleRepresentation;
 
@@ -40,6 +41,8 @@ void CMainProductionCycle::Init(void)
 {
     // создадим и добавим объект "наблюдатель"
     SetGooseServerObserver(new CGooseServerObserver());
+    // создадим и добавим объект "наблюдатель"
+    SetGooseClientObserver(new CGooseClientObserver());
     // создадим и добавим объект "статистика"
     SetGooseServerStatistics(new CGooseServerStatistics());
     // создадим и добавим объект "представление"
@@ -48,6 +51,9 @@ void CMainProductionCycle::Init(void)
     // передадим указатель на объект "наблюдатель" объект "статистика"
     m_pxGooseServerStatistics ->
     SetGooseServerObserver(GetGooseServerObserver());
+    // передадим указатель на объект "наблюдатель" объект "статистика"
+    m_pxGooseServerStatistics ->
+    SetGooseClientObserver(GetGooseClientObserver());
     // передадим указатель на объект "статистика" объект "представление"
     m_pxGooseConsoleRepresentation ->
     SetGooseServerStatistics(GetGooseServerStatistics());
@@ -64,6 +70,9 @@ void CMainProductionCycle::ServerInit(void)
     // передадим указатель на объект "наблюдатель" объект "Goos задачи"
     m_pxGooseEthernet ->
     SetGooseServerObserver(GetGooseServerObserver());
+    // передадим указатель на объект "наблюдатель" объект "Goos задачи"
+    m_pxGooseEthernet ->
+    SetGooseClientObserver(GetGooseClientObserver());
     // установим имя интерфейса
     m_pxGooseEthernet ->
     GetCommunicationDevice() ->
@@ -144,6 +153,9 @@ void CMainProductionCycle::ClientInit(void)
     // передадим указатель на объект "наблюдатель" объект "Goos задачи"
     m_pxGooseEthernet ->
     SetGooseServerObserver(GetGooseServerObserver());
+    // передадим указатель на объект "наблюдатель" объект "Goos задачи"
+    m_pxGooseEthernet ->
+    SetGooseClientObserver(GetGooseClientObserver());
     // установим имя интерфейса
     m_pxGooseEthernet ->
     GetCommunicationDevice() ->

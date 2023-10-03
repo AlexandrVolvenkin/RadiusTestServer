@@ -78,3 +78,35 @@ void CGooseServerObserver::CalculateLostPacketNumber(uint16_t uiIndex)
 }
 
 //-----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------------
+CGooseClientObserver::CGooseClientObserver()
+{
+//    std::cout << "CGooseClientObserver constructor"  << std::endl;
+    SetTransmitPacketNumber(0);
+    SetReceivePacketNumber(0);
+    SetLostPacketNumber(0);
+
+    SetMinReceivePacketTimeout(1000000000);
+    SetMaxReceivePacketTimeout(0);
+    SetAverageReceivePacketTimeout(0);
+    SetCommonReceivePacketTimeout(0);
+    SetCommonReceivePacketNumber(0);
+    SetCommonStatisticsOutCounter(0);
+}
+
+//-----------------------------------------------------------------------------------------
+CGooseClientObserver::~CGooseClientObserver()
+{
+//    std::cout << "CGooseClientObserver destructor"  << std::endl;
+
+}
+
+//-----------------------------------------------------------------------------------------

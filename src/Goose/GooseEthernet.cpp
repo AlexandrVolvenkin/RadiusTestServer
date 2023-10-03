@@ -657,8 +657,8 @@ void CGooseEthernet::Fsm(void)
 //        Send(GetTxBuffer(), GetMessageLength());
 //
 //        // увеличим количество отправленных пакетов
-//        GetGooseServerObserver() ->
-//        SetTransmitPacketNumber(GetGooseServerObserver() ->
+//        GetGooseClientObserver() ->
+//        SetTransmitPacketNumber(GetGooseClientObserver() ->
 //                                GetTransmitPacketNumber() + 1);
 
         SetFsmState(CLIENT_DATA_TRANSMIT);
@@ -672,8 +672,8 @@ void CGooseEthernet::Fsm(void)
         Send(GetTxBuffer(), GetMessageLength());
 
         // увеличим количество отправленных пакетов
-        GetGooseServerObserver() ->
-        SetTransmitPacketNumber(GetGooseServerObserver() ->
+        GetGooseClientObserver() ->
+        SetTransmitPacketNumber(GetGooseClientObserver() ->
                                 GetTransmitPacketNumber() + 1);
 
         SetFsmState(CLIENT_DATA_RECEIVE_PREPARE);

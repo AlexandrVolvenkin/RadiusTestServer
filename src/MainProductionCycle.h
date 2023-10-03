@@ -129,6 +129,15 @@ public:
         return m_pxGooseServerObserver;
     };
 
+    void SetGooseClientObserver(CGooseClientObserver* pxPointer)
+    {
+        m_pxGooseClientObserver = pxPointer;
+    };
+    CGooseClientObserver* GetGooseClientObserver(void)
+    {
+        return m_pxGooseClientObserver;
+    };
+
     void SetGooseServerStatistics(CStatisticsInterface* pxPointer)
     {
         m_pxGooseServerStatistics = pxPointer;
@@ -163,6 +172,7 @@ public:
 
 private:
     CGooseServerObserver* m_pxGooseServerObserver;
+    CGooseClientObserver* m_pxGooseClientObserver;
     CStatisticsInterface* m_pxGooseServerStatistics;
     CRepresentationInterface* m_pxGooseConsoleRepresentation;
     // указатель на объект "управляющий проектом"

@@ -103,25 +103,25 @@ uint16_t CGoose::ReportSlaveID(uint8_t *puiRequest, uint8_t *puiResponse, uint16
     int8_t uiFunctionCode = puiRequest[uiOffset];
 
 
+    uint16_t uiIndex = 0;
+    // получим индекс пакета
+    // младштй байт
+    uiIndex = (uint16_t)(puiRequest[sizeof(struct ether_header) + 1]);
+    // старший байт
+    uiIndex |= ((uint16_t)(puiRequest[sizeof(struct ether_header)]) << 8);
 
-//    uint16_t uiIndex = 0;
-//    // Это не первый принятый пакет?
-//    if (GetGooseServerObserver() ->
-//            GetReceivePacketNumber())
-//    {
-//        // получим индекс пакета
-//        // младштй байт
-//        uiIndex = (uint16_t)(puiRequest[sizeof(struct ether_header) + 1]);
-//        // старший байт
-//        uiIndex |= ((uint16_t)(puiRequest[sizeof(struct ether_header)]) << 8);
-//
-//        // не было потери пакета?
-//        if ((uiIndex - 1) ==
-//                GetGooseServerObserver() ->
-//                GetLastReceivedPacketIndex())
-//        {
+    // Это не первый принятый пакет?
+    if (GetGooseServerObserver() ->
+            GetReceivePacketNumber() > 1)
+    {
+        // не было потери пакета?
+        if ((uiIndex - 1) ==
+                GetGooseServerObserver() ->
+                GetLastReceivedPacketIndex())
+        {
 //            // получим время окончания замера
 //            uint32_t uiTime = xTimeMeasure.End();
+////    std::cout << "CGoose::ReportSlaveIDReceive xTimeMeasure.End()"  << (int)uiTime  << std::endl;
 //            // при получении времени не произошло ошибок?
 //            if (uiTime)
 //            {
@@ -145,29 +145,78 @@ uint16_t CGoose::ReportSlaveID(uint8_t *puiRequest, uint8_t *puiResponse, uint16
 //                    SetMaxReceivePacketTimeout(uiTime);
 //                }
 //
-////                SetAverageReceivePacketTimeout(uint32_t uiData)
-////                GetAverageReceivePacketTimeout(void)
+//                // суммируем с общим временем отклика всех пакетов
+//                GetGooseServerObserver() ->
+//                SetCommonReceivePacketTimeout(GetGooseServerObserver() ->
+//                                              GetCommonReceivePacketTimeout() + uiTime);
+//
+//                // увеличим количество успешно принятых пакетов за сессию вывода статистики - 1с
+//                GetGooseServerObserver() ->
+//                SetCommonReceivePacketNumber(GetGooseServerObserver() ->
+//                                             GetCommonReceivePacketNumber() + 1);
+//
 //            }
-//        }
-//        else
-//        {
-//            // получим и вычислим количество потерянных пакетов
-//            GetGooseServerObserver() ->
-//            CalculateLostPacketNumber(uiIndex);
-//        }
+        }
+        else
+        {
+            // получим и вычислим количество потерянных пакетов
+            GetGooseServerObserver() ->
+            CalculateLostPacketNumber(uiIndex);
+        }
+    }
+
+    // сохраним индекс принятого пакета
+    GetGooseServerObserver() ->
+    SetLastReceivedPacketIndex(uiIndex);
+
+    // увеличим количество принятых пакетов
+    GetGooseServerObserver() ->
+    SetReceivePacketNumber(GetGooseServerObserver() ->
+                           GetReceivePacketNumber() + 1);
+//    // увеличим количество отправленных пакетов
+//    GetGooseServerObserver() ->
+//    SetTransmitPacketNumber(GetGooseServerObserver() ->
+//                            GetTransmitPacketNumber() + 1);
+
+//    if ((GetTimerPointer() -> IsOverflow()))
+//    {
+//        GetTimerPointer() -> Set(1000);
+//
+//        // вычислим среднее время отклика
+//        GetGooseServerObserver() ->
+//        SetAverageReceivePacketTimeout(GetGooseServerObserver() ->
+//                                       GetCommonReceivePacketTimeout() /
+//                                       GetGooseServerObserver() ->
+//                                       GetCommonReceivePacketNumber());
+//
+//        // очистим общее время отклика всех пакетов за сессию вывода статистики - 1с
+//        GetGooseServerObserver() ->
+//        SetCommonReceivePacketTimeout(0);
+//        // очистим количество успешно принятых пакетов за сессию вывода статистики - 1с
+//        GetGooseServerObserver() ->
+//        SetCommonReceivePacketNumber(0);
+//
+////    std::cout << "CGoose::ReportSlaveIDReceive statistics"  << std::endl;
+////        std::cout << std::endl;
+////        std::cout << "//----------------------------------------" << std::endl;
+////        std::cout << "Client statistics session: " << (uint)GetGooseServerObserver() -> GetCommonStatisticsOutCounter() << std::endl;
+////        std::cout << std::endl;
+//////        std::cout << "Last packet index: " << (int)GetGooseServerObserver() -> GetLastReceivedPacketIndex() << std::endl;
+////        std::cout << "Transmited: " << (uint)GetGooseServerObserver() -> GetTransmitPacketNumber() << std::endl;
+////        std::cout << "Received: " << (uint)GetGooseServerObserver() -> GetReceivePacketNumber() << std::endl;
+////        std::cout << "Lost: " << (uint)GetGooseServerObserver() -> GetLostPacketNumber() << std::endl;
+////        std::cout << "Min: " << (uint)GetGooseServerObserver() -> GetMinReceivePacketTimeout() << std::endl;
+////        std::cout << "Max: " << (uint)GetGooseServerObserver() -> GetMaxReceivePacketTimeout() << std::endl;
+////        std::cout << "Average: " << (uint)GetGooseServerObserver() -> GetAverageReceivePacketTimeout() << std::endl;
+////        std::cout << std::endl;
+////        std::cout << "//----------------------------------------" << std::endl;
+//
+//        // увеличим номер сессии вывода статистики
+//        GetGooseServerObserver() ->
+//        SetCommonStatisticsOutCounter(GetGooseServerObserver() ->
+//                                      GetCommonStatisticsOutCounter() + 1);
+//
 //    }
-//
-//    // сохраним индекс принятого пакета
-//    GetGooseServerObserver() ->
-//    SetLastReceivedPacketIndex(uiIndex);
-//
-//    // увеличим количество принятых пакетов
-//    GetGooseServerObserver() ->
-//    SetReceivePacketNumber(GetGooseServerObserver() ->
-//                           GetReceivePacketNumber() + 1);
-//
-//    // получим время начала замера
-//    xTimeMeasure.Begin();
 
     uiLength = ResponseBasis(uiSlave,
                              uiFunctionCode,
@@ -176,6 +225,21 @@ uint16_t CGoose::ReportSlaveID(uint8_t *puiRequest, uint8_t *puiResponse, uint16
     // установим идентификатор устройства
     puiResponse[uiLength++] = 3;
     puiResponse[uiLength++] = 14;
+
+    TGooseServerObserverData* pxGooseServerObserverData;
+    pxGooseServerObserverData = (TGooseServerObserverData*)&puiResponse[uiLength];
+
+    pxGooseServerObserverData -> uiTransmitPacketNumber =
+        GetGooseServerObserver() ->
+        GetTransmitPacketNumber();
+    pxGooseServerObserverData -> uiReceivePacketNumber =
+        GetGooseServerObserver() ->
+        GetReceivePacketNumber();
+    pxGooseServerObserverData -> uiLostPacketNumber =
+        GetGooseServerObserver() ->
+        GetLostPacketNumber();
+
+    uiLength += sizeof(struct TGooseServerObserverData);
 
     return uiLength;
 }
@@ -288,12 +352,12 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
     uiIndex |= ((uint16_t)(puiResponse[sizeof(struct ether_header)]) << 8);
 
     // Это не первый принятый пакет?
-    if (GetGooseServerObserver() ->
+    if (GetGooseClientObserver() ->
             GetReceivePacketNumber() > 1)
     {
         // не было потери пакета?
         if ((uiIndex - 1) ==
-                GetGooseServerObserver() ->
+                GetGooseClientObserver() ->
                 GetLastReceivedPacketIndex())
         {
             // получим время окончания замера
@@ -304,32 +368,32 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
             {
                 // результат текущего измерения времени меньше минимального значения?
                 if (uiTime <
-                        GetGooseServerObserver() ->
+                        GetGooseClientObserver() ->
                         GetMinReceivePacketTimeout())
                 {
                     // сохраним новое минимального значение
-                    GetGooseServerObserver() ->
+                    GetGooseClientObserver() ->
                     SetMinReceivePacketTimeout(uiTime);
                 }
 
                 // результат текущего измерения времени больше максимального значения?
                 if (uiTime >
-                        GetGooseServerObserver() ->
+                        GetGooseClientObserver() ->
                         GetMaxReceivePacketTimeout())
                 {
                     // сохраним новое максимальное значение
-                    GetGooseServerObserver() ->
+                    GetGooseClientObserver() ->
                     SetMaxReceivePacketTimeout(uiTime);
                 }
 
                 // суммируем с общим временем отклика всех пакетов
-                GetGooseServerObserver() ->
-                SetCommonReceivePacketTimeout(GetGooseServerObserver() ->
+                GetGooseClientObserver() ->
+                SetCommonReceivePacketTimeout(GetGooseClientObserver() ->
                                               GetCommonReceivePacketTimeout() + uiTime);
 
                 // увеличим количество успешно принятых пакетов за сессию вывода статистики - 1с
-                GetGooseServerObserver() ->
-                SetCommonReceivePacketNumber(GetGooseServerObserver() ->
+                GetGooseClientObserver() ->
+                SetCommonReceivePacketNumber(GetGooseClientObserver() ->
                                              GetCommonReceivePacketNumber() + 1);
 
             }
@@ -337,61 +401,74 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
         else
         {
             // получим и вычислим количество потерянных пакетов
-            GetGooseServerObserver() ->
+            GetGooseClientObserver() ->
             CalculateLostPacketNumber(uiIndex);
         }
     }
 
     // сохраним индекс принятого пакета
-    GetGooseServerObserver() ->
+    GetGooseClientObserver() ->
     SetLastReceivedPacketIndex(uiIndex);
 
     // увеличим количество принятых пакетов
-    GetGooseServerObserver() ->
-    SetReceivePacketNumber(GetGooseServerObserver() ->
+    GetGooseClientObserver() ->
+    SetReceivePacketNumber(GetGooseClientObserver() ->
                            GetReceivePacketNumber() + 1);
 //    // увеличим количество отправленных пакетов
-//    GetGooseServerObserver() ->
-//    SetTransmitPacketNumber(GetGooseServerObserver() ->
+//    GetGooseClientObserver() ->
+//    SetTransmitPacketNumber(GetGooseClientObserver() ->
 //                            GetTransmitPacketNumber() + 1);
 
     if ((GetTimerPointer() -> IsOverflow()))
     {
-        // вычислим среднее время отклика
+        GetTimerPointer() -> Set(1000);
+
+        TGooseServerObserverData* pxGooseServerObserverData;
+        pxGooseServerObserverData = (TGooseServerObserverData*)&puiResponse[uiOffset + 3];
+
         GetGooseServerObserver() ->
-        SetAverageReceivePacketTimeout(GetGooseServerObserver() ->
+        SetTransmitPacketNumber(pxGooseServerObserverData -> uiTransmitPacketNumber);
+        GetGooseServerObserver() ->
+        SetReceivePacketNumber(pxGooseServerObserverData -> uiReceivePacketNumber) ;
+        GetGooseServerObserver() ->
+        SetLostPacketNumber(pxGooseServerObserverData -> uiLostPacketNumber);
+
+
+
+        // вычислим среднее время отклика
+        GetGooseClientObserver() ->
+        SetAverageReceivePacketTimeout(GetGooseClientObserver() ->
                                        GetCommonReceivePacketTimeout() /
-                                       GetGooseServerObserver() ->
+                                       GetGooseClientObserver() ->
                                        GetCommonReceivePacketNumber());
 
         // очистим общее время отклика всех пакетов за сессию вывода статистики - 1с
-        GetGooseServerObserver() ->
+        GetGooseClientObserver() ->
         SetCommonReceivePacketTimeout(0);
         // очистим количество успешно принятых пакетов за сессию вывода статистики - 1с
-        GetGooseServerObserver() ->
+        GetGooseClientObserver() ->
         SetCommonReceivePacketNumber(0);
 
 //    std::cout << "CGoose::ReportSlaveIDReceive statistics"  << std::endl;
 //        std::cout << std::endl;
 //        std::cout << "//----------------------------------------" << std::endl;
-//        std::cout << "Client statistics session: " << (uint)GetGooseServerObserver() -> GetCommonStatisticsOutCounter() << std::endl;
+//        std::cout << "Client statistics session: " << (uint)GetGooseClientObserver() -> GetCommonStatisticsOutCounter() << std::endl;
 //        std::cout << std::endl;
-////        std::cout << "Last packet index: " << (int)GetGooseServerObserver() -> GetLastReceivedPacketIndex() << std::endl;
-//        std::cout << "Transmited: " << (uint)GetGooseServerObserver() -> GetTransmitPacketNumber() << std::endl;
-//        std::cout << "Received: " << (uint)GetGooseServerObserver() -> GetReceivePacketNumber() << std::endl;
-//        std::cout << "Lost: " << (uint)GetGooseServerObserver() -> GetLostPacketNumber() << std::endl;
-//        std::cout << "Min: " << (uint)GetGooseServerObserver() -> GetMinReceivePacketTimeout() << std::endl;
-//        std::cout << "Max: " << (uint)GetGooseServerObserver() -> GetMaxReceivePacketTimeout() << std::endl;
-//        std::cout << "Average: " << (uint)GetGooseServerObserver() -> GetAverageReceivePacketTimeout() << std::endl;
+////        std::cout << "Last packet index: " << (int)GetGooseClientObserver() -> GetLastReceivedPacketIndex() << std::endl;
+//        std::cout << "Transmited: " << (uint)GetGooseClientObserver() -> GetTransmitPacketNumber() << std::endl;
+//        std::cout << "Received: " << (uint)GetGooseClientObserver() -> GetReceivePacketNumber() << std::endl;
+//        std::cout << "Lost: " << (uint)GetGooseClientObserver() -> GetLostPacketNumber() << std::endl;
+//        std::cout << "Min: " << (uint)GetGooseClientObserver() -> GetMinReceivePacketTimeout() << std::endl;
+//        std::cout << "Max: " << (uint)GetGooseClientObserver() -> GetMaxReceivePacketTimeout() << std::endl;
+//        std::cout << "Average: " << (uint)GetGooseClientObserver() -> GetAverageReceivePacketTimeout() << std::endl;
 //        std::cout << std::endl;
 //        std::cout << "//----------------------------------------" << std::endl;
 
         // увеличим номер сессии вывода статистики
-        GetGooseServerObserver() ->
-        SetCommonStatisticsOutCounter(GetGooseServerObserver() ->
+        GetGooseClientObserver() ->
+        SetCommonStatisticsOutCounter(GetGooseClientObserver() ->
                                       GetCommonStatisticsOutCounter() + 1);
 
-        GetTimerPointer() -> Set(1000);
     }
 
     return 1;
