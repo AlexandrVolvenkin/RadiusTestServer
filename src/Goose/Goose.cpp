@@ -102,6 +102,13 @@ uint16_t CGoose::ReportSlaveID(uint8_t *puiRequest, uint8_t *puiResponse, uint16
     int8_t uiSlave = puiRequest[uiOffset - 1];
     int8_t uiFunctionCode = puiRequest[uiOffset];
 
+    // команда - очистить статистику сервера?
+    if ((puiRequest[uiOffset + 1]) == 0x03)
+    {
+        GetGooseServerObserver() ->
+        Reset();
+    }
+
 
     uint16_t uiIndex = 0;
     // получим индекс пакета
@@ -321,6 +328,14 @@ int8_t CGoose::ReportSlaveIDRequest(uint8_t uiSlaveAddress)
         m_uiMessageLength = RequestBasis(uiSlaveAddress,
                                          m_uiFunctionCode,
                                          puiRequest);
+
+        // первый запрос серверу?
+        if (GetGooseClientObserver() ->
+                GetReceivePacketNumber() == 0)
+        {
+            // команда - очистить статистику сервера
+            puiRequest[m_uiMessageLength++] = 0x03;
+        }
 
         SetFsmState(CLIENT_DATA_TRANSMIT_PREPARE);
         return 1;
