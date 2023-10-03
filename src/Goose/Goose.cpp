@@ -270,7 +270,7 @@ uint16_t CGoose::RequestProcessing(uint8_t *puiRequest,
     /* Filter on the Modbus unit identifier (slave) in RTU mode */
     if (uiSlave != m_uiOwnAddress && uiSlave != 0)
     {
-        std::cout << "CGoose::RequestProcessing uiSlave != m_uiOwnAddress"  << std::endl;
+//        std::cout << "CGoose::RequestProcessing uiSlave != m_uiOwnAddress"  << std::endl;
         return 0;
     }
 
@@ -561,6 +561,28 @@ uint16_t CGoose::AnswerProcessing(uint8_t *puiResponse, uint16_t uiFrameLength)
 //    std::cout << "CGoose::AnswerProcessing uiSlave " << (int)uiSlave << std::endl;
 //    std::cout << "CGoose::AnswerProcessing m_uiFunctionCode " << (int)m_uiFunctionCode << std::endl;
 //    std::cout << "CGoose::AnswerProcessing uiFunctionCode " << (int)uiFunctionCode << std::endl;
+
+
+
+//    struct ether_header* pxEthernetHeader;
+//    pxEthernetHeader = (struct ether_header*)puiResponse;
+//
+//    memcpy(pxEthernetHeader -> ether_dhost,
+//           m_pxCommunicationDevice -> GetDestnationMacAddress(),
+//           CEthernetCommunicationDevice::MAC_ADDRESS_LENGTH);
+//
+////    pxEthernetHeader -> ether_dhost[0] = DEST_MAC0;
+////    pxEthernetHeader -> ether_dhost[1] = DEST_MAC1;
+////    pxEthernetHeader -> ether_dhost[2] = DEST_MAC2;
+////    pxEthernetHeader -> ether_dhost[3] = DEST_MAC3;
+////    pxEthernetHeader -> ether_dhost[4] = DEST_MAC4;
+////    pxEthernetHeader -> ether_dhost[5] = DEST_MAC5;
+//
+//    memcpy(pxEthernetHeader -> ether_shost,
+//           m_pxCommunicationDevice -> GetSourseMacAddress(),
+//           CEthernetCommunicationDevice::MAC_ADDRESS_LENGTH);
+
+
 
     // (uiFunctionCode & 0x7f) при формировании ответа об исключительной ситуации
     // сервер добавляет старший бит - 0x80. здесь его нужно очистить перед проверкой

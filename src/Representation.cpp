@@ -58,7 +58,7 @@ void CGooseConsoleRepresentation::Show(void)
 //    std::cout << std::endl;
 //        std::cout << "Last packet index: " << (int)GetGooseServerObserver() -> GetLastReceivedPacketIndex() << std::endl;
     std::cout << "Transmited: " << (uint)GetGooseServerStatistics() -> GetGooseServerObserver() -> GetTransmitPacketNumber() << std::endl;
-    std::cout << "Received: " << (uint)GetGooseServerStatistics() -> GetGooseServerObserver() -> GetReceivePacketNumber() << std::endl;
+    std::cout << "Received: " << ((uint)GetGooseServerStatistics() -> GetGooseServerObserver() -> GetReceivePacketNumber() - 1) << std::endl;
     std::cout << "Lost: " << (uint)GetGooseServerStatistics() -> GetGooseServerObserver() -> GetLostPacketNumber() << std::endl;
 //    std::cout << "Min: " << (uint)GetGooseServerStatistics() -> GetGooseServerObserver() -> GetMinReceivePacketTimeout() << std::endl;
 //    std::cout << "Max: " << (uint)GetGooseServerStatistics() -> GetGooseServerObserver() -> GetMaxReceivePacketTimeout() << std::endl;

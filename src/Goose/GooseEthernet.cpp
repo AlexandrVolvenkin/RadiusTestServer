@@ -624,6 +624,18 @@ void CGooseEthernet::Fsm(void)
         }
         else
         {
+//            cout << "CGoose::CLIENT_DATA_RECEIVE_WAITING Read" << endl;
+//            unsigned char *pucSourceTemp;
+//            pucSourceTemp = (unsigned char*)GetRxBuffer();
+//            for(int i=0; i<32; )
+//            {
+//                for(int j=0; j<8; j++)
+//                {
+//                    cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
+//                }
+//                cout << endl;
+//                i += 8;
+//            }
             SetFsmState(CLIENT_RECEIVED_DATA_ERROR_PROCESSING);
         }
         break;
@@ -636,6 +648,18 @@ void CGooseEthernet::Fsm(void)
         }
         else
         {
+//            cout << "CGoose::CLIENT_RECEIVED_DATA_PROCESSING Read" << endl;
+//            unsigned char *pucSourceTemp;
+//            pucSourceTemp = (unsigned char*)GetRxBuffer();
+//            for(int i=0; i<32; )
+//            {
+//                for(int j=0; j<8; j++)
+//                {
+//                    cout << hex << uppercase << setw(2) << setfill('0') << (unsigned int)pucSourceTemp[i + j] << " ";
+//                }
+//                cout << endl;
+//                i += 8;
+//            }
             SetFsmState(CLIENT_IDDLE_STATE_PREPARE);
         }
         break;
