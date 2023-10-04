@@ -36,6 +36,11 @@ public:
 
     enum
     {
+        MARKER_SYMBOL_NUMBER = 9,
+    };
+
+    enum
+    {
         IDDLE = 0,
         START,
         FULL_LOAD_MODE_START,
@@ -79,6 +84,8 @@ private:
     uint32_t m_uiPeriodTime;
     uint8_t m_uiLoadPercent;
     CTimeMeasure m_xTimeMeasure;
+    const char* m_pccMarkerData = "0123456789ABCDEF";
+    uint8_t m_uiCurrentSymbolIndex;
 };
 
 //-----------------------------------------------------------------------------------------

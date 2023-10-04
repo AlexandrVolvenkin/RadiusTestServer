@@ -61,7 +61,7 @@ CCommantLineArgumentCustomer::CCommantLineArgumentCustomer()
     m_pccMode = "server";//"client";//
     m_pccGooseInterfaceName = "eth0";
     m_pccEthernetAddress = "00:00:00:00:00:00";
-    m_pccCommInterfaceName = "ttyO1";
+    m_pccCommInterfaceName = "/dev/ttyO1";
     m_uiCalculationPeriodTime = 5000;//1000000;//
     m_uiLoadPercent = 50;
     m_uiOwnAddress = 7;

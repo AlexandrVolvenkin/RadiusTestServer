@@ -17,6 +17,7 @@ CRte::CRte()
 {
     m_pxCommunicationDevice = new CSerialPort();
     SetFsmState(IDDLE);
+    m_uiCurrentSymbolIndex = 0;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -34,20 +35,45 @@ void CRte::Fsm(void)
         break;
 
     case START:
+        // откроем порт
+        GetCommunicationDevice() -> Open();
         SetFsmState(FULL_LOAD_MODE_START);
         break;
 
     case FULL_LOAD_MODE_START:
 //        std::cout << "CRte::Fsm FULL_LOAD_MODE_START"  << std::endl;
-        // получим время начала замера
-        m_xTimeMeasure.Begin();
-        SetFsmState(FULL_LOAD_MODE);
+        // отправим маркер в порт
+        GetCommunicationDevice() ->
+        Write((uint8_t*)&m_pccMarkerData[m_uiCurrentSymbolIndex], 1);
+        if (m_uiCurrentSymbolIndex < MARKER_SYMBOL_NUMBER)
+        {
+            m_uiCurrentSymbolIndex += 1;
+        }
+        else
+        {
+            m_uiCurrentSymbolIndex = 0;
+        }
+
+        //        // получим время начала замера
+//        m_xTimeMeasure.Begin();
+        if (m_xTimeMeasure.Begin())
+        {
+            SetFsmState(FULL_LOAD_MODE);
+        }
+        else
+        {
+            m_xTimeMeasure.Begin();
+        }
         break;
 
     case FULL_LOAD_MODE:
+//        std::cout << "CRte::Fsm FULL_LOAD_MODE"  << std::endl;
+//        usleep(10000);
         // получим время прошедшее с начала замера
         uint32_t uiTime;
         uiTime = m_xTimeMeasure.End();
+
+//        std::cout << "CRte::Fsm FULL_LOAD_MODE uiTime "  << (uint32_t)uiTime << std::endl;
         // время работы закончилось?
         if (uiTime >
                 ((GetPeriodTime() * GetLoadPercent()) / 100))
@@ -78,6 +104,7 @@ void CRte::Fsm(void)
 //        std::cout << "CRte::Fsm STANDBY_MODE_START"  << std::endl;
 //        // получим время начала замера
 //        m_xTimeMeasure.Begin();
+
         SetFsmState(STANDBY_MODE);
         break;
 
@@ -89,6 +116,8 @@ void CRte::Fsm(void)
         break;
 
     case STOP:
+        // закроем порт
+        GetCommunicationDevice() -> Close();
         SetFsmState(IDDLE);
         break;
 

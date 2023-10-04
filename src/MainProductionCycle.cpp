@@ -100,6 +100,7 @@ void CMainProductionCycle::ServerInit(void)
                       HOLDING_REGISTERS_ARRAY_LENGTH,
                       INPUT_REGISTERS_ARRAY_LENGTH
                      );
+
     // создадим объект "производственная площадка Goose задачи"
     m_pxGooseThreadProduction = new CGooseThreadProduction();
     m_pxGooseEthernet ->
@@ -118,7 +119,7 @@ void CMainProductionCycle::ServerInit(void)
     // установим имя интерфейса
     m_pxRte ->
     GetCommunicationDevice() ->
-    SetPortName(GetProjectManager() -> GetGooseInterfaceName());
+    SetPortName(GetProjectManager() -> GetCommInterfaceName());
     m_pxRte ->
     GetCommunicationDevice() -> SetBaudRate(115200);
     m_pxRte ->
@@ -182,6 +183,7 @@ void CMainProductionCycle::ClientInit(void)
                                            HOLDING_REGISTERS_ARRAY_LENGTH,
                                            INPUT_REGISTERS_ARRAY_LENGTH
                                           );
+
     // создадим объект "производственная площадка Goose задачи"
     m_pxGooseThreadProduction = new CGooseThreadProduction();
     m_pxGooseEthernet ->
@@ -193,11 +195,10 @@ void CMainProductionCycle::ClientInit(void)
     m_pxGooseThreadProduction -> Place(m_pxGooseEthernet);
 }
 
+    const char* pccMarkerData = "0123456789ABCDEF";
 //-----------------------------------------------------------------------------------------
 void CMainProductionCycle::Fsm(void)
 {
-//    return;
-
     switch (GetFsmState())
     {
     case MAIN_CYCLE_START:
@@ -276,7 +277,7 @@ void CMainProductionCycle::Fsm(void)
     case MAIN_CYCLE_SHOW_STATISTICS:
 //        std::cout << "CMainProductionCycle::Fsm MAIN_CYCLE_SHOW_STATISTICS"  << std::endl;
         GetGooseConsoleRepresentation() -> Show();
-        SetFsmState(MAIN_CYCLE_IS_TIME_TO_SHOW_STATISTICS);
+        SetFsmState(MAIN_CYCLE_SEND_REQUEST_MEASURE_RESPONCE_TIME);
         break;
 
 

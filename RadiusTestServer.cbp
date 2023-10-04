@@ -37,6 +37,7 @@
 			<Add option="-fexceptions" />
 			<Add directory="src/Goose" />
 			<Add directory="src" />
+			<Add directory="src/Modbus" />
 		</Compiler>
 		<Unit filename="../Задача RadiusTestServer.txt" />
 		<Unit filename="src/Configuration.h" />

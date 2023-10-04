@@ -84,13 +84,18 @@ CTimeMeasure::~CTimeMeasure()
 }
 
 //-----------------------------------------------------------------------------------------
-void CTimeMeasure::Begin(void)
+uint8_t CTimeMeasure::Begin(void)
 {
     gettimeofday( &xTimeLast, NULL );
     if( gettimeofday( &xTimeLast, NULL ) != 0 )
     {
         /* gettimeofday failed - retry next time. */
         xTimeLast.tv_usec = 0;
+        return 0;
+    }
+    else
+    {
+        return 1;
     }
 }
 
@@ -108,17 +113,29 @@ uint32_t CTimeMeasure::End(void)
 //        Store();
         if (xTimeCur.tv_usec &&
                 xTimeLast.tv_usec &&
-                (xTimeCur.tv_usec > xTimeLast.tv_usec))
+                ((uint32_t)xTimeCur.tv_usec - (uint32_t)xTimeLast.tv_usec))
         {
-            return ((uint32_t)(xTimeCur.tv_usec - xTimeLast.tv_usec));
+            uint32_t uiTime = ((uint32_t)((uint32_t)xTimeCur.tv_usec - (uint32_t)xTimeLast.tv_usec));
+            if (uiTime > 1000000000)
+            {
+                return 0;
+            }
+            else
+            {
+                return uiTime;
+            }
+//            return ((uint32_t)((uint32_t)xTimeCur.tv_usec - (uint32_t)xTimeLast.tv_usec));
         }
         else
         {
+//        std::cout << "CTimeMeasure::End xTimeCur.tv_usec"  << (uint32_t)xTimeCur.tv_usec  << std::endl;
+//        std::cout << "CTimeMeasure::End xTimeLast.tv_usec"  << (uint32_t)xTimeLast.tv_usec  << std::endl;
+//        std::cout << "CTimeMeasure::End xTimeCur.tv_usec"  << (uint32_t)xTimeCur.tv_usec  << std::endl;
             return 0;
         }
     }
 }
-
+//(uint16_t)(CPlatform::GetCurrentTime() - (uint16_t)m_uiLastSystemTick)
 ////-----------------------------------------------------------------------------------------
 //uint8_t CTimeMeasure::LastMoreThan(int32_t ui32Seconds)
 //{

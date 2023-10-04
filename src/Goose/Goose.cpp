@@ -381,6 +381,7 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
             // при получении времени не произошло ошибок?
             if (uiTime)
             {
+//    std::cout << "CGoose::ReportSlaveIDReceive xTimeMeasure.End()"  << (int)uiTime  << std::endl;
                 // результат текущего измерения времени меньше минимального значения?
                 if (uiTime <
                         GetGooseClientObserver() ->
@@ -439,6 +440,7 @@ uint16_t CGoose::ReportSlaveIDReceive(uint8_t *puiResponse, uint16_t uiLength)
         GetTimerPointer() -> Set(1000);
 
         TGooseServerObserverData* pxGooseServerObserverData;
+        // получим указатель на начало данных статистики в пакете
         pxGooseServerObserverData = (TGooseServerObserverData*)&puiResponse[uiOffset + 3];
 
         GetGooseServerObserver() ->

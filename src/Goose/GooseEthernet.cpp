@@ -597,8 +597,7 @@ void CGooseEthernet::Fsm(void)
 
 
 
-////-----------------------------------------------------------------------------------------
-//// GooseClient
+//-----------------------------------------------------------------------------------------
 // GooseClient
     case CLIENT_START:
 //        std::cout << "CGooseEthernet::Fsm CLIENT_START"  << std::endl;

@@ -165,15 +165,15 @@ void CSerialPort::Init(void)
     m_xTios.c_cc[VTIME] = 0;
 
 
-//    memset(&m_xRs485Conf, 0x0, sizeof(struct serial_rs485));
-//
-//    m_xRs485Conf.flags |= SER_RS485_ENABLED;
-//    m_xRs485Conf.flags |= SER_RS485_RTS_ON_SEND;
-//    //m_xRs485Conf.flags &= ~(SER_RS485_RTS_ON_SEND);
-//    m_xRs485Conf.flags &= ~SER_RS485_RTS_AFTER_SEND;
-//    //m_xRs485Conf.flags |= SER_RS485_RTS_AFTER_SEND;
-//    m_xRs485Conf.delay_rts_before_send = 0;
-//    m_xRs485Conf.delay_rts_after_send = 0;
+    memset(&m_xRs485Conf, 0x0, sizeof(struct serial_rs485));
+
+    m_xRs485Conf.flags |= SER_RS485_ENABLED;
+    m_xRs485Conf.flags |= SER_RS485_RTS_ON_SEND;
+    //m_xRs485Conf.flags &= ~(SER_RS485_RTS_ON_SEND);
+    m_xRs485Conf.flags &= ~SER_RS485_RTS_AFTER_SEND;
+    //m_xRs485Conf.flags |= SER_RS485_RTS_AFTER_SEND;
+    m_xRs485Conf.delay_rts_before_send = 0;
+    m_xRs485Conf.delay_rts_after_send = 0;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -340,6 +340,7 @@ void CSerialPort::SetStopBit(uint8_t uiStopBit)
 //-----------------------------------------------------------------------------------------
 int8_t CSerialPort::Open(void)
 {
+    cout << "CSerialPort::Open m_pccDeviceName " << m_pccDeviceName << endl;
     /* The O_NOCTTY flag tells UNIX that this program doesn't want
        to be the "controlling terminal" for that port. If you
        don't specify this then any input (such as keyboard abort
@@ -362,11 +363,11 @@ int8_t CSerialPort::Open(void)
         return -1;
     }
 
-//    if (ioctl(m_iDeviceDescriptor, TIOCSRS485, &m_xRs485Conf) < 0)
-//    {
-//        printf("Error! set rs485 ioctl: %d %s\n", errno, strerror(errno));
-//        return -1;
-//    }
+    if (ioctl(m_iDeviceDescriptor, TIOCSRS485, &m_xRs485Conf) < 0)
+    {
+        printf("Error! set rs485 ioctl: %d %s\n", errno, strerror(errno));
+        return -1;
+    }
 
     // Сделаем не блокирующим.
     int flags = fcntl(m_iDeviceDescriptor, F_GETFL, 0);
@@ -415,6 +416,7 @@ int16_t CSerialPort::Read(uint8_t *puiDestination, uint16_t uiLength)
 //-----------------------------------------------------------------------------------------
 int16_t CSerialPort::Write(uint8_t *puiSource, uint16_t uiLength)
 {
+//    std::cout << "CSerialPort::Write"  << std::endl;
     SetDataIsWrited(true);
     return write(m_iDeviceDescriptor, puiSource, uiLength);
 }

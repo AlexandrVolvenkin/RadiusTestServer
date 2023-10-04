@@ -52,7 +52,7 @@ public:
     CTimeMeasure();
     ~CTimeMeasure();
 
-    void Begin(void);
+    uint8_t Begin(void);
     uint32_t End(void);
     void Store(void);
 //    uint8_t LastMoreThan(int32_t );
